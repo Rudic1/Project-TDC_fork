@@ -25,8 +25,11 @@
                    Padding="10"
                    HeightRequest="400">
                 <ScrollView>
-                <StackLayout x:Name="ListPreview"
-                             HorizontalOptions="FillAndExpand"/>
+                    <ScrollView.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnListPreviewTapped"/>
+                    </ScrollView.GestureRecognizers>
+                    <StackLayout x:Name="ListPreview"
+                                 HorizontalOptions="FillAndExpand"/>
                 </ScrollView>
             </Frame>
 

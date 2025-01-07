@@ -26,6 +26,12 @@ namespace TDC
             await Shell.Current.GoToAsync("///ToDoListPage");
         }
 
+        private void OnListPreviewTapped(object sender, EventArgs e)
+        {
+            Console.WriteLine("clicked preview");
+            //await Shell.Current.GoToAsync("///ToDoListPage");
+        }
+
         private void OnNextClicked(object sender, EventArgs e)
         {
             shownListIndex++;
