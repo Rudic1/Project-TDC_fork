@@ -41,12 +41,36 @@
 
         public List<ToDoList> GetLists()
         {
+#if ANDROID
+            return GetListDummy();
+#endif
             return lists;
         }
 
         #endregion
 
         #region privates
+        //TO-DO: ONLY FOR ANDROID TESTING, REMOVE ONCE DATA BASE WORKS
+        private List<ToDoList> GetListDummy()
+        {
+            var listDummy = new List<ToDoList>();
+            var list1 = new ToDoList("first list");
+            list1.AddItem(new ListItem("item 1", true, [], 1));
+            list1.AddItem(new ListItem("item 2", false, [], 2));
+            list1.AddItem(new ListItem("item 3", true, [], 1));
+            list1.AddItem(new ListItem("item 4", false, [], 3));
+            list1.AddItem(new ListItem("item 5", true, [], 1));
+            list1.AddItem(new ListItem("item 6", false, [], 5));
+
+            var list2 = new ToDoList("second list");
+            list2.AddItem(new ListItem("first", false, [], 2));
+            list2.AddItem(new ListItem("sec", true, [], 1));
+            list2.AddItem(new ListItem("third", true, [], 3));
+
+            listDummy.Add(list1);
+            listDummy.Add(list2);
+            return listDummy;
+        }
         private void SaveListsToFile(ToDoList list)
         {
             // check if list with id exists

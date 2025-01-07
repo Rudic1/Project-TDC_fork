@@ -17,23 +17,52 @@
 
             <!-- show available lists -->
             <Frame x:Name="ListPreviewFrame"
-                   HorizontalOptions="Center"
+                   HorizontalOptions="Fill"
                    VerticalOptions="Center"
                    CornerRadius="10"
                    BorderColor="LightGray"
                    HasShadow="True"
                    Padding="10"
-                   HeightRequest="540">
+                   HeightRequest="400">
+                <ScrollView>
                 <StackLayout x:Name="ListPreview"
                              HorizontalOptions="FillAndExpand"/>
+                </ScrollView>
             </Frame>
 
-            <Button
-                x:Name="NewListBtn"
-                Text="Create new list" 
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnNewListClicked"
-                HorizontalOptions="Fill"/>
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Height="50" ColumnSpacing="20" Margin="20, 10" ColumnDefinitions="Auto,*,Auto">
+                <Button
+                    x:Name="PrevBtn"
+                    Text="&lt;" 
+                    Grid.Column="0"
+                    SemanticProperties.Hint="previous list"
+                    BackgroundColor="LightGray"
+                    HeightRequest="50"
+                    WidthRequest="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Fill"/>
+                <Button
+                    x:Name="NewListBtn"
+                    Text="+" 
+                    Grid.Column="1"
+                    SemanticProperties.Hint="Create a new list"
+                    Clicked="OnNewListClicked"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Fill"/>
+                <Button
+                    x:Name="NextBtn"
+                    Text="&gt;" 
+                    Grid.Column="2"
+                    SemanticProperties.Hint="next list"
+                    BackgroundColor="LightGray"
+                    WidthRequest="50"
+                    HeightRequest="50"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Fill"/>
+            </Grid>
+            
         </VerticalStackLayout>
     </ScrollView>
 

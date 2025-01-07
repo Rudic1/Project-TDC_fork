@@ -4,7 +4,8 @@ namespace TDC
 {
     public partial class MainPage : ContentPage
     {
-        private ListRepository listRepository;
+        private readonly ListRepository listRepository;
+        private int shownListIndex;
         #region constructors
         public MainPage()
         {
@@ -33,6 +34,7 @@ namespace TDC
                 {
                     Text = "No Lists available"
                 };
+                ListPreview.Children.Add(emptyListEntry);
                 return;
             }
 
