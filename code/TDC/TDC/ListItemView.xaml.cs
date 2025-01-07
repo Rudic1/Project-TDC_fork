@@ -6,11 +6,14 @@ namespace TDC;
 public partial class ListItemView : ContentView
 {
     public event EventHandler NewItemOnEnter;
+    public event EventHandler EffortChanged;
+    public bool isInitialized;
     private readonly ListItem item;
 
     #region constructors
     public ListItemView(ListItem item)
     {
+        this.isInitialized = false;
         this.item = item;
         InitializeComponent();
         NewItemOnEnter = delegate { };
@@ -56,7 +59,15 @@ public partial class ListItemView : ContentView
         var selectedIndex = picker.SelectedIndex;
 
         if (selectedIndex != -1)
+        {
             item.SetEffort(selectedIndex + 1);
+        }
+
+        if (isInitialized)
+        {
+            EffortChanged.Invoke(this, e);
+        }
+        
     }
 
     #endregion

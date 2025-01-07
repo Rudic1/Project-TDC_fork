@@ -6,17 +6,18 @@ using Android.Views;
 
 namespace TDC;
 
-public partial class ToDoListView : ContentPage, IOnPageKeyDown
+public partial class ListView : ContentPage, IOnPageKeyDown
 {
     private readonly ToDoList list;
     private readonly ListRepository listRepository;
 
     #region constructors
-    public ToDoListView()
+    public ListView()
 	{
         InitializeComponent();
         listRepository = new ListRepository();
         list = new ToDoList("");
+        this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
     }
     #endregion
 
@@ -28,6 +29,14 @@ public partial class ToDoListView : ContentPage, IOnPageKeyDown
         var listItemView = new ListItemView(list.GetItems().Last());
         ItemsContainer.Children.Add(listItemView);
         listItemView.NewItemOnEnter += OnNewItemClicked!;
+        listItemView.EffortChanged += OnEffortUpdated!;
+        listItemView.isInitialized = true;
+        OnEffortUpdated(this, e);
+    }
+
+    private void OnEffortUpdated(object sender, EventArgs e)
+    {
+        this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
     }
 
     private async void OnSaveListClicked(object sender, EventArgs e)
@@ -84,6 +93,11 @@ public partial class ToDoListView : ContentPage, IOnPageKeyDown
     {
         list.RemoveItem(view.GetItem());
         ItemsContainer.Children.Remove(view);
+    }
+
+    private int GetListPoints(ToDoList toDoList)
+    {
+        return toDoList.GetItems().Sum(listItem => listItem.GetEffort() * 5);
     }
     #endregion
 }

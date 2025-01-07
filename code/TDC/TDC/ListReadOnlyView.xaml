@@ -12,12 +12,10 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Entry x:Name="TitleEntry"
-                       Placeholder="Enter list title..."
+                <Label x:Name="TitleLabel"
                        FontSize="Large"
                        HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
-                       IsReadOnly="True"
                        Grid.Column="0" />
             </Grid>
 
@@ -37,6 +35,10 @@
             <!-- Points -->
             <Label Text="Points: "
                    FontSize="Large"
+                   HorizontalOptions="Center"/>
+
+            <Label x:Name="PointsLabel"
+                   FontSize="Medium"
                    HorizontalOptions="Center"/>
 
         </VerticalStackLayout>

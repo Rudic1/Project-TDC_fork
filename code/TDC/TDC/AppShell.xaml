@@ -14,7 +14,7 @@
 
     <ShellContent
         Title="Home"
-        ContentTemplate="{DataTemplate local:ToDoListView}"
+        ContentTemplate="{DataTemplate local:ListView}"
         Route="ToDoListPage" />
 
 </Shell>

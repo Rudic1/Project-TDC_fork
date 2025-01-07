@@ -30,7 +30,7 @@ namespace TDC
             var availableLists = listRepository.GetLists();
             if (availableLists.Count == 0)
             {
-                var emptyListEntry = new Entry
+                var emptyListEntry = new Label
                 {
                     Text = "No Lists available"
                 };
