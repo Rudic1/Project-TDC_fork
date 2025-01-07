@@ -8,8 +8,8 @@ namespace TDC;
 
 public partial class ToDoListView : ContentPage, IOnPageKeyDown
 {
-    private ToDoList list;
-    private ListRepository listRepository;
+    private readonly ToDoList list;
+    private readonly ListRepository listRepository;
 
     #region constructors
     public ToDoListView()
@@ -23,7 +23,7 @@ public partial class ToDoListView : ContentPage, IOnPageKeyDown
     #region listeners
     private void OnNewItemClicked(object sender, EventArgs e)
     {
-        list.AddItem(new ListItem("", new List<Profile>(), 5));
+        list.AddItem(new ListItem("", [], 5));
 
         var listItemView = new ListItemView(list.GetItems().Last());
         ItemsContainer.Children.Add(listItemView);
@@ -33,12 +33,12 @@ public partial class ToDoListView : ContentPage, IOnPageKeyDown
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
         // get name from input field
-        string listName = TitleEntry.Text?.Trim();
+        var listName = TitleEntry.Text?.Trim();
 
         // if no name entered, ask user to put name
         if (string.IsNullOrWhiteSpace(listName))
         {
-            var result = await DisplayPromptAsync("Enter List Name", "Please provide a name for the list:");
+            var result = await DisplayPromptAsync("Enter List Name", "Please provide a name for the list: ");
             if (!string.IsNullOrWhiteSpace(result))
             {
                 listName = result;
@@ -57,12 +57,12 @@ public partial class ToDoListView : ContentPage, IOnPageKeyDown
     private void BackspaceEmitted()
     {
         foreach (var item in ItemsContainer.Children) {
-            ListItemView view = (ListItemView)item;
+            var view = (ListItemView)item;
 
             if(view.FindByName<Entry>("TaskEntry").IsFocused)
             {
                 RemoveItem(view);
-                return;
+                break;
             }
         }
     }
@@ -70,8 +70,8 @@ public partial class ToDoListView : ContentPage, IOnPageKeyDown
     #if ANDROID
     public bool OnPageKeyDown(Keycode keyCode, KeyEvent e) {
         if(keyCode == Keycode.Del) {
-                BackspaceEmitted();
-                return true;
+            BackspaceEmitted();
+            return true;
         }
         return false;
     }

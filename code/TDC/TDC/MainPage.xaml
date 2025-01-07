@@ -15,6 +15,20 @@
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Welcome to Project TDC!" />
 
+            <!-- show available lists -->
+            <Frame x:Name="ListPreviewFrame"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   CornerRadius="10"
+                   BorderColor="LightGray"
+                   HasShadow="True"
+                   Padding="10"
+                   WidthRequest="400"
+                   HeightRequest="532">
+                <StackLayout x:Name="ListPreview"
+                             HorizontalOptions="FillAndExpand"/>
+            </Frame>
+
             <Button
                 x:Name="NewListBtn"
                 Text="Create new list" 
