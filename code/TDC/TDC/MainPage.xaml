@@ -23,8 +23,7 @@
                    BorderColor="LightGray"
                    HasShadow="True"
                    Padding="10"
-                   WidthRequest="400"
-                   HeightRequest="532">
+                   HeightRequest="540">
                 <StackLayout x:Name="ListPreview"
                              HorizontalOptions="FillAndExpand"/>
             </Frame>

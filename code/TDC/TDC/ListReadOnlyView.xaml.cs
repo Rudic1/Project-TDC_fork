@@ -19,7 +19,10 @@ public partial class ListReadOnlyView : ContentView
     {
         foreach (var listItem in list.GetItems())
         {
-            var listItemView = new ListItemReadOnlyView(listItem);
+            var listItemView = new ListItemReadOnlyView(listItem)
+            {
+                MaximumHeightRequest = 42,
+            };
             ItemsContainer.Children.Add(listItemView);
         }
     }

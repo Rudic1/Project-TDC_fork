@@ -10,9 +10,9 @@ public partial class ListItemReadOnlyView : ContentView
 	{
         this.item = item;
         InitializeComponent();
-        this.FindByName<Entry>("TaskEntry").Text = item.GetDescription();
+        this.FindByName<Label>("TaskLabel").Text = item.GetDescription();
         this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone();
-        //this.FindByName<Picker>("TaskPicker").SelectedIndex = item.GetEffort() - 1;
-	}
+        this.FindByName<Label>("PointsLabel").Text = (item.GetEffort() * 5).ToString();  //item.GetEffort() - 1;
+    }
 	#endregion
 }
