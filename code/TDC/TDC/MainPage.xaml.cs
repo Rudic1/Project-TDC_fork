@@ -5,10 +5,15 @@ namespace TDC
     public partial class MainPage : ContentPage
     {
         private readonly ListRepository listRepository;
+        private List<ToDoList> availableLists;
         private int shownListIndex;
+        private bool listLoaded;
         #region constructors
         public MainPage()
         {
+            shownListIndex = 0;
+            listLoaded = false;
+            availableLists = new List<ToDoList>();
             listRepository = new ListRepository(); //init with user later
             InitializeComponent();
             LoadAvailableLists();
@@ -20,14 +25,41 @@ namespace TDC
         {
             await Shell.Current.GoToAsync("///ToDoListPage");
         }
+
+        private void OnNextClicked(object sender, EventArgs e)
+        {
+            shownListIndex++;
+            if (shownListIndex >= availableLists.Count)
+            {
+                shownListIndex = 0;
+            }
+            UpdateShownList();
+        }
+
+        private void OnPrevClicked(object sender, EventArgs e)
+        {
+            shownListIndex--;
+            if (shownListIndex < 0)
+            {
+                shownListIndex = availableLists.Count - 1;
+            }
+            UpdateShownList();
+        }
+
         #endregion
 
         #region privates
         private void LoadAvailableLists()
         {
-            ListPreview.Children.Clear();
             //TO-DO: Init via user
-            var availableLists = listRepository.GetLists();
+            this.availableLists = listRepository.GetLists();
+            listLoaded = true;
+            UpdateShownList();
+        }
+
+        private void UpdateShownList()
+        {
+            ListPreview.Children.Clear();
             if (availableLists.Count == 0)
             {
                 var emptyListEntry = new Label
@@ -37,9 +69,7 @@ namespace TDC
                 ListPreview.Children.Add(emptyListEntry);
                 return;
             }
-
-            //TO-DO: add navigation option to switch between lists
-            var list = availableLists[0];
+            var list = availableLists[shownListIndex];
             var listView = new ListReadOnlyView(list);
             ListPreview.Children.Add(listView);
         }
