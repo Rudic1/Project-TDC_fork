@@ -25,13 +25,14 @@
                    Padding="10"
                    HeightRequest="400">
                 <ScrollView>
-                    <ScrollView.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnListPreviewTapped"/>
-                    </ScrollView.GestureRecognizers>
                     <StackLayout x:Name="ListPreview"
                                  HorizontalOptions="FillAndExpand"/>
                 </ScrollView>
             </Frame>
+
+            <Button x:Name="OpenList"
+                    Text="Open List"
+                    Clicked="OnListPreviewTapped"/>
 
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Height="50" ColumnSpacing="20" Margin="20, 10" ColumnDefinitions="Auto,*,Auto">
                 <Button

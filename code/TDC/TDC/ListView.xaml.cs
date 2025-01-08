@@ -19,6 +19,16 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         list = new ToDoList("");
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
     }
+
+    public ListView(ToDoList list)
+    {
+        InitializeComponent();
+        this.list = list;
+        listRepository = new ListRepository();
+        this.FindByName<Entry>("TitleEntry").Text = list.GetName();
+        //init items here
+        this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
+    }
     #endregion
 
     #region listeners

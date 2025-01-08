@@ -1,4 +1,5 @@
 ﻿using TDC.Models;
+using System.Diagnostics;
 
 namespace TDC
 {
@@ -28,7 +29,7 @@ namespace TDC
 
         private void OnListPreviewTapped(object sender, EventArgs e)
         {
-            Console.WriteLine("clicked preview");
+            Debug.WriteLine("clicked preview");
             //await Shell.Current.GoToAsync("///ToDoListPage");
         }
 
