@@ -1,4 +1,6 @@
-﻿namespace TDC.Models
+﻿using TDC.Models;
+
+namespace TDC.Repositories
 {
     public class ListRepository
     {
@@ -11,15 +13,15 @@
         public ListRepository()
         {
             filePath = Path.Combine(projectPath, "lists.csv");
-            #if ANDROID
-             string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                if (!Directory.Exists(directoryPath))
-                {
-                    Directory.CreateDirectory(directoryPath); // Verzeichnis erstellen, wenn es nicht existiert
-                }
 
-                filePath = Path.Combine(directoryPath, "lists.csv");
-            #endif
+#if ANDROID
+            string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath); // Verzeichnis erstellen, wenn es nicht existiert
+            }
+            filePath = Path.Combine(directoryPath, "lists.csv");
+#endif
             lists = new List<ToDoList>();
             LoadAllListsFromFile();
         }
@@ -29,6 +31,15 @@
         public void AddList(ToDoList list)
         {
             SaveListsToFile(list);
+        }
+
+        public void UpdateList(ToDoList newList, string listId) {
+            for (int i = 0; i < lists.Count; i++) {
+                if (lists[i].GetID() == listId) {
+                    lists[i] = newList;
+                }
+            }
+            SaveListsToFile(newList);
         }
 
         public void RemoveList(ToDoList list)
@@ -143,10 +154,10 @@
             }
 
             // testing only
-            #if ANDROID
+#if ANDROID
             lists = GetListDummy();
-            #endif
+#endif
         }
-#endregion
+        #endregion
     }
 }

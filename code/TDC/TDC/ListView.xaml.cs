@@ -1,6 +1,13 @@
 using TDC.Models;
 using System.Diagnostics;
 
+/* Nicht gemergte Änderung aus Projekt "TDC (net8.0-windows10.0.19041.0)"
+Hinzugefügt:
+using TDC.Repositories;
+*/
+using TDC.Repositories;
+
+
 
 #if ANDROID
 using Android.Views;
@@ -46,6 +53,11 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         AddItemToView(item);
     }
 
+    private void TitleEntryChanged(object sender, EventArgs e)
+    {
+        list.SetName(this.FindByName<Entry>("TitleEntry").Text);
+    }
+
     private void OnEffortUpdated(object sender, EventArgs e)
     {
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
@@ -53,7 +65,12 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        // list already exists: remove from repository
+        if(!string.IsNullOrEmpty(listId)) //list exists
+        {
+            listRepository.UpdateList(list, listId);
+            await Shell.Current.GoToAsync("///MainPage");
+            return;
+        }
 
         var listName = TitleEntry.Text?.Trim();
 
@@ -78,6 +95,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         }
         // save list
         listRepository.AddList(list);
+        await Shell.Current.GoToAsync("///MainPage");
     }
 
     private void BackspaceEmitted()

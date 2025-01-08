@@ -20,6 +20,8 @@
                        HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
                        IsReadOnly="False"
+                       Completed="TitleEntryChanged"
+                       Unfocused="TitleEntryChanged"
                        Grid.Column="0" />
             </Grid>
 

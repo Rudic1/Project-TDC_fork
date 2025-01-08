@@ -1,5 +1,6 @@
 ﻿using TDC.Models;
 using System.Diagnostics;
+using TDC.Repositories;
 
 namespace TDC
 {
