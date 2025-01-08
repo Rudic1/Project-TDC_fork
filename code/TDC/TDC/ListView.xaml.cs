@@ -1,4 +1,6 @@
 using TDC.Models;
+using System.Diagnostics;
+
 
 #if ANDROID
 using Android.Views;
@@ -6,10 +8,12 @@ using Android.Views;
 
 namespace TDC;
 
+[QueryProperty(nameof(listId), "id")]
 public partial class ListView : ContentPage, IOnPageKeyDown
 {
-    private readonly ToDoList list;
+    private ToDoList list;
     private readonly ListRepository listRepository;
+    public string? listId { get; set; }
 
     #region constructors
     public ListView()
@@ -17,16 +21,19 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         InitializeComponent();
         listRepository = new ListRepository();
         list = new ToDoList("");
-        this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
     }
 
-    public ListView(ToDoList list)
+    protected override void OnAppearing()
     {
-        InitializeComponent();
-        this.list = list;
-        listRepository = new ListRepository();
-        this.FindByName<Entry>("TitleEntry").Text = list.GetName();
-        //init items here
+        base.OnAppearing();
+
+        if (!string.IsNullOrEmpty(listId)) // existing list
+        {
+            list = listRepository.GetListFromID(listId)!;
+            this.FindByName<Entry>("TitleEntry").Text = list.GetName();
+            AddItemsForExistingList(list);
+        }
+
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
     }
     #endregion
@@ -34,14 +41,9 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     #region listeners
     private void OnNewItemClicked(object sender, EventArgs e)
     {
-        list.AddItem(new ListItem("", [], 5));
-
-        var listItemView = new ListItemView(list.GetItems().Last());
-        ItemsContainer.Children.Add(listItemView);
-        listItemView.NewItemOnEnter += OnNewItemClicked!;
-        listItemView.EffortChanged += OnEffortUpdated!;
-        listItemView.isInitialized = true;
-        OnEffortUpdated(this, e);
+        var item = new ListItem("", [], 5);
+        list.AddItem(item);
+        AddItemToView(item);
     }
 
     private void OnEffortUpdated(object sender, EventArgs e)
@@ -51,11 +53,11 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        // get name from input field
+        // list already exists: remove from repository
+
         var listName = TitleEntry.Text?.Trim();
 
-        // if no name entered, ask user to put name
-        if (string.IsNullOrWhiteSpace(listName))
+        if (string.IsNullOrWhiteSpace(listName)) // if no name entered, ask user to put name
         {
             var result = await DisplayPromptAsync("Enter List Name", "Please provide a name for the list: ");
             if (!string.IsNullOrWhiteSpace(result))
@@ -64,10 +66,15 @@ public partial class ListView : ContentPage, IOnPageKeyDown
                 TitleEntry.Text = result;
             }
         }
-        // set name of list
-        if (!string.IsNullOrWhiteSpace(listName))
+        
+        if (!string.IsNullOrWhiteSpace(listName)) // set name of list
         {
             list.SetName(listName);
+        }
+        else
+        {
+            OnSaveListClicked(sender, e); // repeat until name entered
+            // TO-DO: add default naming
         }
         // save list
         listRepository.AddList(list);
@@ -77,7 +84,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     {
         foreach (var item in ItemsContainer.Children) {
             var view = (ListItemView)item;
-
+            
             if(view.FindByName<Entry>("TaskEntry").IsFocused)
             {
                 RemoveItem(view);
@@ -98,6 +105,21 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     #endregion
 
     #region privates
+    private void AddItemsForExistingList(ToDoList list)
+    {
+        foreach (var item in list.GetItems()) {
+            AddItemToView(item);
+        }
+    }
+
+    private void AddItemToView(ListItem item) {
+        var listItemView = new ListItemView(item);
+        ItemsContainer.Children.Add(listItemView);
+        listItemView.NewItemOnEnter += OnNewItemClicked!;
+        listItemView.EffortChanged += OnEffortUpdated!;
+        listItemView.isInitialized = true;
+        OnEffortUpdated(this, EventArgs.Empty);
+    }
 
     private void RemoveItem(ListItemView view)
     {

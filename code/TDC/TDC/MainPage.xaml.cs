@@ -24,13 +24,17 @@ namespace TDC
         #region navigation
         private async void OnNewListClicked(object sender, EventArgs e)
         {
-            await Shell.Current.GoToAsync("///ToDoListPage");
+            await Shell.Current.GoToAsync($"ToDoListPage");
         }
 
-        private void OnListPreviewTapped(object sender, EventArgs e)
+        private async void OnListPreviewTapped(object sender, EventArgs e)
         {
-            Debug.WriteLine("clicked preview");
-            //await Shell.Current.GoToAsync("///ToDoListPage");
+            if (availableLists.Count == 0)
+            {
+                return;
+            }
+            var id = availableLists[shownListIndex].GetID();
+            await Shell.Current.GoToAsync($"ToDoListPage?id={id}");
         }
 
         private void OnNextClicked(object sender, EventArgs e)
@@ -59,7 +63,7 @@ namespace TDC
         private void LoadAvailableLists()
         {
             //TO-DO: Init via user
-            this.availableLists = listRepository.GetLists();
+            availableLists = listRepository.GetLists();
             listLoaded = true;
             UpdateShownList();
         }

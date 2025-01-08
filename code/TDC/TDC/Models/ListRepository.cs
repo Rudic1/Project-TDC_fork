@@ -23,11 +23,9 @@
             lists = new List<ToDoList>();
             LoadAllListsFromFile();
         }
-
-#endregion
+        #endregion
 
         #region publics
-
         public void AddList(ToDoList list)
         {
             SaveListsToFile(list);
@@ -41,10 +39,16 @@
 
         public List<ToDoList> GetLists()
         {
-#if ANDROID
-            return GetListDummy();
-#endif
             return lists;
+        }
+
+        public ToDoList? GetListFromID(string id)
+        {
+            foreach (ToDoList list in lists)
+            {
+                if (id.Equals(list.GetID())) return list;
+            }
+            return null;
         }
 
         #endregion
@@ -137,7 +141,12 @@
                 // get all lists from dict and save to actual buffer
                 lists = listDict.Values.ToList();
             }
+
+            // testing only
+            #if ANDROID
+            lists = GetListDummy();
+            #endif
         }
-        #endregion
+#endregion
     }
 }
