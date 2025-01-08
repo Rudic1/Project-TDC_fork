@@ -6,7 +6,7 @@ namespace TDC
 {
     public partial class MainPage : ContentPage
     {
-        private readonly ListRepository listRepository;
+        private ListRepository listRepository;
         private List<ToDoList> availableLists;
         private int shownListIndex;
         private bool listLoaded;
@@ -23,6 +23,16 @@ namespace TDC
         #endregion
 
         #region navigation
+        protected override void OnNavigatedTo(NavigatedToEventArgs args)
+        {
+            base.OnNavigatedTo(args);
+
+            shownListIndex = 0;
+            listLoaded = false;
+            availableLists = new List<ToDoList>();
+            LoadAvailableLists();
+        }
+
         private async void OnNewListClicked(object sender, EventArgs e)
         {
             await Shell.Current.GoToAsync($"ToDoListPage");
@@ -64,6 +74,7 @@ namespace TDC
         private void LoadAvailableLists()
         {
             //TO-DO: Init via user
+            listRepository = new ListRepository();
             availableLists = listRepository.GetLists();
             listLoaded = true;
             UpdateShownList();
