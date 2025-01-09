@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TDC.ToDoListView"
+             x:Class="TDC.ListView"
              Title="To Do List">
 
     <ScrollView>
@@ -20,6 +20,8 @@
                        HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
                        IsReadOnly="False"
+                       Completed="TitleEntryChanged"
+                       Unfocused="TitleEntryChanged"
                        Grid.Column="0" />
             </Grid>
 
@@ -50,6 +52,10 @@
                 <!-- Points -->
             <Label Text="Points: "
                    FontSize="Large"
+                   HorizontalOptions="Center"/>
+
+            <Label x:Name="PointsLabel"
+                   FontSize="Medium"
                    HorizontalOptions="Center"/>
 
         </VerticalStackLayout>

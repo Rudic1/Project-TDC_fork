@@ -1,4 +1,6 @@
-﻿namespace TDC.Models
+﻿using TDC.Models;
+
+namespace TDC.Repositories
 {
     public class ListRepository
     {
@@ -11,26 +13,33 @@
         public ListRepository()
         {
             filePath = Path.Combine(projectPath, "lists.csv");
-            #if ANDROID
-             string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-                if (!Directory.Exists(directoryPath))
-                {
-                    Directory.CreateDirectory(directoryPath); // Verzeichnis erstellen, wenn es nicht existiert
-                }
 
-                filePath = Path.Combine(directoryPath, "lists.csv");
-            #endif
+#if ANDROID
+            string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath); // Verzeichnis erstellen, wenn es nicht existiert
+            }
+            filePath = Path.Combine(directoryPath, "lists.csv");
+#endif
             lists = new List<ToDoList>();
             LoadAllListsFromFile();
         }
-
-#endregion
+        #endregion
 
         #region publics
-
         public void AddList(ToDoList list)
         {
             SaveListsToFile(list);
+        }
+
+        public void UpdateList(ToDoList newList, string listId) {
+            for (int i = 0; i < lists.Count; i++) {
+                if (lists[i].GetID() == listId) {
+                    lists[i] = newList;
+                }
+            }
+            SaveListsToFile(newList);
         }
 
         public void RemoveList(ToDoList list)
@@ -44,9 +53,39 @@
             return lists;
         }
 
+        public ToDoList? GetListFromID(string id)
+        {
+            foreach (ToDoList list in lists)
+            {
+                if (id.Equals(list.GetID())) return list;
+            }
+            return null;
+        }
+
         #endregion
 
         #region privates
+        //TO-DO: ONLY FOR ANDROID TESTING, REMOVE ONCE DATA BASE WORKS
+        private List<ToDoList> GetListDummy()
+        {
+            var listDummy = new List<ToDoList>();
+            var list1 = new ToDoList("first list");
+            list1.AddItem(new ListItem("item 1", true, [], 1));
+            list1.AddItem(new ListItem("item 2", false, [], 2));
+            list1.AddItem(new ListItem("item 3", true, [], 1));
+            list1.AddItem(new ListItem("item 4", false, [], 3));
+            list1.AddItem(new ListItem("item 5", true, [], 1));
+            list1.AddItem(new ListItem("item 6", false, [], 5));
+
+            var list2 = new ToDoList("second list");
+            list2.AddItem(new ListItem("first", false, [], 2));
+            list2.AddItem(new ListItem("sec", true, [], 1));
+            list2.AddItem(new ListItem("third", true, [], 3));
+
+            listDummy.Add(list1);
+            listDummy.Add(list2);
+            return listDummy;
+        }
         private void SaveListsToFile(ToDoList list)
         {
             // check if list with id exists
@@ -113,6 +152,11 @@
                 // get all lists from dict and save to actual buffer
                 lists = listDict.Values.ToList();
             }
+
+            // testing only
+#if ANDROID
+            lists = GetListDummy();
+#endif
         }
         #endregion
     }

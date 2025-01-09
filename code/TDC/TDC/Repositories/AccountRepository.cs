@@ -1,4 +1,6 @@
-﻿namespace TDC.Models;
+﻿using TDC.Models;
+
+namespace TDC.Repositories;
 public class AccountRepository
 {
     private List<Account> accounts;
