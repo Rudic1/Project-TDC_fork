@@ -14,14 +14,15 @@ namespace TDC.Repositories
         {
             filePath = Path.Combine(projectPath, "lists.csv");
 
-#if ANDROID
+            #if ANDROID
             string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(directoryPath); // Verzeichnis erstellen, wenn es nicht existiert
+                Directory.CreateDirectory(directoryPath); // create directory if nit doesn't exist already
             }
+
             filePath = Path.Combine(directoryPath, "lists.csv");
-#endif
+            #endif
             lists = new List<ToDoList>();
             LoadAllListsFromFile();
         }
@@ -30,7 +31,8 @@ namespace TDC.Repositories
         #region publics
         public void AddList(ToDoList list)
         {
-            SaveListsToFile(list);
+            lists.Add(list);
+            SaveListsToFile();
         }
 
         public void UpdateList(ToDoList newList, string listId) {
@@ -39,13 +41,13 @@ namespace TDC.Repositories
                     lists[i] = newList;
                 }
             }
-            SaveListsToFile(newList);
+            SaveListsToFile();
         }
 
         public void RemoveList(ToDoList list)
         {
             lists.Remove(list);
-            //SaveListsToFile(list);  Liste nach dem Hinzufügen in CSV speichern !!!geht nicht mit der aktuellen implementierung
+            SaveListsToFile();
         }
 
         public List<ToDoList> GetLists()
@@ -86,31 +88,16 @@ namespace TDC.Repositories
             listDummy.Add(list2);
             return listDummy;
         }
-        private void SaveListsToFile(ToDoList list)
+        private void SaveListsToFile()
         {
-            // check if list with id exists
-            var existingList = lists.FirstOrDefault(l => l.GetID() == list.GetID());
-
-            if (existingList != null)
+            using (var writer = new StreamWriter(filePath)) // overwrite new lists
             {
-                // if list exists, remove line
-                lists.Remove(existingList);
-            }
-
-            // add new/updated list
-            lists.Add(list);
-
-            // overwrite updated list array to csv
-            using (var writer = new StreamWriter(filePath))
-            {
-                // Header for CSV
-                writer.WriteLine("ListID;ListName;ItemDescription;Effort;Done;Members");
+                writer.WriteLine("ListID;ListName;ItemDescription;Effort;Done;Members"); // header
 
                 foreach (var todoList in lists)
                 {
                     foreach (var item in todoList.GetItems())
                     {
-                        // convert to csv
                         writer.WriteLine($"{todoList.GetID()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
                     }
                 }
@@ -121,9 +108,9 @@ namespace TDC.Repositories
         {
             if (File.Exists(filePath))
             {
-                var lines = File.ReadAllLines(filePath).Skip(1); // Skip the header line
+                var lines = File.ReadAllLines(filePath).Skip(1); // skip header line
 
-                // create dict for each list id, to place items in the correct list
+                // dict id -> list object
                 var listDict = new Dictionary<string, ToDoList>();
 
                 foreach (var line in lines)
@@ -136,16 +123,14 @@ namespace TDC.Repositories
                     var itemEffort = int.Parse(values[3]);
                     var itemDone = bool.Parse(values[4]);
 
-                    // if list doesnt ecist, create and add to dict
-                    if (!listDict.ContainsKey(listId))
+                    if (!listDict.ContainsKey(listId)) //list not registered in dict yet
                     {
                         var todoList = new ToDoList(listName, listId);
-                        listDict[listId] = todoList;
+                        listDict[listId] = todoList; // add new list to dict
                     }
 
-                    // add list item
+                    // add list item from line to corresponding list
                     var todoItem = new ListItem(itemDescription, itemDone, new List<Profile>(), itemEffort);
-
                     listDict[listId].AddItem(todoItem);
                 }
 
@@ -154,9 +139,9 @@ namespace TDC.Repositories
             }
 
             // testing only
-#if ANDROID
-            lists = GetListDummy();
-#endif
+            #if ANDROID
+                lists = GetListDummy();
+            #endif
         }
         #endregion
     }

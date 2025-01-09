@@ -49,7 +49,15 @@
                         HorizontalOptions="Fill">
             </Button>
 
-                <!-- Points -->
+            <Button x:Name="DeleteListBtn"
+                        Text="Delete List" 
+                        SemanticProperties.Hint="Delete List"
+                        Clicked="OnDeleteListClicked"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="Fill">
+            </Button>
+
+            <!-- Points -->
             <Label Text="Points: "
                    FontSize="Large"
                    HorizontalOptions="Center"/>
