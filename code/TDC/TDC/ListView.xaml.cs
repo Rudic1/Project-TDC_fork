@@ -65,7 +65,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        if(!string.IsNullOrEmpty(listId)) //list exists
+        if(!string.IsNullOrEmpty(listId)) //existing list -> update attributes
         {
             listRepository.UpdateList(list, listId);
             await Shell.Current.GoToAsync("///MainPage");
@@ -95,6 +95,12 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         }
         // save list
         listRepository.AddList(list);
+        await Shell.Current.GoToAsync("///MainPage");
+    }
+
+    private async void OnDeleteListClicked(object sender, EventArgs e)
+    {
+        listRepository.RemoveList(list);
         await Shell.Current.GoToAsync("///MainPage");
     }
 
