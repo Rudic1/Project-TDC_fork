@@ -100,8 +100,12 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnDeleteListClicked(object sender, EventArgs e)
     {
-        listRepository.RemoveList(list);
-        await Shell.Current.GoToAsync("///MainPage");
+        bool answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
+        if (answer)
+        {
+            listRepository.RemoveList(list);
+            await Shell.Current.GoToAsync("///MainPage");
+        }
     }
 
     private void BackspaceEmitted()
