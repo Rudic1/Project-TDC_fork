@@ -18,7 +18,7 @@ namespace TDC.Repositories
             string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(directoryPath); // create directory if nit doesn't exist already
+                Directory.CreateDirectory(directoryPath); // create directory if not doesn't exist already
             }
 
             filePath = Path.Combine(directoryPath, "lists.csv");
