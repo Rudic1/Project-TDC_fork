@@ -9,10 +9,10 @@
 
             <!-- Title (editable) -->
             <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
                 <Entry x:Name="TitleEntry"
                        Placeholder="Enter list title..."
@@ -22,7 +22,13 @@
                        IsReadOnly="False"
                        Completed="TitleEntryChanged"
                        Unfocused="TitleEntryChanged"
-                       Grid.Column="0" />
+                       Grid.Row="0" />
+                <Label x:Name="ErrorLabel"
+                       IsVisible="False"
+                       FontSize="14"
+                       TextColor="Red"
+                       Text="Pleaser enter a valid list title"
+                       Grid.Row="1"/>
             </Grid>
 
             <!-- Dynamically generated ListItemViews -->

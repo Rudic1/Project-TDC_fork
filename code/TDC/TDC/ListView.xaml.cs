@@ -56,6 +56,10 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     private void TitleEntryChanged(object sender, EventArgs e)
     {
         list.SetName(this.FindByName<Entry>("TitleEntry").Text);
+        if (!string.IsNullOrEmpty(this.FindByName<Entry>("TitleEntry").Text))
+        {
+            this.FindByName<Label>("ErrorLabel").IsVisible = false;
+        }
     }
 
     private void OnEffortUpdated(object sender, EventArgs e)
@@ -65,34 +69,20 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        if(!string.IsNullOrEmpty(listId)) //existing list -> update attributes
+        var listName = TitleEntry.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(listName)) // if no name entered, ask user to put name
+        {
+            this.FindByName<Label>("ErrorLabel").IsVisible = true;
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(listId)) //existing list -> update attributes
         {
             listRepository.UpdateList(list, listId);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
 
-        var listName = TitleEntry.Text?.Trim();
-
-        if (string.IsNullOrWhiteSpace(listName)) // if no name entered, ask user to put name
-        {
-            var result = await DisplayPromptAsync("Enter List Name", "Please provide a name for the list: ");
-            if (!string.IsNullOrWhiteSpace(result))
-            {
-                listName = result;
-                TitleEntry.Text = result;
-            }
-        }
-        
-        if (!string.IsNullOrWhiteSpace(listName)) // set name of list
-        {
-            list.SetName(listName);
-        }
-        else
-        {
-            OnSaveListClicked(sender, e); // repeat until name entered
-            // TO-DO: add default naming
-        }
         // save list
         listRepository.AddList(list);
         await Shell.Current.GoToAsync("///MainPage");
