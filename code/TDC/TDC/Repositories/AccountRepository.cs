@@ -58,14 +58,18 @@ public class AccountRepository
     }
 
     #region privates
-    private void SaveAccountsToFile()
+    private void SaveAccountToFile(Account acc)
     {
-        
+        if (!Directory.Exists(filePath + "/" + acc.GetId()))
+        {
+            Directory.CreateDirectory(filePath + "/" + acc.GetId()); // create directory if not doesn't exist already
+        }
+        using StreamWriter writer = new(filePath + "/" + acc.GetId() + "/info.csv");
     }
 
     private void LoadAllAccountsFromFile()
     {
-
+        
     }
     #endregion
 }
