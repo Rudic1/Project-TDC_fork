@@ -1,42 +1,57 @@
-﻿namespace TDC.Models;
+﻿using System.Collections.Generic;
+
+namespace TDC.Models;
 public class Account: Profile
 {
-    private List<Profile> friends = new List<Profile>();
-    private List<Profile> requests = new List<Profile>();
-    private List<ToDoList> lists = new List<ToDoList>();
+    private readonly List<Profile> friends;
+    private readonly List<Profile> requests;
+    private readonly List<ToDoList> lists;
     private string email;
     private string password;
-    private Character character;
 
     #region constructors
-    public Account(int id, string name, string picture, string description, string email, string password)
-    : base(id, name, picture, description)
+    // new account case
+    public Account(string id, string name, string description, string email, string password, Character character)
+    : base(id, name, character, description, 0)
     {
-        this.friends = new List<Profile>();
-        this.requests = new List<Profile>();
-        this.lists = new List<ToDoList>();
-        character = new Character();
+        this.friends = [];
+        this.requests = [];
+        this.lists = [];
         this.email = email;
         this.password = password;
+        this.Level = 0;
     }
+
+    // existing account -> identify via repository
+    public Account(string id, string name, string description, string email, string password, List<Profile> friends, List<Profile> requests, List<ToDoList> lists, Character character)
+        : base(id, name, character, description, 0)
+    {
+        this.friends = friends;
+        this.requests = requests;
+        this.lists = lists;
+        this.email = email;
+        this.password = password;
+        this.Level = 0;
+    }
+
     #endregion
 
     #region getters & setters
     public void SetName(string name) { 
-        this.name = name;
+        this.Name = name;
     }
 
-    public void SetPicture(string picture) { 
-        this.picture = picture;
+    public void SetCharacter(Character character) { 
+        this.Character = character;
     }
 
     public void SetDescription(string description) { 
-        this.description = description;
+        this.Description = description;
     }
 
-    public void SetPassword(string password)
+    public void SetPassword(string pw)
     {
-        this.password = password;
+        this.password = pw;
     }
 
     public string GetPassword()
@@ -44,9 +59,9 @@ public class Account: Profile
         return password;
     }
 
-    public void SetEmail(string email)
+    public void SetEmail(string mail)
     {
-        this.email = email;
+        this.email = mail;
     }
 
     public string GetEmail()
@@ -84,9 +99,6 @@ public class Account: Profile
         return lists;
     }
 
-    public Character GetCharacter() {
-        return character;
-    }
 
     public List<Profile> GetRequests() { 
         return requests;

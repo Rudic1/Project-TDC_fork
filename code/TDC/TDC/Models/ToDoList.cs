@@ -3,10 +3,10 @@
 namespace TDC.Models;
 public class ToDoList
 {
-    private List<ListItem> items = new List<ListItem>();
-    private List<Profile> members = new List<Profile>();
+    private readonly List<ListItem> items;
+    private readonly List<Profile> members;
     private string name;
-    private string id; // <base-id>-<member-id>
+    private readonly string id; // TO-DO: add logic for data base, suggestion: <base-id>-<member-id>
 
     #region constructors 
     public ToDoList(string name)

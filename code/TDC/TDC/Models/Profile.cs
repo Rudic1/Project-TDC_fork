@@ -1,48 +1,48 @@
 ﻿namespace TDC.Models;
 public class Profile
 {
-    protected int id;
-    protected string name;
-    protected string picture;
-    protected string description;
-    protected int level;
+    protected string Id;
+    protected string Name;
+    protected Character Character;
+    protected string Description;
+    protected int Level;
 
     #region constructors
-    public Profile(int id, string name, string picture, string description)
+    public Profile(string id, string name, Character character, string description, int level)
     {
-        this.id = id;
-        this.name = name;
-        this.picture = picture;
-        this.description = description;
-        level = 0;
+        this.Id = id;
+        this.Name = name;
+        this.Character = character;
+        this.Description = description;
+        this.Level = level;
     }
 
     #endregion
 
     #region getters & setters
-    public int GetID()
+    public string GetId()
     {
-        return id;
+        return Id;
     }
 
     public string GetName()
     {
-        return name;
+        return Name;
     }
 
-    public string GetPicture()
+    public Character GetCharacter()
     {
-        return picture;
+        return Character;
     }
 
     public string GetDescription()
     {
-        return description;
+        return Description;
     }
 
     public int GetLevel()
     {
-        return level;
+        return Level;
     }
     #endregion
 }
