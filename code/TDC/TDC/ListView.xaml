@@ -27,7 +27,7 @@
                        IsVisible="False"
                        FontSize="14"
                        TextColor="Red"
-                       Text="Pleaser enter a valid list title"
+                       Text="Pleaser enter a valid list title. Title cannot be empty or contain any of the following characters: ;, /, \"
                        Grid.Row="1"/>
             </Grid>
 

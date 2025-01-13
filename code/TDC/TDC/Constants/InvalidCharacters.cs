@@ -7,9 +7,9 @@ using System.Xml;
 
 namespace TDC.Constants
 {
-    public class InvalidCharacters
+    public static class InvalidCharacters
     {
-        public readonly List<string> InvalidTitle = [";", "\\", "/"];
-        public readonly List<string> InvalidGeneral = [";", "\n"];
+        public static readonly List<char> InvalidTitle = [';', '\\', '/'];
+        public static readonly List<char> InvalidGeneral = [';', '\n'];
     }
 }

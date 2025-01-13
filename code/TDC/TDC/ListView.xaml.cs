@@ -1,6 +1,6 @@
 using TDC.Models;
 using System.Diagnostics;
-
+using TDC.Constants;
 /* Nicht gemergte Änderung aus Projekt "TDC (net8.0-windows10.0.19041.0)"
 Hinzugefügt:
 using TDC.Repositories;
@@ -70,7 +70,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
         var listName = TitleEntry.Text?.Trim();
-        if (string.IsNullOrWhiteSpace(listName)) // if no name entered, ask user to put name
+        if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName)) // if no name entered, ask user to put name
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = true;
             return;
@@ -90,12 +90,10 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnDeleteListClicked(object sender, EventArgs e)
     {
-        bool answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
-        if (answer)
-        {
-            listRepository.RemoveList(list);
-            await Shell.Current.GoToAsync("///MainPage");
-        }
+        var answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
+        if (!answer) return;
+        listRepository.RemoveList(list);
+        await Shell.Current.GoToAsync("///MainPage");
     }
 
     private void BackspaceEmitted()
@@ -145,9 +143,14 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         ItemsContainer.Children.Remove(view);
     }
 
-    private int GetListPoints(ToDoList toDoList)
+    private static int GetListPoints(ToDoList toDoList)
     {
         return toDoList.GetItems().Sum(listItem => listItem.GetEffort() * 5);
+    }
+
+    private static bool HasInvalidTitleCharacters(string title)
+    {
+        return InvalidCharacters.InvalidTitle.Any(title.Contains);
     }
     #endregion
 }
