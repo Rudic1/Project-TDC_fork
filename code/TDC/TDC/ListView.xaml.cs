@@ -1,6 +1,6 @@
 using TDC.Models;
 using System.Diagnostics;
-
+using TDC.Constants;
 /* Nicht gemergte Änderung aus Projekt "TDC (net8.0-windows10.0.19041.0)"
 Hinzugefügt:
 using TDC.Repositories;
@@ -56,6 +56,10 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     private void TitleEntryChanged(object sender, EventArgs e)
     {
         list.SetName(this.FindByName<Entry>("TitleEntry").Text);
+        if (!string.IsNullOrEmpty(this.FindByName<Entry>("TitleEntry").Text))
+        {
+            this.FindByName<Label>("ErrorLabel").IsVisible = false;
+        }
     }
 
     private void OnEffortUpdated(object sender, EventArgs e)
@@ -65,34 +69,20 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        if(!string.IsNullOrEmpty(listId)) //existing list -> update attributes
+        var listName = TitleEntry.Text?.Trim();
+        if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName)) // if no name entered, ask user to put name
+        {
+            this.FindByName<Label>("ErrorLabel").IsVisible = true;
+            return;
+        }
+
+        if (!string.IsNullOrEmpty(listId)) //existing list -> update attributes
         {
             listRepository.UpdateList(list, listId);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
 
-        var listName = TitleEntry.Text?.Trim();
-
-        if (string.IsNullOrWhiteSpace(listName)) // if no name entered, ask user to put name
-        {
-            var result = await DisplayPromptAsync("Enter List Name", "Please provide a name for the list: ");
-            if (!string.IsNullOrWhiteSpace(result))
-            {
-                listName = result;
-                TitleEntry.Text = result;
-            }
-        }
-        
-        if (!string.IsNullOrWhiteSpace(listName)) // set name of list
-        {
-            list.SetName(listName);
-        }
-        else
-        {
-            OnSaveListClicked(sender, e); // repeat until name entered
-            // TO-DO: add default naming
-        }
         // save list
         listRepository.AddList(list);
         await Shell.Current.GoToAsync("///MainPage");
@@ -100,12 +90,10 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnDeleteListClicked(object sender, EventArgs e)
     {
-        bool answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
-        if (answer)
-        {
-            listRepository.RemoveList(list);
-            await Shell.Current.GoToAsync("///MainPage");
-        }
+        var answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
+        if (!answer) return;
+        listRepository.RemoveList(list);
+        await Shell.Current.GoToAsync("///MainPage");
     }
 
     private void BackspaceEmitted()
@@ -155,9 +143,14 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         ItemsContainer.Children.Remove(view);
     }
 
-    private int GetListPoints(ToDoList toDoList)
+    private static int GetListPoints(ToDoList toDoList)
     {
         return toDoList.GetItems().Sum(listItem => listItem.GetEffort() * 5);
+    }
+
+    private static bool HasInvalidTitleCharacters(string title)
+    {
+        return InvalidCharacters.InvalidTitle.Any(title.Contains);
     }
     #endregion
 }
