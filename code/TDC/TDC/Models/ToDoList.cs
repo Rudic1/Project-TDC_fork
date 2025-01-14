@@ -3,10 +3,10 @@
 namespace TDC.Models;
 public class ToDoList
 {
-    private List<ListItem> items = new List<ListItem>();
-    private List<Profile> members = new List<Profile>();
+    private readonly List<ListItem> items;
+    private readonly List<Profile> members;
     private string name;
-    private string id; // <base-id>-<member-id>
+    private readonly string id; // TO-DO: add logic for data base, suggestion: <base-id>-<member-id>
 
     #region constructors 
     public ToDoList(string name)
@@ -57,9 +57,9 @@ public class ToDoList
         return members;
     }
 
-    public void SetName(string name)
+    public void SetName(string n)
     {
-        this.name = name;
+        this.name = n;
     }
 
     public string GetName()
@@ -67,7 +67,7 @@ public class ToDoList
         return name;
     }
 
-    public string GetID()
+    public string GetId()
     {
         Debug.WriteLine(id);
         return id;

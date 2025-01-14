@@ -1,42 +1,54 @@
 ﻿namespace TDC.Models;
 public class Account: Profile
 {
-    private List<Profile> friends = new List<Profile>();
-    private List<Profile> requests = new List<Profile>();
-    private List<ToDoList> lists = new List<ToDoList>();
+    private readonly List<string> friends; 
+    private readonly List<string> requests;
+    private readonly List<string> lists;
     private string email;
     private string password;
-    private Character character;
 
     #region constructors
-    public Account(int id, string name, string picture, string description, string email, string password)
-    : base(id, name, picture, description)
+    // new account case
+    public Account(string id, string name, string description, string email, string password, Character character, int level)
+    : base(id, name, character, description, level)
     {
-        this.friends = new List<Profile>();
-        this.requests = new List<Profile>();
-        this.lists = new List<ToDoList>();
-        character = new Character();
+        this.friends = [];
+        this.requests = [];
+        this.lists = [];
         this.email = email;
         this.password = password;
     }
+
+    // existing account -> identify via repository
+    public Account(string id, string name, string description, string email, string password, Character character, int level, List<string> friends, List<string> requests, List<string> lists)
+        : base(id, name, character, description, level)
+    {
+        this.friends = friends;
+        this.requests = requests;
+        this.lists = lists;
+        this.email = email;
+        this.password = password;
+        this.Level = level;
+    }
+
     #endregion
 
     #region getters & setters
     public void SetName(string name) { 
-        this.name = name;
+        this.Name = name;
     }
 
-    public void SetPicture(string picture) { 
-        this.picture = picture;
+    public void SetCharacter(Character character) { 
+        this.Character = character;
     }
 
     public void SetDescription(string description) { 
-        this.description = description;
+        this.Description = description;
     }
 
-    public void SetPassword(string password)
+    public void SetPassword(string pw)
     {
-        this.password = password;
+        this.password = pw;
     }
 
     public string GetPassword()
@@ -44,9 +56,9 @@ public class Account: Profile
         return password;
     }
 
-    public void SetEmail(string email)
+    public void SetEmail(string mail)
     {
-        this.email = email;
+        this.email = mail;
     }
 
     public string GetEmail()
@@ -54,46 +66,43 @@ public class Account: Profile
         return email;
     }
 
-    public void AddFriend(Profile friend)
+    public void AddFriend(string friendId)
     {
-        friends.Add(friend);
+        friends.Add(friendId);
     }
 
-    public void RemoveFriend(Profile friend)
+    public void RemoveFriend(string friendId)
     {
-        friends.Remove(friend);
+        friends.Remove(friendId);
     }
 
-    public List<Profile> GetFriendList()
+    public List<string> GetFriendList()
     {
         return friends;
     }
 
-    public void AddList(ToDoList list)
+    public void AddList(string listId)
     {
-        lists.Add(list);
+        lists.Add(listId);
     }
 
-    public void RemoveList(ToDoList list)
+    public void RemoveList(string listId)
     {
-        lists.Remove(list);
+        lists.Remove(listId);
     }
 
-    public List<ToDoList> GetLists()
+    public List<string> GetLists()
     {
         return lists;
     }
 
-    public Character GetCharacter() {
-        return character;
-    }
 
-    public List<Profile> GetRequests() { 
+    public List<string> GetRequests() { 
         return requests;
     }
 
-    public void SendRequest(Profile profile) {
-        
+    public void SendRequest(string profileId) {
+        requests.Add(profileId);
     }
     #endregion
 }

@@ -4,12 +4,17 @@ namespace TDC.Repositories;
 
 public class ProfileRepository
 {
-    private List<Profile> profiles;
+    private readonly List<Profile> profiles;
 
     #region constructors
     public ProfileRepository()
     {
         profiles = new List<Profile>();
+        var accRepos = new AccountRepository();
+        foreach (var acc in accRepos.GetAllAccounts())
+        {
+            profiles.Add(new Profile(acc.GetId(), acc.GetName(), new Character(), acc.GetDescription(), acc.GetLevel())); //TO-DO: Add database for characters
+        }
     }
     #endregion
 
@@ -35,9 +40,9 @@ public class ProfileRepository
         return [];
     }
 
-    public Profile? GetProfileById(int id)
+    public Profile? GetProfileById(string id)
     {
-        return null;
+        return profiles.FirstOrDefault(profile => id.Equals(profile.GetId()));
     }
 }
 

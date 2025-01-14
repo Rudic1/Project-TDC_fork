@@ -15,10 +15,10 @@ namespace TDC.Repositories
             filePath = Path.Combine(projectPath, "lists.csv");
 
             #if ANDROID
-            string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(directoryPath); // create directory if nit doesn't exist already
+                Directory.CreateDirectory(directoryPath); // create directory if not doesn't exist already
             }
 
             filePath = Path.Combine(directoryPath, "lists.csv");
@@ -36,8 +36,8 @@ namespace TDC.Repositories
         }
 
         public void UpdateList(ToDoList newList, string listId) {
-            for (int i = 0; i < lists.Count; i++) {
-                if (lists[i].GetID() == listId) {
+            for (var i = 0; i < lists.Count; i++) {
+                if (lists[i].GetId().Equals(listId)) {
                     lists[i] = newList;
                 }
             }
@@ -52,23 +52,23 @@ namespace TDC.Repositories
 
         public List<ToDoList> GetLists()
         {
+            // testing only
+            #if ANDROID
+                return GetDummyLists();
+            #endif
             return lists;
         }
 
-        public ToDoList? GetListFromID(string id)
+        public ToDoList? GetListFromId(string id)
         {
-            foreach (ToDoList list in lists)
-            {
-                if (id.Equals(list.GetID())) return list;
-            }
-            return null;
+            return lists.FirstOrDefault(list => id.Equals(list.GetId()));
         }
 
         #endregion
 
         #region privates
         //TO-DO: ONLY FOR ANDROID TESTING, REMOVE ONCE DATA BASE WORKS
-        private List<ToDoList> GetListDummy()
+        private List<ToDoList> GetDummyLists()
         {
             var listDummy = new List<ToDoList>();
             var list1 = new ToDoList("first list");
@@ -98,7 +98,7 @@ namespace TDC.Repositories
                 {
                     foreach (var item in todoList.GetItems())
                     {
-                        writer.WriteLine($"{todoList.GetID()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
+                        writer.WriteLine($"{todoList.GetId()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
                     }
                 }
             }
@@ -137,11 +137,6 @@ namespace TDC.Repositories
                 // get all lists from dict and save to actual buffer
                 lists = listDict.Values.ToList();
             }
-
-            // testing only
-            #if ANDROID
-                lists = GetListDummy();
-            #endif
         }
         #endregion
     }

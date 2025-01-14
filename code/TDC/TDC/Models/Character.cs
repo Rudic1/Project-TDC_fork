@@ -4,15 +4,15 @@ public class Character
 {
     private int xp;
     private int points;
-    private List<Perk> perks = new List<Perk>();
-    private List<int> outfits;
+    private readonly List<Perk> perks;
+    private readonly List<int> outfits;
     private int currentOutfit;
     private string color;
     private int face;
     private Hairstyle hairstyle;
 
     #region constructors
-    public Character() 
+    public Character() // default character
     {
         perks = new List<Perk>();
         outfits = new List<int>();
@@ -34,19 +34,19 @@ public class Character
     #endregion
 
     #region getters & setters
-    public void AddXP(int xp)
+    public void AddXp(int xp)
     {
         this.xp += xp;
     }
 
-    public int GetXP()
+    public int GetXp()
     {
         return xp;
     }
 
-    public void AddPoints(int points)
+    public void AddPoints(int pts)
     {
-        this.points += points;
+        this.points += pts;
     }
 
     public int GetPoints()
@@ -64,7 +64,7 @@ public class Character
         return perks;
     }
 
-    public void AddOutfit(int outfitID)
+    public void AddOutfit(int outfitId)
     {
         
     }
@@ -74,9 +74,9 @@ public class Character
         return outfits;
     }
 
-    public void SetCurrentOutfit(int outfitID)
+    public void SetCurrentOutfit(int outfitId)
     {
-        currentOutfit = outfitID;
+        currentOutfit = outfitId;
     }
 
     public int GetCurrentOutfit()
@@ -94,9 +94,9 @@ public class Character
         return color;
     }
 
-    public void SetFace(int faceID)
+    public void SetFace(int faceId)
     {
-        face = faceID;
+        face = faceId;
     }
 
     public int GetFace()

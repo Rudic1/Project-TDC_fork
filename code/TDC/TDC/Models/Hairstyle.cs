@@ -2,20 +2,20 @@
 public class Hairstyle
 {
     private string color;
-    private int styleID;
+    private int sId;
 
     #region constructors
-    public Hairstyle(string color, int styleID) 
+    public Hairstyle(string color, int sId) 
     { 
         this.color = color;
-        this.styleID = styleID;
+        this.sId = sId;
     }
     #endregion
 
     #region getters & setters
-    public void SetColor(string color)
+    public void SetColor(string c)
     {
-        this.color = color;
+        this.color = c;
     }
 
     public string GetColor()
@@ -23,14 +23,14 @@ public class Hairstyle
         return color;
     }
 
-    public void SetStyle(int styleID)
+    public void SetStyle(int styleId)
     {
-        this.styleID = styleID;
+        this.sId = styleId;
     }
 
     public int GetStyle()
     {
-        return styleID;
+        return sId;
     }
     #endregion
 }

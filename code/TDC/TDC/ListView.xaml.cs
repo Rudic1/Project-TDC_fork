@@ -36,7 +36,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
         if (!string.IsNullOrEmpty(listId)) // existing list
         {
-            list = listRepository.GetListFromID(listId)!;
+            list = listRepository.GetListFromId(listId)!;
             this.FindByName<Entry>("TitleEntry").Text = list.GetName();
             AddItemsForExistingList(list);
         }
