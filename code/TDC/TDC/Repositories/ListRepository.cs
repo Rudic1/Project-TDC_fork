@@ -52,6 +52,10 @@ namespace TDC.Repositories
 
         public List<ToDoList> GetLists()
         {
+            // testing only
+            #if ANDROID
+                return GetDummyLists();
+            #endif
             return lists;
         }
 
@@ -64,7 +68,7 @@ namespace TDC.Repositories
 
         #region privates
         //TO-DO: ONLY FOR ANDROID TESTING, REMOVE ONCE DATA BASE WORKS
-        private List<ToDoList> GetListDummy()
+        private List<ToDoList> GetDummyLists()
         {
             var listDummy = new List<ToDoList>();
             var list1 = new ToDoList("first list");
@@ -133,11 +137,6 @@ namespace TDC.Repositories
                 // get all lists from dict and save to actual buffer
                 lists = listDict.Values.ToList();
             }
-
-            // testing only
-            #if ANDROID
-                lists = GetListDummy();
-            #endif
         }
         #endregion
     }

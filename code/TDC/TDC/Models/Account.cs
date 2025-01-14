@@ -9,27 +9,26 @@ public class Account: Profile
 
     #region constructors
     // new account case
-    public Account(string id, string name, string description, string email, string password, Character character)
-    : base(id, name, character, description, 0)
+    public Account(string id, string name, string description, string email, string password, Character character, int level)
+    : base(id, name, character, description, level)
     {
         this.friends = [];
         this.requests = [];
         this.lists = [];
         this.email = email;
         this.password = password;
-        this.Level = 0;
     }
 
     // existing account -> identify via repository
-    public Account(string id, string name, string description, string email, string password, List<string> friends, List<string> requests, List<string> lists, Character character)
-        : base(id, name, character, description, 0)
+    public Account(string id, string name, string description, string email, string password, Character character, int level, List<string> friends, List<string> requests, List<string> lists)
+        : base(id, name, character, description, level)
     {
         this.friends = friends;
         this.requests = requests;
         this.lists = lists;
         this.email = email;
         this.password = password;
-        this.Level = 0;
+        this.Level = level;
     }
 
     #endregion
