@@ -15,7 +15,7 @@ namespace TDC.Repositories
             filePath = Path.Combine(projectPath, "lists.csv");
 
             #if ANDROID
-            string directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+            var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
             if (!Directory.Exists(directoryPath))
             {
                 Directory.CreateDirectory(directoryPath); // create directory if not doesn't exist already
@@ -36,8 +36,8 @@ namespace TDC.Repositories
         }
 
         public void UpdateList(ToDoList newList, string listId) {
-            for (int i = 0; i < lists.Count; i++) {
-                if (lists[i].GetID() == listId) {
+            for (var i = 0; i < lists.Count; i++) {
+                if (lists[i].GetId().Equals(listId)) {
                     lists[i] = newList;
                 }
             }
@@ -55,13 +55,9 @@ namespace TDC.Repositories
             return lists;
         }
 
-        public ToDoList? GetListFromID(string id)
+        public ToDoList? GetListFromId(string id)
         {
-            foreach (ToDoList list in lists)
-            {
-                if (id.Equals(list.GetID())) return list;
-            }
-            return null;
+            return lists.FirstOrDefault(list => id.Equals(list.GetId()));
         }
 
         #endregion
@@ -98,7 +94,7 @@ namespace TDC.Repositories
                 {
                     foreach (var item in todoList.GetItems())
                     {
-                        writer.WriteLine($"{todoList.GetID()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
+                        writer.WriteLine($"{todoList.GetId()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
                     }
                 }
             }

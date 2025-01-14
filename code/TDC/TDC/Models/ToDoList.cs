@@ -57,9 +57,9 @@ public class ToDoList
         return members;
     }
 
-    public void SetName(string name)
+    public void SetName(string n)
     {
-        this.name = name;
+        this.name = n;
     }
 
     public string GetName()
@@ -67,7 +67,7 @@ public class ToDoList
         return name;
     }
 
-    public string GetID()
+    public string GetId()
     {
         Debug.WriteLine(id);
         return id;

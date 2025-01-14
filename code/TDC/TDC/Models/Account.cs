@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace TDC.Models;
+﻿namespace TDC.Models;
 public class Account: Profile
 {
-    private readonly List<Profile> friends;
-    private readonly List<Profile> requests;
-    private readonly List<ToDoList> lists;
+    private readonly List<string> friends; 
+    private readonly List<string> requests;
+    private readonly List<string> lists;
     private string email;
     private string password;
 
@@ -23,7 +21,7 @@ public class Account: Profile
     }
 
     // existing account -> identify via repository
-    public Account(string id, string name, string description, string email, string password, List<Profile> friends, List<Profile> requests, List<ToDoList> lists, Character character)
+    public Account(string id, string name, string description, string email, string password, List<string> friends, List<string> requests, List<string> lists, Character character)
         : base(id, name, character, description, 0)
     {
         this.friends = friends;
@@ -69,38 +67,38 @@ public class Account: Profile
         return email;
     }
 
-    public void AddFriend(Profile friend)
+    public void AddFriend(string friend)
     {
         friends.Add(friend);
     }
 
-    public void RemoveFriend(Profile friend)
+    public void RemoveFriend(string friend)
     {
         friends.Remove(friend);
     }
 
-    public List<Profile> GetFriendList()
+    public List<string> GetFriendList()
     {
         return friends;
     }
 
-    public void AddList(ToDoList list)
+    public void AddList(string list)
     {
         lists.Add(list);
     }
 
-    public void RemoveList(ToDoList list)
+    public void RemoveList(string list)
     {
         lists.Remove(list);
     }
 
-    public List<ToDoList> GetLists()
+    public List<string> GetLists()
     {
         return lists;
     }
 
 
-    public List<Profile> GetRequests() { 
+    public List<string> GetRequests() { 
         return requests;
     }
 
