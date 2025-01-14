@@ -44,7 +44,7 @@ namespace TDC
             {
                 return;
             }
-            var id = availableLists[shownListIndex].GetID();
+            var id = availableLists[shownListIndex].GetId();
             await Shell.Current.GoToAsync($"ToDoListPage?id={id}");
         }
 

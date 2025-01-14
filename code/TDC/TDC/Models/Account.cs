@@ -66,14 +66,14 @@ public class Account: Profile
         return email;
     }
 
-    public void AddFriend(string friend)
+    public void AddFriend(string friendId)
     {
-        friends.Add(friend);
+        friends.Add(friendId);
     }
 
-    public void RemoveFriend(string friend)
+    public void RemoveFriend(string friendId)
     {
-        friends.Remove(friend);
+        friends.Remove(friendId);
     }
 
     public List<string> GetFriendList()
@@ -81,14 +81,14 @@ public class Account: Profile
         return friends;
     }
 
-    public void AddList(string list)
+    public void AddList(string listId)
     {
-        lists.Add(list);
+        lists.Add(listId);
     }
 
-    public void RemoveList(string list)
+    public void RemoveList(string listId)
     {
-        lists.Remove(list);
+        lists.Remove(listId);
     }
 
     public List<string> GetLists()
@@ -101,8 +101,8 @@ public class Account: Profile
         return requests;
     }
 
-    public void SendRequest(Profile profile) {
-        
+    public void SendRequest(string profileId) {
+        requests.Add(profileId);
     }
     #endregion
 }

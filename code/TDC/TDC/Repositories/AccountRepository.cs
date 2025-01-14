@@ -91,6 +91,7 @@ public class AccountRepository
         var accountDirs = Directory.GetDirectories(filePath);
         foreach (var dir in accountDirs)
         {
+            accounts.Add(LoadAccountFromDirectory(dir + "/"));
         }
     }
 
@@ -99,7 +100,7 @@ public class AccountRepository
         var reader = new StreamReader(accountPath + "info.csv");
         var accInfo = reader.ReadToEnd().Split(Environment.NewLine)[1].Split(';');
 
-        var acc = new Account(accInfo[0], accInfo[1], accInfo[2], accInfo[3], accInfo[5], new Character(), int.Parse(accInfo[6])); //TO-DO: Implement Character database
+        var acc = new Account(accInfo[0], accInfo[1], accInfo[2], accInfo[3], accInfo[4], new Character(), int.Parse(accInfo[6])); //TO-DO: Implement Character database
         SetListsForAccount(acc, accountPath + "lists.csv");
         SetFriendsForAccount(acc, accountPath + "friends.csv");
         SetRequestsForAccount(acc, accountPath + "requests.csv");
@@ -108,11 +109,11 @@ public class AccountRepository
 
     private static void SetListsForAccount(Account acc, string fullPath)
     {
-        var listRepos = new ListRepository();
         var reader = new StreamReader(fullPath);
         var listIds = reader.ReadToEnd().Split(Environment.NewLine);
         foreach (var id in listIds)
         {
+            if (string.IsNullOrWhiteSpace(id)) { continue;}
             acc.AddList(id); //TO-DO: secure connected lists are always saved
         }
     }
@@ -123,6 +124,7 @@ public class AccountRepository
         var friendIds = reader.ReadToEnd().Split(Environment.NewLine);
         foreach (var id in friendIds)
         {
+            if (string.IsNullOrWhiteSpace(id)) { continue;}
             acc.AddFriend(id);
         }
     }
@@ -133,7 +135,8 @@ public class AccountRepository
         var requestIds = reader.ReadToEnd().Split(Environment.NewLine);
         foreach (var id in requestIds)
         {
-            acc.AddFriend(id);
+            if (string.IsNullOrWhiteSpace(id)) { continue;}
+            acc.SendRequest(id);
         }
     }
 
