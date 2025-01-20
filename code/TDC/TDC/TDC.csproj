@@ -63,25 +63,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="ListView.xaml.cs">
+	  <Compile Update="Components\List\ListView.xaml.cs">
 	    <DependentUpon>ListView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="ListItemReadOnlyView.xaml">
+	  <MauiXaml Update="Components\List\ListItemReadOnlyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ListItemView.xaml">
+	  <MauiXaml Update="Components\List\ListItemView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ListReadOnlyView.xaml">
+	  <MauiXaml Update="Components\List\ListReadOnlyView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Components\User\UserLogin.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Accounts\" />
+	  <Folder Include="TestDB\Accounts\" />
 	</ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ namespace TDC.Repositories
         #region constructors
         public ListRepository()
         {
-            filePath = Path.Combine(projectPath, "lists.csv");
+            filePath = Path.Combine(projectPath, "TestDB/lists.csv");
 
             #if ANDROID
             var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
@@ -21,7 +21,7 @@ namespace TDC.Repositories
                 Directory.CreateDirectory(directoryPath); // create directory if not doesn't exist already
             }
 
-            filePath = Path.Combine(directoryPath, "lists.csv");
+            filePath = Path.Combine(directoryPath, "TestDB/lists.csv");
             #endif
             lists = new List<ToDoList>();
             LoadAllListsFromFile();
@@ -90,53 +90,49 @@ namespace TDC.Repositories
         }
         private void SaveListsToFile()
         {
-            using (var writer = new StreamWriter(filePath)) // overwrite new lists
-            {
-                writer.WriteLine("ListID;ListName;ItemDescription;Effort;Done;Members"); // header
+            var writer = new StreamWriter(filePath); // overwrite new lists
+            writer.WriteLine("ListID;ListName;ItemDescription;Effort;Done;Members"); // header
 
-                foreach (var todoList in lists)
+            foreach (var todoList in lists)
+            {
+                foreach (var item in todoList.GetItems())
                 {
-                    foreach (var item in todoList.GetItems())
-                    {
-                        writer.WriteLine($"{todoList.GetId()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
-                    }
+                    writer.WriteLine($"{todoList.GetId()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
                 }
             }
         }
 
         private void LoadAllListsFromFile()
         {
-            if (File.Exists(filePath))
+            if (!File.Exists(filePath)) return;
+            var lines = File.ReadAllLines(filePath).Skip(1); // skip header line
+
+            // dict id -> list object
+            var listDict = new Dictionary<string, ToDoList>();
+
+            foreach (var line in lines)
             {
-                var lines = File.ReadAllLines(filePath).Skip(1); // skip header line
+                var values = line.Split(';');
 
-                // dict id -> list object
-                var listDict = new Dictionary<string, ToDoList>();
+                var listId = values[0];
+                var listName = values[1];
+                var itemDescription = values[2];
+                var itemEffort = int.Parse(values[3]);
+                var itemDone = bool.Parse(values[4]);
 
-                foreach (var line in lines)
+                if (!listDict.ContainsKey(listId)) //list not registered in dict yet
                 {
-                    var values = line.Split(';');
-
-                    var listId = values[0];
-                    var listName = values[1];
-                    var itemDescription = values[2];
-                    var itemEffort = int.Parse(values[3]);
-                    var itemDone = bool.Parse(values[4]);
-
-                    if (!listDict.ContainsKey(listId)) //list not registered in dict yet
-                    {
-                        var todoList = new ToDoList(listName, listId);
-                        listDict[listId] = todoList; // add new list to dict
-                    }
-
-                    // add list item from line to corresponding list
-                    var todoItem = new ListItem(itemDescription, itemDone, new List<Profile>(), itemEffort);
-                    listDict[listId].AddItem(todoItem);
+                    var todoList = new ToDoList(listName, listId);
+                    listDict[listId] = todoList; // add new list to dict
                 }
 
-                // get all lists from dict and save to actual buffer
-                lists = listDict.Values.ToList();
+                // add list item from line to corresponding list
+                var todoItem = new ListItem(itemDescription, itemDone, [], itemEffort);
+                listDict[listId].AddItem(todoItem);
             }
+
+            // get all lists from dict and save to actual buffer
+            lists = listDict.Values.ToList();
         }
         #endregion
     }

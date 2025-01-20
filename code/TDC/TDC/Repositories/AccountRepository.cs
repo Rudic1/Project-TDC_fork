@@ -19,7 +19,7 @@ public class AccountRepository
     #region constructors
     public AccountRepository()
     {
-        filePath = Path.Combine(projectPath, "Accounts");
+        filePath = Path.Combine(projectPath, "TestDB/Accounts");
 
         #if ANDROID
             var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
@@ -28,7 +28,7 @@ public class AccountRepository
                 Directory.CreateDirectory(directoryPath);
             }
 
-            filePath = Path.Combine(directoryPath, "Accounts");
+            filePath = Path.Combine(directoryPath, "TestDB/Accounts");
         #endif
         accounts = new List<Account>();
         LoadAllAccounts();
