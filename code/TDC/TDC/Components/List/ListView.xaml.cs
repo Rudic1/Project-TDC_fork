@@ -1,26 +1,15 @@
-using TDC.Models;
-using System.Diagnostics;
-using TDC.Constants;
-/* Nicht gemergte Änderung aus Projekt "TDC (net8.0-windows10.0.19041.0)"
-Hinzugefügt:
-using TDC.Repositories;
-*/
-using TDC.Repositories;
-
-
-
-#if ANDROID
 using Android.Views;
-#endif
+using TDC.Constants;
+using TDC.Models;
+using TDC.Repositories;
+namespace TDC.Components.List;
 
-namespace TDC;
-
-[QueryProperty(nameof(listId), "id")]
+[QueryProperty(nameof(ListId), "id")]
 public partial class ListView : ContentPage, IOnPageKeyDown
 {
     private ToDoList list;
     private readonly ListRepository listRepository;
-    public string? listId { get; set; }
+    public string? ListId { get; set; }
 
     #region constructors
     public ListView()
@@ -34,9 +23,9 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     {
         base.OnAppearing();
 
-        if (!string.IsNullOrEmpty(listId)) // existing list
+        if (!string.IsNullOrEmpty(ListId)) // existing list
         {
-            list = listRepository.GetListFromId(listId)!;
+            list = listRepository.GetListFromId(ListId)!;
             this.FindByName<Entry>("TitleEntry").Text = list.GetName();
             AddItemsForExistingList(list);
         }
@@ -76,9 +65,9 @@ public partial class ListView : ContentPage, IOnPageKeyDown
             return;
         }
 
-        if (!string.IsNullOrEmpty(listId)) //existing list -> update attributes
+        if (!string.IsNullOrEmpty(ListId)) //existing list -> update attributes
         {
-            listRepository.UpdateList(list, listId);
+            listRepository.UpdateList(list, ListId);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }

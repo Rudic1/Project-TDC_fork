@@ -1,4 +1,6 @@
-﻿namespace TDC
+﻿using ListView = TDC.Components.List.ListView;
+
+namespace TDC
 {
     public partial class AppShell : Shell
     {
