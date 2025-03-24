@@ -1,13 +1,10 @@
 using TDC.Models;
-
 namespace TDC;
 
-public partial class ListReadOnlyView : ContentView
+public partial class ListReadOnlyView
 {
-    private readonly ToDoList list;
 	public ListReadOnlyView(ToDoList list)
     {
-        this.list = list; 
         InitializeComponent();
         this.FindByName<Label>("TitleLabel").Text = list.GetName();
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
@@ -16,21 +13,20 @@ public partial class ListReadOnlyView : ContentView
 
     #region privates
 
-    private void InitListItems(ToDoList toDoList)
+    private void InitListItems(ToDoList list)
     {
-        foreach (var listItem in toDoList.GetItems())
+        foreach (var listItemView in list.GetItems().Select(listItem => new ListItemReadOnlyView(listItem)
+                 {
+                     MaximumHeightRequest = 42,
+                 }))
         {
-            var listItemView = new ListItemReadOnlyView(listItem)
-            {
-                MaximumHeightRequest = 42,
-            };
             ItemsContainer.Children.Add(listItemView);
         }
     }
 
-    private int GetListPoints(ToDoList toDoList)
+    private static int GetListPoints(ToDoList list)
     {
-        return toDoList.GetItems().Sum(listItem => listItem.GetEffort()*5);
+        return list.GetItems().Sum(listItem => listItem.GetEffort()*5);
     }
     #endregion
 }
