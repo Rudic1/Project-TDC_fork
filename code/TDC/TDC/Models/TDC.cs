@@ -1,7 +1,7 @@
 ﻿namespace TDC.Models;
 public class TDC
 {
-    private Account? currentUser;
+    private readonly Account? currentUser;
 
     #region constructors
     public TDC() { 

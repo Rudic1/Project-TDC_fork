@@ -12,7 +12,7 @@ public class Character
     private Hairstyle hairstyle;
 
     #region constructors
-    public Character() // default character
+    public Character()
     {
         perks = new List<Perk>();
         outfits = new List<int>();
@@ -34,9 +34,9 @@ public class Character
     #endregion
 
     #region getters & setters
-    public void AddXp(int xp)
+    public void AddXp(int exp)
     {
-        this.xp += xp;
+        this.xp += exp;
     }
 
     public int GetXp()
