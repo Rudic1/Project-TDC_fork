@@ -1,10 +1,5 @@
 using TDC.Models;
-using System.Diagnostics;
 using TDC.Constants;
-/* Nicht gemergte Änderung aus Projekt "TDC (net8.0-windows10.0.19041.0)"
-Hinzugefügt:
-using TDC.Repositories;
-*/
 using TDC.Repositories;
 
 
@@ -133,7 +128,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         ItemsContainer.Children.Add(listItemView);
         listItemView.NewItemOnEnter += OnNewItemClicked!;
         listItemView.EffortChanged += OnEffortUpdated!;
-        listItemView.isInitialized = true;
+        listItemView.IsInitialized = true;
         OnEffortUpdated(this, EventArgs.Empty);
     }
 

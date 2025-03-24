@@ -1,30 +1,22 @@
-using System.Collections.ObjectModel;
 using TDC.Models;
-
 namespace TDC;
 
-public partial class ListItemView : ContentView
+public partial class ListItemView 
 {
-    public event EventHandler NewItemOnEnter;
-    public event EventHandler EffortChanged;
-    public bool isInitialized;
+    public event EventHandler? NewItemOnEnter;
+    public event EventHandler? EffortChanged;
+    public bool IsInitialized;
     private readonly ListItem item;
 
     #region constructors
     public ListItemView(ListItem item)
     {
-        this.isInitialized = false;
+        IsInitialized = false;
         this.item = item;
-        InitializeComponent();
-        NewItemOnEnter = delegate { };
-        this.FindByName<Entry>("TaskEntry").Text = item.GetDescription();
-        this.FindByName<CheckBox>("TaskCheckBox").IsChecked =item.IsDone(); 
-        this.FindByName<Picker>("TaskPicker").SelectedIndex = item.GetEffort() - 1;
 
-        this.LayoutChanged += (sender, e) =>
-        {
-            this.FindByName<Entry>("TaskEntry").Focus();
-        };
+        InitializeComponent();
+        SetComponentProperties();
+        SetEventHandlers();
     }
 
     #endregion
@@ -38,21 +30,36 @@ public partial class ListItemView : ContentView
 
     private void EnterPressed(object sender, EventArgs e)
     {
-        // save item description
         DescriptionChanged(sender, e);
-
-        //emit signal to parent
-        NewItemOnEnter.Invoke(this, e);
+        NewItemOnEnter?.Invoke(this, e);
     }
 
     private void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (isInitialized)
+        if (IsInitialized)
         {
             item.ToggleDone();
         }
     }
 
+    #endregion
+
+    #region privates
+
+    private void SetComponentProperties()
+    {
+        this.FindByName<Entry>("TaskEntry").Text = item.GetDescription();
+        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone();
+        this.FindByName<Picker>("TaskPicker").SelectedIndex = item.GetEffort() - 1;
+    }
+
+    private void SetEventHandlers()
+    {
+        LayoutChanged += (_, _) =>
+        {
+            this.FindByName<Entry>("TaskEntry").Focus();
+        };
+    }
     #endregion
 
     #region Picker
@@ -61,16 +68,9 @@ public partial class ListItemView : ContentView
         var picker = (Picker)sender;
         var selectedIndex = picker.SelectedIndex;
 
-        if (selectedIndex != -1)
-        {
-            item.SetEffort(selectedIndex + 1);
-        }
-
-        if (isInitialized)
-        {
-            EffortChanged.Invoke(this, e);
-        }
-        
+        if (selectedIndex == -1 || !IsInitialized) return;
+        item.SetEffort(selectedIndex + 1);
+        EffortChanged?.Invoke(this, e);
     }
 
     #endregion
