@@ -63,19 +63,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="ListView.xaml.cs">
+	  <Compile Update="Views\List\ListView.xaml.cs">
 	    <DependentUpon>ListView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="ListItemReadOnlyView.xaml">
+	  <MauiXaml Update="Views\ListItem\ListItemReadOnlyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ListItemView.xaml">
+	  <MauiXaml Update="Views\ListItem\ListItemView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="ListReadOnlyView.xaml">
+	  <MauiXaml Update="Views\List\ListReadOnlyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

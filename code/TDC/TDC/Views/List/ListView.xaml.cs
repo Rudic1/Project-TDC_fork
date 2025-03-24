@@ -1,10 +1,5 @@
 using TDC.Models;
-using System.Diagnostics;
 using TDC.Constants;
-/* Nicht gemergte Änderung aus Projekt "TDC (net8.0-windows10.0.19041.0)"
-Hinzugefügt:
-using TDC.Repositories;
-*/
 using TDC.Repositories;
 
 
@@ -15,12 +10,12 @@ using Android.Views;
 
 namespace TDC;
 
-[QueryProperty(nameof(listId), "id")]
-public partial class ListView : ContentPage, IOnPageKeyDown
+[QueryProperty(nameof(ListId), "id")]
+public partial class ListView : IOnPageKeyDown
 {
     private ToDoList list;
     private readonly ListRepository listRepository;
-    public string? listId { get; set; }
+    public string? ListId { get; set; }
 
     #region constructors
     public ListView()
@@ -34,11 +29,11 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     {
         base.OnAppearing();
 
-        if (!string.IsNullOrEmpty(listId)) // existing list
+        if (ListIdExists(ListId))
         {
-            list = listRepository.GetListFromId(listId)!;
+            list = listRepository.GetListFromId(ListId!)!;
             this.FindByName<Entry>("TitleEntry").Text = list.GetName();
-            AddItemsForExistingList(list);
+            AddItemsForExistingList();
         }
 
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
@@ -69,21 +64,20 @@ public partial class ListView : ContentPage, IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        var listName = TitleEntry.Text?.Trim();
-        if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName)) // if no name entered, ask user to put name
+        var listName = TitleEntry.Text.Trim();
+        if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName))
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = true;
             return;
         }
 
-        if (!string.IsNullOrEmpty(listId)) //existing list -> update attributes
+        if (ListIdExists(ListId))
         {
-            listRepository.UpdateList(list, listId);
+            listRepository.UpdateList(list, ListId!);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
 
-        // save list
         listRepository.AddList(list);
         await Shell.Current.GoToAsync("///MainPage");
     }
@@ -104,7 +98,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
             if(view.FindByName<Entry>("TaskEntry").IsFocused)
             {
                 RemoveItem(view);
-                break;
+                return;
             }
         }
     }
@@ -121,7 +115,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
     #endregion
 
     #region privates
-    private void AddItemsForExistingList(ToDoList list)
+    private void AddItemsForExistingList()
     {
         foreach (var item in list.GetItems()) {
             AddItemToView(item);
@@ -133,7 +127,7 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         ItemsContainer.Children.Add(listItemView);
         listItemView.NewItemOnEnter += OnNewItemClicked!;
         listItemView.EffortChanged += OnEffortUpdated!;
-        listItemView.isInitialized = true;
+        listItemView.IsInitialized = true;
         OnEffortUpdated(this, EventArgs.Empty);
     }
 
@@ -143,9 +137,14 @@ public partial class ListView : ContentPage, IOnPageKeyDown
         ItemsContainer.Children.Remove(view);
     }
 
-    private static int GetListPoints(ToDoList toDoList)
+    private static bool ListIdExists(string? listId)
     {
-        return toDoList.GetItems().Sum(listItem => listItem.GetEffort() * 5);
+        return !string.IsNullOrEmpty(listId);
+    }
+
+    private static int GetListPoints(ToDoList list)
+    {
+        return list.GetItems().Sum(listItem => listItem.GetEffort() * 5);
     }
 
     private static bool HasInvalidTitleCharacters(string title)

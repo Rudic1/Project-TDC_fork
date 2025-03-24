@@ -1,23 +1,11 @@
 ﻿namespace TDC.Models;
-public class Profile
+public class Profile(string id, string name, Character character, string description, int level)
 {
-    protected string Id;
-    protected string Name;
-    protected Character Character;
-    protected string Description;
-    protected int Level;
-
-    #region constructors
-    public Profile(string id, string name, Character character, string description, int level)
-    {
-        this.Id = id;
-        this.Name = name;
-        this.Character = character;
-        this.Description = description;
-        this.Level = level;
-    }
-
-    #endregion
+    protected string Id = id;
+    protected string Name = name;
+    protected Character Character = character;
+    protected string Description = description;
+    protected int Level = level;
 
     #region getters & setters
     public string GetId()
