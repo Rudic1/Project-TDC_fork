@@ -18,7 +18,7 @@ public partial class ListItemView : ContentView
         InitializeComponent();
         NewItemOnEnter = delegate { };
         this.FindByName<Entry>("TaskEntry").Text = item.GetDescription();
-        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone(); 
+        this.FindByName<CheckBox>("TaskCheckBox").IsChecked =item.IsDone(); 
         this.FindByName<Picker>("TaskPicker").SelectedIndex = item.GetEffort() - 1;
 
         this.LayoutChanged += (sender, e) =>
@@ -47,7 +47,10 @@ public partial class ListItemView : ContentView
 
     private void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        item.ToggleDone();  // Toggle the done status of the item when the checkbox is checked or unchecked
+        if (isInitialized)
+        {
+            item.ToggleDone();
+        }
     }
 
     #endregion
