@@ -1,19 +1,22 @@
 ﻿using TDC.Models;
+using System.Diagnostics;
 using TDC.Repositories;
 
 namespace TDC
 {
-    public partial class MainPage
+    public partial class MainPage : ContentPage
     {
         private ListRepository listRepository;
         private List<ToDoList> availableLists;
         private int shownListIndex;
+        private bool listLoaded;
         #region constructors
         public MainPage()
         {
             shownListIndex = 0;
+            listLoaded = false;
             availableLists = new List<ToDoList>();
-            listRepository = new ListRepository(); 
+            listRepository = new ListRepository(); //init with user later
             InitializeComponent();
             LoadAvailableLists();
         }
@@ -25,7 +28,8 @@ namespace TDC
             base.OnNavigatedTo(args);
 
             shownListIndex = 0;
-            availableLists = [];
+            listLoaded = false;
+            availableLists = new List<ToDoList>();
             LoadAvailableLists();
         }
 
@@ -69,9 +73,10 @@ namespace TDC
         #region privates
         private void LoadAvailableLists()
         {
-            //TO-DO: Init via user -> load all lists via given ids in user-object
+            //TO-DO: Init via user
             listRepository = new ListRepository();
             availableLists = listRepository.GetLists();
+            listLoaded = true;
             UpdateShownList();
         }
 
