@@ -4,24 +4,9 @@
              x:Class="TDC.Components.User.UserLogin"
              Title="UserLogin">
     <VerticalStackLayout>
-        <!-- TO-DO: Replace with logo -->
         <Label 
-            Text="TDC"
+            Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 
             HorizontalOptions="Center" />
-
-        <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-        </Grid>
-
-        <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-        </Grid>
     </VerticalStackLayout>
 </ContentPage>
