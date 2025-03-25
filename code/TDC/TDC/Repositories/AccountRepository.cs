@@ -19,17 +19,17 @@ public class AccountRepository
     #region constructors
     public AccountRepository()
     {
-        filePath = Path.Combine(projectPath, "Accounts");
+        filePath = Path.Combine(projectPath, "TestDB/Accounts");
 
-        #if ANDROID
-            var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            if (!Directory.Exists(directoryPath))
-            {
-                Directory.CreateDirectory(directoryPath);
-            }
+#if ANDROID
+        var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        if (!Directory.Exists(directoryPath))
+        {
+            Directory.CreateDirectory(directoryPath);
+        }
 
-            filePath = Path.Combine(directoryPath, "Accounts");
-        #endif
+        filePath = Path.Combine(directoryPath, "TestDB/Accounts");
+#endif
         accounts = new List<Account>();
         LoadAllAccounts();
     }
@@ -52,7 +52,7 @@ public class AccountRepository
     {
         // testing only
         #if ANDROID
-            return GetDummyAccounts();
+        return GetDummyAccounts();
         #endif
         return accounts;
     }
@@ -74,9 +74,9 @@ public class AccountRepository
     {
         if (!Directory.Exists(filePath + "/" + acc.GetId()))
         {
-            Directory.CreateDirectory(filePath + "/" + acc.GetId());
+            Directory.CreateDirectory(filePath + "/" + acc.GetId()); // create directory if not doesn't exist already
         }
-        
+
         SaveGeneralInfo(acc, filePath + "/" + acc.GetId() + "/info.csv");
         SaveAssociatedLists(acc.GetLists(), filePath + "/" + acc.GetId() + "/lists.csv");
         SaveFriendList(acc.GetFriendList(), filePath + "/" + acc.GetId() + "/friends.csv");
@@ -95,7 +95,7 @@ public class AccountRepository
         }
     }
 
-    private static Account LoadAccountFromDirectory(string accountPath)
+    private Account LoadAccountFromDirectory(string accountPath)
     {
         var reader = new StreamReader(accountPath + "info.csv");
         var accInfo = reader.ReadToEnd().Split(Environment.NewLine)[1].Split(';');
@@ -113,8 +113,8 @@ public class AccountRepository
         var listIds = reader.ReadToEnd().Split(Environment.NewLine);
         foreach (var id in listIds)
         {
-            if (string.IsNullOrWhiteSpace(id)) { continue;}
-            acc.AddList(id);
+            if (string.IsNullOrWhiteSpace(id)) { continue; }
+            acc.AddList(id); //TO-DO: secure connected lists are always saved
         }
     }
 
@@ -124,7 +124,7 @@ public class AccountRepository
         var friendIds = reader.ReadToEnd().Split(Environment.NewLine);
         foreach (var id in friendIds)
         {
-            if (string.IsNullOrWhiteSpace(id)) { continue;}
+            if (string.IsNullOrWhiteSpace(id)) { continue; }
             acc.AddFriend(id);
         }
     }
@@ -135,7 +135,7 @@ public class AccountRepository
         var requestIds = reader.ReadToEnd().Split(Environment.NewLine);
         foreach (var id in requestIds)
         {
-            if (string.IsNullOrWhiteSpace(id)) { continue;}
+            if (string.IsNullOrWhiteSpace(id)) { continue; }
             acc.SendRequest(id);
         }
     }
@@ -145,7 +145,7 @@ public class AccountRepository
     {
         if (Directory.Exists(filePath + "/" + id))
         {
-            Directory.Delete(filePath + "/" + id);
+            Directory.Delete(filePath + "/" + id); // create directory if not doesn't exist already
         }
     }
 
