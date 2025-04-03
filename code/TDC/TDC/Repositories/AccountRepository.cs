@@ -31,7 +31,7 @@ public class AccountRepository
             filePath = Path.Combine(directoryPath, "Accounts");
         #endif
         accounts = new List<Account>();
-        LoadAllAccounts();
+        //LoadAllAccounts();
     }
     #endregion
 
@@ -45,7 +45,7 @@ public class AccountRepository
     public void RemoveAccount(Account account)
     {
         accounts.Remove(account);
-        DeleteAccount(account.GetId());
+        DeleteAccount(account.UserId);
     }
 
     public List<Account> GetAllAccounts()
@@ -57,9 +57,9 @@ public class AccountRepository
         return accounts;
     }
 
-    public Account? GetAccountById(string id)
+    public Account? GetAccountById(long id)
     {
-        return accounts.FirstOrDefault(acc => acc.GetId().Equals(id));
+        return accounts.FirstOrDefault(acc => acc.UserId.Equals(id));
     }
 
     public void SaveAllAccounts()
@@ -72,76 +72,38 @@ public class AccountRepository
 
     public void SaveAccountToFile(Account acc)
     {
-        if (!Directory.Exists(filePath + "/" + acc.GetId()))
+        if (!Directory.Exists(filePath + "/" + acc.UserId))
         {
-            Directory.CreateDirectory(filePath + "/" + acc.GetId());
+            Directory.CreateDirectory(filePath + "/" + acc.UserId);
         }
         
-        SaveGeneralInfo(acc, filePath + "/" + acc.GetId() + "/info.csv");
-        SaveAssociatedLists(acc.GetLists(), filePath + "/" + acc.GetId() + "/lists.csv");
+        SaveGeneralInfo(acc, filePath + "/" + acc.UserId + "/info.csv");
+        /*SaveAssociatedLists(acc.GetLists(), filePath + "/" + acc.UserId + "/lists.csv");
         SaveFriendList(acc.GetFriendList(), filePath + "/" + acc.GetId() + "/friends.csv");
-        SaveRequestList(acc.GetRequests(), filePath + "/" + acc.GetId() + "/requests.csv");
+        SaveRequestList(acc.GetRequests(), filePath + "/" + acc.GetId() + "/requests.csv");*/
     }
 
     #endregion
 
     #region privates
-    private void LoadAllAccounts()
-    {
-        var accountDirs = Directory.GetDirectories(filePath);
-        foreach (var dir in accountDirs)
-        {
-            accounts.Add(LoadAccountFromDirectory(dir + "/"));
-        }
-    }
 
-    private static Account LoadAccountFromDirectory(string accountPath)
-    {
-        var reader = new StreamReader(accountPath + "info.csv");
-        var accInfo = reader.ReadToEnd().Split(Environment.NewLine)[1].Split(';');
-
-        var acc = new Account(accInfo[0], accInfo[1], accInfo[2], accInfo[3], accInfo[4], new Character(), int.Parse(accInfo[6])); //TO-DO: Implement Character database
-        SetListsForAccount(acc, accountPath + "lists.csv");
-        SetFriendsForAccount(acc, accountPath + "friends.csv");
-        SetRequestsForAccount(acc, accountPath + "requests.csv");
-        return acc;
-    }
 
     private static void SetListsForAccount(Account acc, string fullPath)
     {
-        var reader = new StreamReader(fullPath);
-        var listIds = reader.ReadToEnd().Split(Environment.NewLine);
-        foreach (var id in listIds)
-        {
-            if (string.IsNullOrWhiteSpace(id)) { continue;}
-            acc.AddList(id);
-        }
+        
     }
 
     private static void SetFriendsForAccount(Account acc, string fullPath)
     {
-        var reader = new StreamReader(fullPath);
-        var friendIds = reader.ReadToEnd().Split(Environment.NewLine);
-        foreach (var id in friendIds)
-        {
-            if (string.IsNullOrWhiteSpace(id)) { continue;}
-            acc.AddFriend(id);
-        }
+        
     }
 
     private static void SetRequestsForAccount(Account acc, string fullPath)
     {
-        var reader = new StreamReader(fullPath);
-        var requestIds = reader.ReadToEnd().Split(Environment.NewLine);
-        foreach (var id in requestIds)
-        {
-            if (string.IsNullOrWhiteSpace(id)) { continue;}
-            acc.SendRequest(id);
-        }
     }
 
 
-    private void DeleteAccount(string id)
+    private void DeleteAccount(long id)
     {
         if (Directory.Exists(filePath + "/" + id))
         {
@@ -151,53 +113,35 @@ public class AccountRepository
 
     private static void SaveGeneralInfo(Account acc, string fullPath)
     {
-        var writer = new StreamWriter(fullPath);
-        writer.WriteLine("AccountID;Name;Description;E-Mail;Password;CharacterID;Level");
-        writer.WriteLine(acc.GetId() + ";" + acc.GetName() + ";" + acc.GetDescription() + ";" + acc.GetEmail() + ";" + acc.GetPassword() + ";" + "default" + ";" + acc.GetLevel()); //TO-DO: add character database or use different saving method
-        writer.Close();
+        
     }
 
     private static void SaveFriendList(List<string> friends, string fullPath)
     {
-        var writer = new StreamWriter(fullPath);
-        foreach (var friend in friends)
-        {
-            writer.WriteLine(friend);
-        }
-        writer.Close();
+        
     }
 
     private static void SaveRequestList(List<string> requests, string fullPath)
     {
-        var writer = new StreamWriter(fullPath);
-        foreach (var request in requests)
-        {
-            writer.WriteLine(request);
-        }
-        writer.Close();
+        
     }
 
     private static void SaveAssociatedLists(List<string> lists, string fullPath)
     {
-        var writer = new StreamWriter(fullPath);
-        foreach (var list in lists)
-        {
-            writer.WriteLine(list);
-        }
-        writer.Close();
+        
     }
 
     // TO-DO: remove once database is implemented, only for android testing
     private static List<Account> GetDummyAccounts()
     {
         var dummyAccounts = new List<Account>();
-        var acc1 = new Account("1", "acc1", "description1", "mail 1", "pw1", new Character(), 2, [], [], []);
+        var acc1 = new Account(1, "acc1", "description1", "mail 1", "pw1", new Character("", "", 0, new CharacterStats(0, 0, 0)), [], []);
         dummyAccounts.Add(acc1);
 
-        var acc2 = new Account("2", "acc2", "description2", "mail 2", "pw2", new Character(), 0, ["1"], [], []);
+        var acc2 = new Account(2, "acc2", "description2", "mail 2", "pw2", new Character("", "", 0, new CharacterStats(0, 0, 0)), [1], []);
         dummyAccounts.Add(acc2);
 
-        var acc3 = new Account("3", "acc3", "description3", "mail 3", "pw3", new Character(), 5, ["2"], ["1"], []);
+        var acc3 = new Account(3, "acc3", "description3", "mail 3", "pw3", new Character("", "", 0, new CharacterStats(0, 0, 0)), [2], [1]);
         dummyAccounts.Add(acc3);
         return dummyAccounts;
     }

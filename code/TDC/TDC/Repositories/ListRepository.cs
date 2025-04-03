@@ -37,7 +37,7 @@ namespace TDC.Repositories
 
         public void UpdateList(ToDoList newList, string listId) {
             for (var i = 0; i < lists.Count; i++) {
-                if (lists[i].GetId().Equals(listId)) {
+                if (lists[i].ListID.Equals(listId)) {
                     lists[i] = newList;
                 }
             }
@@ -61,7 +61,7 @@ namespace TDC.Repositories
 
         public ToDoList? GetListFromId(string id)
         {
-            return lists.FirstOrDefault(list => id.Equals(list.GetId()));
+            return lists.FirstOrDefault(list => id.Equals(list.ListID));
         }
 
         #endregion
@@ -97,7 +97,7 @@ namespace TDC.Repositories
             {
                 foreach (var item in todoList.GetItems())
                 {
-                    writer.WriteLine($"{todoList.GetId()};{todoList.GetName()};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
+                    writer.WriteLine($"{todoList.ListID};{todoList.Name};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
                 }
             }
         }

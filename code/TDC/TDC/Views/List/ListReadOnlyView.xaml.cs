@@ -6,7 +6,7 @@ public partial class ListReadOnlyView
 	public ListReadOnlyView(ToDoList list)
     {
         InitializeComponent();
-        this.FindByName<Label>("TitleLabel").Text = list.GetName();
+        this.FindByName<Label>("TitleLabel").Text = list.Name;
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
         InitListItems(list);
 	}

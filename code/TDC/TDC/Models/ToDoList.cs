@@ -3,84 +3,53 @@
 namespace TDC.Models;
 public class ToDoList
 {
-    private readonly List<ListItem> items;
-    private readonly List<Profile> members;
-    private string name;
-    private readonly string id; // TO-DO: add logic for data base, suggestion: <base-id>-<member-id>
+    private readonly List<ListItem> Items;
+    private readonly List<Profile> Members;
+    public string Name { get; set; }
+    public string ListID { get; } 
 
     #region constructors 
     public ToDoList(string name)
     {
-        id = Guid.NewGuid().ToString();
-        items = new List<ListItem>();
-        members = new List<Profile>();
-        this.name = name;
+        ListID = Guid.NewGuid().ToString(); //TO-DO: Replace with long later and use database
+        Items = new List<ListItem>();
+        Members = new List<Profile>();
+        Name = name;
     }
 
     public ToDoList(string name, string listId)
     {
-        id = listId;
-        items = new List<ListItem>();
-        members = new List<Profile>();
-        this.name = name;
+        ListID = listId;
+        Items = new List<ListItem>();
+        Members = new List<Profile>();
+        Name = name;
     }
     #endregion
 
     #region getters & setters
     public void AddItem(ListItem item)
     {
-        items.Add(item);
+        Items.Add(item);
     }
 
     public void RemoveItem(ListItem item)
     {
-        items.Remove(item);
+        Items.Remove(item);
     }
 
     public List<ListItem> GetItems()
     {
-        return items;
+        return Items;
     }
 
     public void AddMember(Profile member)
     {
-        members.Add(member);
+        Members.Add(member);
     }
 
     public void RemoveMember(Profile member)
     {
-        members.Remove(member);
-    }
-
-    public List<Profile> GetMembers()
-    {
-        return members;
-    }
-
-    public void SetName(string n)
-    {
-        this.name = n;
-    }
-
-    public string GetName()
-    {
-        return name;
-    }
-
-    public string GetId()
-    {
-        Debug.WriteLine(id);
-        return id;
+        Members.Remove(member);
     }
     #endregion
-
-    public void DeleteList()
-    {
-
-    }
-
-    public void FinishList()
-    {
-        
-    }
 }

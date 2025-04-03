@@ -29,10 +29,10 @@ public partial class ListView : IOnPageKeyDown
     {
         base.OnAppearing();
 
-        if (ListIdExists(ListId))
+        if (HasListId(ListId))
         {
             list = listRepository.GetListFromId(ListId!)!;
-            this.FindByName<Entry>("TitleEntry").Text = list.GetName();
+            this.FindByName<Entry>("TitleEntry").Text = list.Name;
             AddItemsForExistingList();
         }
 
@@ -50,7 +50,7 @@ public partial class ListView : IOnPageKeyDown
 
     private void TitleEntryChanged(object sender, EventArgs e)
     {
-        list.SetName(this.FindByName<Entry>("TitleEntry").Text);
+        list.Name = this.FindByName<Entry>("TitleEntry").Text;
         if (!string.IsNullOrEmpty(this.FindByName<Entry>("TitleEntry").Text))
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = false;
@@ -71,7 +71,7 @@ public partial class ListView : IOnPageKeyDown
             return;
         }
 
-        if (ListIdExists(ListId))
+        if (HasListId(ListId))
         {
             listRepository.UpdateList(list, ListId!);
             await Shell.Current.GoToAsync("///MainPage");
@@ -137,7 +137,7 @@ public partial class ListView : IOnPageKeyDown
         ItemsContainer.Children.Remove(view);
     }
 
-    private static bool ListIdExists(string? listId)
+    private static bool HasListId(string? listId)
     {
         return !string.IsNullOrEmpty(listId);
     }
