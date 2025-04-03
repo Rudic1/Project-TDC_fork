@@ -22,7 +22,7 @@ public partial class ListView : IOnPageKeyDown
 	{
         InitializeComponent();
         listRepository = new ListRepository();
-        list = new ToDoList("");
+        list = new ToDoList("", 0); //TO-DO: Replace 0 once login logic is implemented
     }
 
     protected override void OnAppearing()
@@ -31,7 +31,7 @@ public partial class ListView : IOnPageKeyDown
 
         if (HasListId(ListId))
         {
-            list = listRepository.GetListFromId(ListId!)!;
+            list = listRepository.GetListById(ListId!, 0)!;
             this.FindByName<Entry>("TitleEntry").Text = list.Name;
             AddItemsForExistingList();
         }
@@ -73,12 +73,12 @@ public partial class ListView : IOnPageKeyDown
 
         if (HasListId(ListId))
         {
-            listRepository.UpdateList(list, ListId!);
+            listRepository.UpdateList(list, ListId!, 0);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
 
-        listRepository.AddList(list);
+        listRepository.CreateList(list);
         await Shell.Current.GoToAsync("///MainPage");
     }
 
@@ -86,7 +86,7 @@ public partial class ListView : IOnPageKeyDown
     {
         var answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
         if (!answer) return;
-        listRepository.RemoveList(list);
+        listRepository.DeleteList(list.ListID, list.UserId);
         await Shell.Current.GoToAsync("///MainPage");
     }
 

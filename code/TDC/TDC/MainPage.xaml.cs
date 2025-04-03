@@ -72,7 +72,7 @@ namespace TDC
         {
             //TO-DO: Init via user
             listRepository = new ListRepository();
-            availableLists = listRepository.GetLists();
+            availableLists = listRepository.GetAllListsForUser(0);
             UpdateShownList();
         }
 

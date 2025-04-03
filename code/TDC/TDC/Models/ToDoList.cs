@@ -7,19 +7,22 @@ public class ToDoList
     private readonly List<Profile> Members;
     public string Name { get; set; }
     public string ListID { get; } 
+    public long UserId { get; }
 
     #region constructors 
-    public ToDoList(string name)
+    public ToDoList(string name, long userId)
     {
         ListID = Guid.NewGuid().ToString(); //TO-DO: Replace with long later and use database
+        UserId = userId;
         Items = new List<ListItem>();
         Members = new List<Profile>();
         Name = name;
     }
 
-    public ToDoList(string name, string listId)
+    public ToDoList(string name, string listId, long userId)
     {
         ListID = listId;
+        UserId = userId;
         Items = new List<ListItem>();
         Members = new List<Profile>();
         Name = name;

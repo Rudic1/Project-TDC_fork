@@ -1,8 +1,10 @@
-﻿using TDC.Models;
+﻿using System.Collections.Generic;
+using TDC.IRepository;
+using TDC.Models;
 
 namespace TDC.Repositories
 {
-    public class ListRepository
+    public class ListRepository : IListRepository
     {
         private List<ToDoList> lists;
 
@@ -29,39 +31,47 @@ namespace TDC.Repositories
         #endregion
 
         #region publics
-        public void AddList(ToDoList list)
+        public string CreateList(ToDoList list)
         {
             lists.Add(list);
             SaveListsToFile();
+            return list.ListID; //TO-DO: Once database is implemented, add logic to return new id
         }
 
-        public void UpdateList(ToDoList newList, string listId) {
-            for (var i = 0; i < lists.Count; i++) {
-                if (lists[i].ListID.Equals(listId)) {
+        public void UpdateList(ToDoList newList, string listId, long userId)
+        {
+            for (var i = 0; i < lists.Count; i++)
+            {
+                if (lists[i].ListID.Equals(listId) && lists[i].UserId.Equals(userId))
+                {
                     lists[i] = newList;
                 }
             }
             SaveListsToFile();
         }
 
-        public void RemoveList(ToDoList list)
+        public void DeleteList(string listId, long userId)
         {
-            lists.Remove(list);
-            SaveListsToFile();
+            var list = lists.FirstOrDefault(list => list.ListID.Equals(listId) && list.UserId.Equals(userId));
+            if (list != null)
+            {
+                lists.Remove(list);
+                SaveListsToFile();
+            }
         }
 
-        public List<ToDoList> GetLists()
+        public ToDoList? GetListById(string listId, long userId)
         {
-            //TO-DO: testing only, replace later
+            return lists.FirstOrDefault(list => list.ListID.Equals(listId) && list.UserId.Equals(userId));
+        }
+
+        public List<ToDoList> GetAllListsForUser(long userId)
+        {
             #if ANDROID
                 return GetDummyLists();
+            #else
+                return lists.FindAll(list => list.UserId.Equals(userId));
             #endif
-            return lists;
-        }
-
-        public ToDoList? GetListFromId(string id)
-        {
-            return lists.FirstOrDefault(list => id.Equals(list.ListID));
         }
 
         #endregion
@@ -71,7 +81,7 @@ namespace TDC.Repositories
         private List<ToDoList> GetDummyLists()
         {
             var listDummy = new List<ToDoList>();
-            var list1 = new ToDoList("first list");
+            var list1 = new ToDoList("first list", 0);
             list1.AddItem(new ListItem("item 1", true, [], 1));
             list1.AddItem(new ListItem("item 2", false, [], 2));
             list1.AddItem(new ListItem("item 3", true, [], 1));
@@ -79,7 +89,7 @@ namespace TDC.Repositories
             list1.AddItem(new ListItem("item 5", true, [], 1));
             list1.AddItem(new ListItem("item 6", false, [], 5));
 
-            var list2 = new ToDoList("second list");
+            var list2 = new ToDoList("second list", 0);
             list2.AddItem(new ListItem("first", false, [], 2));
             list2.AddItem(new ListItem("sec", true, [], 1));
             list2.AddItem(new ListItem("third", true, [], 3));
@@ -91,13 +101,13 @@ namespace TDC.Repositories
         private void SaveListsToFile()
         {
             using var writer = new StreamWriter(filePath);
-            writer.WriteLine("ListID;ListName;ItemDescription;Effort;Done;Members"); // header
+            writer.WriteLine("ListID;UserID;ListName;ItemDescription;Effort;Done;Members"); // header
 
             foreach (var todoList in lists)
             {
                 foreach (var item in todoList.GetItems())
                 {
-                    writer.WriteLine($"{todoList.ListID};{todoList.Name};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
+                    writer.WriteLine($"{todoList.ListID};{todoList.UserId};{todoList.Name};{item.GetDescription()};{item.GetEffort()};{item.IsDone()}");
                 }
             }
         }
@@ -114,14 +124,15 @@ namespace TDC.Repositories
                 var values = line.Split(';');
 
                 var listId = values[0];
-                var listName = values[1];
-                var itemDescription = values[2];
-                var itemEffort = int.Parse(values[3]);
-                var itemDone = bool.Parse(values[4]);
+                var userId = long.Parse(values[1]);
+                var listName = values[2];
+                var itemDescription = values[3];
+                var itemEffort = int.Parse(values[4]);
+                var itemDone = bool.Parse(values[5]);
 
                 if (!listDict.ContainsKey(listId))
                 {
-                    var todoList = new ToDoList(listName, listId);
+                    var todoList = new ToDoList(listName, listId, userId); 
                     listDict[listId] = todoList;
                 }
 
