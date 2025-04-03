@@ -12,7 +12,7 @@ namespace TDC.Repositories
         #region constructors
         public ListRepository()
         {
-            filePath = Path.Combine(projectPath, "lists.csv");
+            filePath = Path.Combine(projectPath, "Data/lists.csv");
 
             #if ANDROID
             var directoryPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
