@@ -41,7 +41,7 @@ namespace TDC
             {
                 return;
             }
-            var id = availableLists[shownListIndex].GetId();
+            var id = availableLists[shownListIndex].ListID;
             await Shell.Current.GoToAsync($"ToDoListPage?id={id}");
         }
 
@@ -72,7 +72,7 @@ namespace TDC
         {
             //TO-DO: Init via user
             listRepository = new ListRepository();
-            availableLists = listRepository.GetLists();
+            availableLists = listRepository.GetAllListsForUser(0);
             UpdateShownList();
         }
 

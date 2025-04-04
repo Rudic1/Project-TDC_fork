@@ -82,6 +82,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Accounts\" />
+	  <Folder Include="Data\" />
 	</ItemGroup>
 
 </Project>
