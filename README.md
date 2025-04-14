@@ -39,8 +39,8 @@ Unsere Vision ist es, eine **benutzerfreundliche und stabile** App zu entwickeln
 - **Framework:** .NET MAUI (Cross-Platform)  
 - **IDE:** Visual Studio  
 - **Versionsverwaltung:** Git  
-- **CI/CD:** Docker, Jenkins (spätere Integration)  
-- **Tests:** Unit- und Integrationstests (geplant ab Sprint 3)  
+- **CI/CD:** GitHub Actions 
+- **Tests:** Unit- und Integrationstests (geplant ab Sem 4)  
 
 
 
@@ -141,12 +141,6 @@ git push
 
 ---
 
-## Sprint Zusammenfassungen
-### Abschluss Sprint 1
-Der erste Sprint diente hauptsächlich der Planung und Vorbereitung. Die Entwicklungsumgebungen wurden eingerichtet, und wir haben uns über Projektziele und Anforderungen abgestimmt.
-
-### Abschluss Sprint 2
-Nach dem Setup des Projekts haben wir erste Entwicklungsarbeit begonnen und eine „Hello World“-Demo erstellt. Die Entwicklungsumgebung ermöglicht nun die mobile Simulation, und wir sind startklar für die nächsten Features.
 
 ---
 
