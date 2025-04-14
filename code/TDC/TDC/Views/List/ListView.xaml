@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TDC.ToDoListView"
+             x:Class="TDC.ListView"
              Title="To Do List">
 
     <ScrollView>
@@ -9,10 +9,10 @@
 
             <!-- Title (editable) -->
             <Grid VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
                 <Entry x:Name="TitleEntry"
                        Placeholder="Enter list title..."
@@ -20,7 +20,15 @@
                        HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
                        IsReadOnly="False"
-                       Grid.Column="0" />
+                       Completed="TitleEntryChanged"
+                       Unfocused="TitleEntryChanged"
+                       Grid.Row="0" />
+                <Label x:Name="ErrorLabel"
+                       IsVisible="False"
+                       FontSize="14"
+                       TextColor="Red"
+                       Text="Pleaser enter a valid list title. Title cannot be empty or contain any of the following characters: ;, /, \"
+                       Grid.Row="1"/>
             </Grid>
 
             <!-- Dynamically generated ListItemViews -->
@@ -47,9 +55,21 @@
                         HorizontalOptions="Fill">
             </Button>
 
-                <!-- Points -->
+            <Button x:Name="DeleteListBtn"
+                        Text="Delete List" 
+                        SemanticProperties.Hint="Delete List"
+                        Clicked="OnDeleteListClicked"
+                        BackgroundColor="LightGray"
+                        HorizontalOptions="Fill">
+            </Button>
+
+            <!-- Points -->
             <Label Text="Points: "
                    FontSize="Large"
+                   HorizontalOptions="Center"/>
+
+            <Label x:Name="PointsLabel"
+                   FontSize="Medium"
                    HorizontalOptions="Center"/>
 
         </VerticalStackLayout>

@@ -1,38 +1,17 @@
 ﻿namespace TDC.Models;
-public class ListItem
+public class ListItem(string description, bool done, List<Profile> finishedMembers, int effort)
 {
-    private string description;
-    private bool done;
-    private List<Profile> finishedMembers;
-    private int effort;
-
     #region constructors
-    public ListItem() {
-        description = "";
-        done = false;
-        finishedMembers = new List<Profile>();
-        effort = 0;
-    }
+    public ListItem() : this("", false, [], 0) {}
 
-    public ListItem(string description, List<Profile> finishedMembers, int effort)
-    {
-        this.description = description;
-        this.finishedMembers = finishedMembers;
-        this.effort = effort;
-    }
-    public ListItem(string description, bool done, List<Profile> finishedMembers, int effort)
-    {
-        this.description = description;
-        this.done = done;
-        this.finishedMembers = finishedMembers;
-        this.effort = effort;
-    }
+    public ListItem(string description, List<Profile> finishedMembers, int effort) : this(description, false, finishedMembers, effort) {}
+
     #endregion
 
     #region getters & setters
-    public void SetDescription(string description)
+    public void SetDescription(string newDescription)
     {
-        this.description = description;
+        description = newDescription;
     }
 
     public string GetDescription()
@@ -69,8 +48,8 @@ public class ListItem
         return effort;
     }
 
-    public void SetEffort(int effort) { 
-        this.effort = effort;
+    public void SetEffort(int newEffort) { 
+        effort = newEffort;
     }
     #endregion
 }

@@ -16,9 +16,9 @@ namespace TDC
                     fonts.AddFont("FluentSystemIcons-Regular.ttf", "FluentUISystemIcons");
                 });
 
-#if DEBUG
+            #if DEBUG
     		builder.Logging.AddDebug();
-#endif
+            #endif
 
             return builder.Build();
         }

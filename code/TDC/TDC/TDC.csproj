@@ -63,9 +63,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="ListItemView.xaml">
+	  <Compile Update="Views\List\ListView.xaml.cs">
+	    <DependentUpon>ListView.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Views\ListItem\ListItemReadOnlyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\ListItem\ListItemView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\List\ListReadOnlyView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Accounts\" />
+	  <Folder Include="Data\" />
 	</ItemGroup>
 
 </Project>
