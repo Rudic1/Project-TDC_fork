@@ -3,11 +3,9 @@
     using TDC.Models;
     public class UserService
     {
-        // CurrentUser hat bereits einen public setter, das ist gut!
         public Account? CurrentUser { get; set; }
         public bool IsLoggedIn => CurrentUser != null;
 
-        // Geänderte Login-Methode: Akzeptiert das Account-Objekt
         public void Login(Account user)
         {
             // Setzt den aktuellen Benutzer

@@ -29,20 +29,16 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        // ---> HIER ist der korrekte Aufruf:
         Account? account = _accountRepository.AuthenticateUser(username, password);
-        // ---> KEIN direkter Aufruf von GetDummyAccounts hier! <---
 
         if (account != null)
         {
-            // Annahme: Dein UserService hat eine Methode wie Login(Account user)
-            _userService.Login(account); // Passe dies an deinen UserService an!
+            _userService.Login(account);
 
-            ErrorMessageLabel.IsVisible = false; // Fehlermeldung ausblenden
+            ErrorMessageLabel.IsVisible = false;
 
             // Erfolgreich eingeloggt -> zur Zielseite navigieren
-            // Verwende relative Navigation oder stelle sicher, dass die absolute Route korrekt ist
-            await Shell.Current.GoToAsync($"//{nameof(MainPage)}"); // Beispiel für MainPage
+            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
         }
         else
         {

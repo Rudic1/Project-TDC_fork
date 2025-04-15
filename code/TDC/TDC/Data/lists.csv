@@ -1,5 +1,7 @@
 ListID;UserID;ListName;ItemDescription;Effort;Done;Members
-fe4da72d-d145-4310-b959-4500ad5ed8d5;0;meine liste;ich;1;False
-fe4da72d-d145-4310-b959-4500ad5ed8d5;0;meine liste;bin;2;True
-fe4da72d-d145-4310-b959-4500ad5ed8d5;0;meine liste;ein;3;True
-fe4da72d-d145-4310-b959-4500ad5ed8d5;0;meine liste;kek lol;5;False
+fe4da72d-d145-4310-b959-4500ad5ed8d5;1;meine liste;ich;1;False
+fe4da72d-d145-4310-b959-4500ad5ed8d5;1;meine liste;bin;2;True
+fe4da72d-d145-4310-b959-4500ad5ed8d5;1;meine liste;ein;3;True
+fe4da72d-d145-4310-b959-4500ad5ed8d5;1;meine liste;kek lol;5;False
+86bb72a2-7996-41c4-b703-49894487f25b;2;test;sfsdf;5;False
+86bb72a2-7996-41c4-b703-49894487f25b;2;test;ssdfssdffsd;5;True

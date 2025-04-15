@@ -61,24 +61,12 @@ public class AccountRepository : IAccountRepository
     // NEU: Implementierung der Authentifizierungsmethode
     public Account? AuthenticateUser(string username, string password)
     {
-        // ----- DEBUGGING START -----
-        Debug.WriteLine($"[Auth] Versuch für Username: '{username}'");
-
-        // !!! SICHERHEITSRISIKO: Nur für lokales Debugging, danach SOFORT entfernen !!!
-        // Debug.WriteLine($"[Auth] Empfangenes Passwort: '{password}'");
-        // Alternativ: Nur die Länge oder ob es nicht leer ist, loggen:
-        Debug.WriteLine($"[Auth] Passwortlänge: {password}");
-        // ----- DEBUGGING ENDE -----
 
 
-        // Hole die Dummy-Daten (oder später echte Daten)
+
         List<Account> accounts = GetDummyAccounts();
-        Debug.WriteLine($"accounts: {accounts.ToString}");
-        // Finde den Benutzer nach Name und Passwort
-        // WICHTIG: Passwörter sollten NIE im Klartext verglichen werden. Hier nur für die Dummy-Daten!
         return accounts.FirstOrDefault(acc =>
         {
-            Debug.WriteLine($"{acc.Password} + {acc.Username}");
             return acc.Username.Equals(username, StringComparison.OrdinalIgnoreCase) // Case-Insensitive Vergleich
                    && acc.Password == password; // Unsicherer Klartext-Vergleich!
         });
