@@ -28,6 +28,8 @@ namespace TDC
             // Services registrieren
             builder.Services.AddSingleton<UserService>(); // Einmal pro App-Lebenszeit
             builder.Services.AddSingleton<IAccountRepository, AccountRepository>(); // Einmal pro App-Lebenszeit
+            builder.Services.AddTransient<ListView>(); // wichtig für DI
+
 
             // Pages registrieren (Transient = jedes Mal eine neue Instanz, wenn sie benötigt wird)
             builder.Services.AddTransient<LoginPage>();

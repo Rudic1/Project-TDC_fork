@@ -1,7 +1,7 @@
 using TDC.Models;
 using TDC.Constants;
 using TDC.Repositories;
-
+using TDC.Services;
 
 
 #if ANDROID
@@ -15,14 +15,16 @@ public partial class ListView : IOnPageKeyDown
 {
     private ToDoList list;
     private readonly ListRepository listRepository;
+    private readonly UserService _userService;
     public string? ListId { get; set; }
 
     #region constructors
-    public ListView()
+    public ListView(UserService userService)
 	{
         InitializeComponent();
+        _userService = userService;
         listRepository = new ListRepository();
-        list = new ToDoList("", 0); //TO-DO: Replace 0 once login logic is implemented
+        list = new ToDoList("", _userService.CurrentUser.UserId); //TO-DO: Replace 0 once login logic is implemented
     }
 
     protected override void OnAppearing()
@@ -73,7 +75,7 @@ public partial class ListView : IOnPageKeyDown
 
         if (HasListId(ListId))
         {
-            listRepository.UpdateList(list, ListId!, 0);
+            listRepository.UpdateList(list, ListId!, _userService.CurrentUser.UserId);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
