@@ -3,8 +3,7 @@ name: TDC_Build_pipeline
 on:
   push:
     branches:
-      - main
-      - dev
+      - '*'
     paths-ignore:
       - '**/*.md' # Optional: Ignoriere Änderungen an README-Dateien
   pull_request:
