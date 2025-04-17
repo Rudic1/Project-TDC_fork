@@ -62,6 +62,7 @@ namespace TDC.Repositories
 
         public ToDoList? GetListById(string listId, long userId)
         {
+            //To-Do fix for android --> nicht möglich aktuell listen zu öffnen weil nicht die dummy listen returnt und druchsucht werden sondern die der csv und die gibt es in android nd
             return lists.FirstOrDefault(list => list.ListID.Equals(listId) && list.UserId.Equals(userId));
         }
 
