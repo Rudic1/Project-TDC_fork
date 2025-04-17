@@ -1,4 +1,5 @@
-﻿using TDC.Models;
+﻿using System.Diagnostics;
+using TDC.Models;
 using TDC.Repositories;
 using TDC.Services;
 
@@ -30,7 +31,6 @@ namespace TDC
         protected override void OnNavigatedTo(NavigatedToEventArgs args)
         {
             base.OnNavigatedTo(args);
-
             shownListIndex = 0;
             availableLists = [];
             LoadAvailableLists();

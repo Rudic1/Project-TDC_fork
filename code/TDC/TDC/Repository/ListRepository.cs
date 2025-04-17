@@ -71,6 +71,7 @@ namespace TDC.Repositories
             #if ANDROID
                 return GetDummyLists(userId);
             #else
+                LoadAllListsFromFile();
                 return lists.FindAll(list => list.UserId.Equals(userId));
             #endif
         }
