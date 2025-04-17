@@ -1,11 +1,9 @@
-```yaml
 name: TDC_Build_pipeline
 
 on:
   push:
     branches:
-      - main
-      - dev
+      - "*"
     paths-ignore:
       - '**/*.md' # Optional: Ignoriere Änderungen an README-Dateien
   pull_request:
@@ -120,4 +118,3 @@ jobs:
       #Tests ausführen
       - name: Run tests
         run: dotnet test --no-build --configuration Release ./code/TDC/mobile/TDC/TDC.csproj
-```
