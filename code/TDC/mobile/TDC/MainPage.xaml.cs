@@ -1,21 +1,28 @@
-﻿using TDC.Models;
+﻿using System.Diagnostics;
+using TDC.Models;
 using TDC.Repositories;
+using TDC.Services;
 
 namespace TDC
 {
     public partial class MainPage
     {
         private ListRepository listRepository;
+        private readonly UserService _userService;
         private List<ToDoList> availableLists;
         private int shownListIndex;
 
         #region constructors
         public MainPage()
         {
+            InitializeComponent();
+            _userService = App.Services.GetService<UserService>();
+
+
             shownListIndex = 0;
             availableLists = new List<ToDoList>();
-            listRepository = new ListRepository(); //TO-DO: init with user later
-            InitializeComponent();
+            listRepository = new ListRepository();
+
             LoadAvailableLists();
         }
         #endregion
@@ -24,7 +31,6 @@ namespace TDC
         protected override void OnNavigatedTo(NavigatedToEventArgs args)
         {
             base.OnNavigatedTo(args);
-
             shownListIndex = 0;
             availableLists = [];
             LoadAvailableLists();
@@ -68,11 +74,26 @@ namespace TDC
         #endregion
 
         #region privates
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            LoadAvailableLists(); // Laden der Listen beim Anzeigen der Seite
+        }
         private void LoadAvailableLists()
         {
-            //TO-DO: Init via user
-            listRepository = new ListRepository();
-            availableLists = listRepository.GetAllListsForUser(0);
+            if (_userService.CurrentUser == null)
+            {
+                // Kein Benutzer eingeloggt – keine Listen anzeigen
+                availableLists = new List<ToDoList>();
+
+                // UI trotzdem updaten, damit z.B. "No Lists available" angezeigt wird
+                UpdateShownList();
+                return;
+            }
+
+            long userId = _userService.CurrentUser.UserId;
+            availableLists = listRepository.GetAllListsForUser(userId);
             UpdateShownList();
         }
 

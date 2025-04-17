@@ -1,12 +1,17 @@
+using System.Diagnostics;
 using TDC.Models;
 using TDC.Constants;
 using TDC.Repositories;
-
+using TDC.Services;
+using Microsoft.Maui.Controls.PlatformConfiguration;
 
 
 #if ANDROID
 using Android.Views;
+using Android.Util;
 #endif
+
+
 
 namespace TDC;
 
@@ -15,29 +20,43 @@ public partial class ListView : IOnPageKeyDown
 {
     private ToDoList list;
     private readonly ListRepository listRepository;
+    private readonly UserService _userService;
     public string? ListId { get; set; }
 
     #region constructors
-    public ListView()
-	{
+    public ListView(UserService userService)
+    {
         InitializeComponent();
+        _userService = userService;
         listRepository = new ListRepository();
-        list = new ToDoList("", 0); //TO-DO: Replace 0 once login logic is implemented
+        list = new ToDoList("", _userService.CurrentUser.UserId);
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
+        // 1) Hole die aktuelle UserId
+        long currentUserId = _userService.CurrentUser?.UserId
+                             ?? throw new InvalidOperationException("CurrentUser or UserId is null");
+
+        // 2) Logge sie in Debug-Ausgabe (VS) und in Logcat (Android)
+        Debug.WriteLine($"[TDC][ListView] CurrentUserId = {currentUserId}");
+        #if ANDROID
+            Log.Debug("TDC", $"[ListView] CurrentUserId = {currentUserId}");
+        #endif
+
         if (HasListId(ListId))
         {
-            list = listRepository.GetListById(ListId!, 0)!;
+            list = listRepository.GetListById(ListId!, currentUserId!)!;
             this.FindByName<Entry>("TitleEntry").Text = list.Name;
             AddItemsForExistingList();
         }
 
+        // Punkte ebenfalls anzeigen
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
     }
+
     #endregion
 
     #region listeners
@@ -73,7 +92,7 @@ public partial class ListView : IOnPageKeyDown
 
         if (HasListId(ListId))
         {
-            listRepository.UpdateList(list, ListId!, 0);
+            listRepository.UpdateList(list, ListId!, _userService.CurrentUser.UserId);
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
