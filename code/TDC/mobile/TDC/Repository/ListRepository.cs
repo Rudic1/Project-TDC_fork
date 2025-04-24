@@ -62,14 +62,16 @@ namespace TDC.Repositories
 
         public ToDoList? GetListById(string listId, long userId)
         {
+            //To-Do fix for android --> nicht möglich aktuell listen zu öffnen weil nicht die dummy listen returnt und druchsucht werden sondern die der csv und die gibt es in android nd
             return lists.FirstOrDefault(list => list.ListID.Equals(listId) && list.UserId.Equals(userId));
         }
 
         public List<ToDoList> GetAllListsForUser(long userId)
         {
             #if ANDROID
-                return GetDummyLists();
+                return GetDummyLists(userId);
             #else
+                LoadAllListsFromFile();
                 return lists.FindAll(list => list.UserId.Equals(userId));
             #endif
         }
@@ -78,24 +80,42 @@ namespace TDC.Repositories
 
         #region privates
         //TO-DO: ONLY FOR ANDROID TESTING, REMOVE ONCE DATA BASE WORKS
-        private List<ToDoList> GetDummyLists()
+        private List<ToDoList> GetDummyLists(long userId)
         {
             var listDummy = new List<ToDoList>();
-            var list1 = new ToDoList("first list", 0);
-            list1.AddItem(new ListItem("item 1", true, [], 1));
-            list1.AddItem(new ListItem("item 2", false, [], 2));
-            list1.AddItem(new ListItem("item 3", true, [], 1));
-            list1.AddItem(new ListItem("item 4", false, [], 3));
-            list1.AddItem(new ListItem("item 5", true, [], 1));
-            list1.AddItem(new ListItem("item 6", false, [], 5));
+            var list1 = new ToDoList("first list", 1);
+            if (list1.UserId == userId)
+            {
+                list1.AddItem(new ListItem("item 1", true, [], 1));
+                list1.AddItem(new ListItem("item 2", false, [], 2));
+                list1.AddItem(new ListItem("item 3", true, [], 1));
+                list1.AddItem(new ListItem("item 4", false, [], 3));
+                list1.AddItem(new ListItem("item 5", true, [], 1));
+                list1.AddItem(new ListItem("item 6", false, [], 5));
+                listDummy.Add(list1);
+            }
 
-            var list2 = new ToDoList("second list", 0);
-            list2.AddItem(new ListItem("first", false, [], 2));
-            list2.AddItem(new ListItem("sec", true, [], 1));
-            list2.AddItem(new ListItem("third", true, [], 3));
+            var list2 = new ToDoList("second list", 2);
+            if (list2.UserId == userId)
+            {
+                list2.AddItem(new ListItem("first", false, [], 2));
+                list2.AddItem(new ListItem("sec", true, [], 1));
+                list2.AddItem(new ListItem("third", true, [], 3));
+                listDummy.Add(list2);
+            }
 
-            listDummy.Add(list1);
-            listDummy.Add(list2);
+            // Corrected: list3 should have a unique UserId
+            var list3 = new ToDoList("third list", 3);
+            // The following lines were adding items to list2 instead of list3, which seems like a bug.
+            // Assuming you intended to add items to list3 if its UserId matches.
+            if (list3.UserId == userId)
+            {
+                list3.AddItem(new ListItem("first", false, [], 2));
+                list3.AddItem(new ListItem("sec", true, [], 1));
+                list3.AddItem(new ListItem("third", true, [], 3));
+                listDummy.Add(list3);
+            }
+
             return listDummy;
         }
         private void SaveListsToFile()
