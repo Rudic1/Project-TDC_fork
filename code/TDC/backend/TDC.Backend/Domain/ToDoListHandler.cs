@@ -26,14 +26,14 @@ namespace TDC.Backend.Domain
         public Task AddUserToList(long listId, string username)
         {
             if (UserIsListMember(listId, username)) { return Task.CompletedTask; }
-            if(!ListIsCollaborative(listId)) { return Task.CompletedTask; }
+            if (!ListIsCollaborative(listId)) { return Task.CompletedTask; }
             _listMemberRepository.AddListMember(listId, username, false);
             return Task.CompletedTask;
         }
 
         public Task RemoveUserFromList(long listId, string username)
         {
-            if(!UserIsListMember(listId,username)) { return Task.CompletedTask; }
+            if (!UserIsListMember(listId,username)) { return Task.CompletedTask; }
             if (_listMemberRepository.UserIsCreator(listId, username)) { return Task.CompletedTask; }
             _listMemberRepository.RemoveListMember(listId, username);
             return Task.CompletedTask;
@@ -61,14 +61,14 @@ namespace TDC.Backend.Domain
 
         public Task DeleteList(long listId, string sender)
         {
-            if(!_listMemberRepository.UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if (!_listMemberRepository.UserIsCreator(listId, sender)) { return Task.CompletedTask; }
             _listRepository.DeleteList(listId);
             return Task.CompletedTask;
         }
 
         public Task FinishList(long listId, string sender)
         {
-            if(!_listMemberRepository.UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if (!_listMemberRepository.UserIsCreator(listId, sender)) { return Task.CompletedTask; }
             if (!ListCanBeFinished(listId)) { return Task.CompletedTask; }
 
             // TO-DO: add logic to grant every member rewards

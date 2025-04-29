@@ -56,8 +56,8 @@ namespace TDC.Backend.Domain
 
         public bool RegisterUser(AccountSavingDto accountData)
         {
-            if(AccountWithUsernameExists(accountData.Username)) { return false; }
-            if(AccountWithEmailExists(accountData.Email)) { return false; }
+            if (AccountWithUsernameExists(accountData.Username)) { return false; }
+            if (AccountWithEmailExists(accountData.Email)) { return false; }
             _accountRepository.CreateAccount(new AccountDbo(accountData.Username, accountData.Email, accountData.Password, accountData.Description));
             return true;
         }
@@ -69,7 +69,7 @@ namespace TDC.Backend.Domain
 
         public bool UpdateEmail(string username, string email)
         {
-            if(AccountWithEmailExists(email)) { return false; }
+            if (AccountWithEmailExists(email)) { return false; }
             _accountRepository.UpdateEmail(username, email);
             return true;
         }
