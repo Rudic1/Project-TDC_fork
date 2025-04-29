@@ -8,12 +8,9 @@ namespace TDC.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountController: ControllerBase
+    public class AccountController(IAccountHandler accountHandler) : ControllerBase
     {
-        internal readonly IAccountHandler _accountHandler;
-        public AccountController(IAccountHandler accountHandler) {
-            _accountHandler = accountHandler;
-        }
+        internal readonly IAccountHandler _accountHandler = accountHandler;
 
         [HttpPut("registerUser")]
         public bool RegisterUser([FromBody] AccountSavingDto accountData)
@@ -28,9 +25,9 @@ namespace TDC.Backend.Controllers
         }
 
         [HttpPost("updateUserDescription/{username}")]
-        public async Task UpdateUserDescription([FromRoute] string username, [FromBody] DescriptionHelper description)
+        public bool UpdateUserDescription([FromRoute] string username, [FromBody] DescriptionHelper description)
         {
-            await _accountHandler.UpdateUserDescription(username, description.Description);
+            return _accountHandler.UpdateUserDescription(username, description.Description);
         }
 
         [HttpPost("updateEmail/{username}")]

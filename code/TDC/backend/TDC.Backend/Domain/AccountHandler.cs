@@ -85,14 +85,17 @@ namespace TDC.Backend.Domain
             return true;
         }
 
-        public Task UpdateUserDescription(string username, string description)
+        public bool UpdateUserDescription(string username, string description)
         {
+            if (!AccountWithUsernameExists(username)) { return false; }
+
             _accountRepository.UpdateDescription(username, description);
-            return Task.CompletedTask;
+            return true;
         }
 
         public bool UpdateUsername(string oldUsername, string newUsername)
         {
+            if (!AccountWithUsernameExists(oldUsername)) { return false; }
             if (AccountWithUsernameExists(newUsername)) { return false; }
             _accountRepository.UpdateUsername(oldUsername, newUsername);
             return true;
