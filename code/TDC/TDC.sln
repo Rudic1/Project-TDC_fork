@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDC.Backend", "backend\TDC.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDC", "mobile\TDC\TDC.csproj", "{9B1B2141-B40A-B522-85B9-8F7A0D7733F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDC-Backend.Test", "TDC-Backend.Test\TDC-Backend.Test.csproj", "{C72F879C-B99B-474D-BF59-642892B8DB94}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDC.Backend.Test", "TDC-Backend.Test\TDC.Backend.Test.csproj", "{C72F879C-B99B-474D-BF59-642892B8DB94}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
