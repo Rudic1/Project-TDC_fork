@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NSubstitute;
+using NUnit.Framework.Internal;
 using TDC.Backend.DataRepository;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
@@ -96,6 +97,53 @@ namespace TDC.Backend.Test.DomainTests
             var actual = _target.LoginWithUsername("test-user", "test-password");
 
             _target._accountRepository.Received().GetAccountByUsername("test-user");
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public void RegisterUser_EmailAndUsernameAreAvailable_CallsRepositoryAndReturnsTrue()
+        {
+            _target._accountRepository.GetAccountByUsername("test-user").Returns((AccountDbo?) null);
+            _target._accountRepository.GetAccountByEmail("test-email").Returns((AccountDbo?)null);
+
+            var testUserDto = new AccountSavingDto("test-user", "test-email", "test-password", "test-description");
+
+            var actual = _target.RegisterUser(testUserDto);
+
+            _target._accountRepository.Received().CreateAccount(Arg.Is<AccountDbo>(dbo =>
+                                                                                       dbo.Username == "test-user" &&
+                                                                                       dbo.Email == "test-email" &&
+                                                                                       dbo.Password == "test-password" &&
+                                                                                       dbo.Description == "test-description"
+                                                                                  ));
+            actual.Should().BeTrue();
+        }
+
+        [Test]
+        public void RegisterUser_EmailExists_DoesNotCallRepositoryAndReturnsFalse()
+        {
+            _target._accountRepository.GetAccountByUsername("test-user").Returns((AccountDbo?)null);
+            _target._accountRepository.GetAccountByEmail("test-email").Returns(new AccountDbo("", "test-email", "", ""));
+
+            var testUserDto = new AccountSavingDto("test-user", "test-email", "test-password", "test-description");
+
+            var actual = _target.RegisterUser(testUserDto);
+
+            _target._accountRepository.DidNotReceive().CreateAccount(Arg.Any<AccountDbo>());
+            actual.Should().BeFalse();
+        }
+
+        [Test]
+        public void RegisterUser_UsernameExists_DoesNotCallRepositoryAndReturnsFalse()
+        {
+            _target._accountRepository.GetAccountByUsername("test-user").Returns(new AccountDbo("test-user", "", "", ""));
+            _target._accountRepository.GetAccountByEmail("test-email").Returns((AccountDbo?) null);
+
+            var testUserDto = new AccountSavingDto("test-user", "test-email", "test-password", "test-description");
+
+            var actual = _target.RegisterUser(testUserDto);
+
+            _target._accountRepository.DidNotReceive().CreateAccount(Arg.Any<AccountDbo>());
             actual.Should().BeFalse();
         }
     }
