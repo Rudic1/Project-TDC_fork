@@ -79,25 +79,17 @@ namespace TDC.Backend.Domain
         public List<ToDoListLoadingDto> GetListsForUser(string username)
         {
             var listIds = _listMemberRepository.GetListsForUser(username);
-            var listDbos = new List<ToDoListDbo>();
+            var listDboList = listIds.Select(listId => _listRepository.GetById(listId)).OfType<ToDoListDbo>().ToList();
 
-            foreach (var listId in listIds) {
-                var list = _listRepository.GetById(listId);
-                if(list != null) { listDbos.Add(list); } //TO-DO: check can be removed as soon as sql with foreign keys is used
-            }
-
-            var listDtos = new List<ToDoListLoadingDto>();
-            foreach (var listDbo in listDbos) {
-                var itemDbos = _listItemRepository.GetItemsForList(listDbo.ListId);
+            var listDtoList = new List<ToDoListLoadingDto>();
+            foreach (var listDbo in listDboList) {
+                var itemDboList = _listItemRepository.GetItemsForList(listDbo.ListId);
                 var listMembers = _listMemberRepository.GetListMembers(listDbo.ListId);
-                var itemDtos = new List<ToDoListItemLoadingDto>();
+                var itemDtoList = itemDboList.Select(itemDbo => ParseItemDboToDto(itemDbo, username, listMembers)).ToList();
 
-                foreach (var itemDbo in itemDbos) {
-                    itemDtos.Add(ParseItemDboToDto(itemDbo, username, listMembers));
-                }
-                listDtos.Add(new ToDoListLoadingDto(listDbo.ListId, listDbo.Name, itemDtos, listMembers, listDbo.IsCollaborative));
+                listDtoList.Add(new ToDoListLoadingDto(listDbo.ListId, listDbo.Name, itemDtoList, listMembers, listDbo.IsCollaborative));
             }
-            return listDtos;
+            return listDtoList;
         }
 
         public Task AddItemToList(long listId, string itemDescription, uint itemEffort)
