@@ -34,7 +34,7 @@ namespace TDC.Backend.DataRepository
             return item.ItemId;
         }
 
-        public void RemoveItemFromList(long itemId)
+        public void DeleteItem(long itemId)
         {
             RemoveItemFromFile(itemId);
         }

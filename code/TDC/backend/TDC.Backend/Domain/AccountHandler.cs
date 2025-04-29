@@ -5,14 +5,9 @@ using TDC.Backend.IDomain.Models;
 
 namespace TDC.Backend.Domain
 {
-    public class AccountHandler : IAccountHandler
+    public class AccountHandler(IAccountRepository accountRepository) : IAccountHandler
     {
-        internal readonly IAccountRepository _accountRepository;
-
-        public AccountHandler(IAccountRepository accountRepository)
-        {
-            _accountRepository = accountRepository;
-        }
+        public readonly IAccountRepository _accountRepository = accountRepository;
 
         public Task AcceptFriendRequest(string username, string requestName)
         {
@@ -47,31 +42,22 @@ namespace TDC.Backend.Domain
 
         public bool LoginWithMail(string email, string password)
         {
-            if (!_accountRepository.AccountWithEmailExists(email)) { return false; }
-
+            if (!AccountWithEmailExists(email)) { return false;}
             var accountDbo = _accountRepository.GetAccountByEmail(email)!;
-            if (accountDbo.Password.Equals(password)) {
-                return true;
-            }
-            return false;
+            return accountDbo.Password.Equals(password);
         }
 
         public bool LoginWithUsername(string username, string password)
         {
-            if (!_accountRepository.AccountExists(username)) { return false; }
-
+            if (!AccountWithUsernameExists(username)) { return false;}
             var accountDbo = _accountRepository.GetAccountByUsername(username)!;
-            if (accountDbo.Password.Equals(password))
-            {
-                return true;
-            }
-            return false;
+            return accountDbo.Password.Equals(password);
         }
 
         public bool RegisterUser(AccountSavingDto accountData)
         {
-            if(UsernameAlreadyExists(accountData.Username)) { return false; }
-            if(EmailAlreadyExists(accountData.Email)) { return false; }
+            if (AccountWithUsernameExists(accountData.Username)) { return false; }
+            if (AccountWithEmailExists(accountData.Email)) { return false; }
             _accountRepository.CreateAccount(new AccountDbo(accountData.Username, accountData.Email, accountData.Password, accountData.Description));
             return true;
         }
@@ -83,42 +69,47 @@ namespace TDC.Backend.Domain
 
         public bool UpdateEmail(string username, string email)
         {
-            if(EmailAlreadyExists(email)) { return false; }
+            if (AccountWithEmailExists(email)) { return false; }
             _accountRepository.UpdateEmail(username, email);
             return true;
         }
 
         public bool UpdatePassword(string username, string password)
         {
+            if (!AccountWithUsernameExists(username)) { return false;}
+
+            var oldPassword = _accountRepository.GetPasswordForAccount(username);
+            if(oldPassword!.Equals(password)) { return false; }
+            
             _accountRepository.UpdatePassword(username, password);
-            //TO-DO: catch possible errors and return false if update failed -> check error case of existing password and sql exception
-            // existing password could also be checked in FE -> discuss
             return true;
         }
 
-        public Task UpdateUserDescription(string username, string description)
+        public bool UpdateUserDescription(string username, string description)
         {
+            if (!AccountWithUsernameExists(username)) { return false; }
+
             _accountRepository.UpdateDescription(username, description);
-            return Task.CompletedTask;
+            return true;
         }
 
         public bool UpdateUsername(string oldUsername, string newUsername)
         {
-            if (UsernameAlreadyExists(newUsername)) { return false; }
+            if (!AccountWithUsernameExists(oldUsername)) { return false; }
+            if (AccountWithUsernameExists(newUsername)) { return false; }
             _accountRepository.UpdateUsername(oldUsername, newUsername);
             return true;
         }
 
         #region privates
-        private bool UsernameAlreadyExists(string username)
+        private bool AccountWithUsernameExists(string username)
         {
-            return _accountRepository.AccountExists(username);
+            return _accountRepository.GetAccountByUsername(username) != null;
         }
 
-        private bool EmailAlreadyExists(string email)
+        private bool AccountWithEmailExists(string email)
         {
-            var account = _accountRepository.GetAccountByEmail(email);
-            return account != null;
+            return _accountRepository.GetAccountByEmail(email) != null;
         }
         #endregion
     }

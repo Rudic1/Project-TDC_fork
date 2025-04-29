@@ -43,18 +43,6 @@ namespace TDC.Backend.DataRepository
             UpdateDescriptionInFile(username, newDescription);
         }
 
-        public bool AccountExists(string username)
-        {
-            var accounts = GetAllAccounts();
-            return accounts.Any(acc => acc.Username.Equals(username));
-        }
-
-        public bool AccountWithEmailExists(string email)
-        {
-            var accounts = GetAllAccounts();
-            return accounts.Any(accounts => accounts.Email.Equals(email));
-        }
-
         public AccountDbo? GetAccountByUsername(string username)
         {
             return GetAccountByUsernameFromFile(username);
@@ -63,6 +51,13 @@ namespace TDC.Backend.DataRepository
         public AccountDbo? GetAccountByEmail(string email)
         {
             return GetAccountByEmailFromFile(email);
+        }
+
+        public string? GetPasswordForAccount(string username)
+        {
+            var accounts = GetAllAccounts();
+            var account = accounts.FirstOrDefault(acc => acc.Username.Equals(username));
+            return account?.Password;
         }
 
         #region privates
