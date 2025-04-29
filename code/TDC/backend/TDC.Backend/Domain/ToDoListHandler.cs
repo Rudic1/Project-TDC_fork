@@ -25,6 +25,7 @@ namespace TDC.Backend.Domain
 
         public Task AddUserToList(long listId, string username)
         {
+            if(!ListExists(listId)) { return Task.CompletedTask;}
             if (UserIsListMember(listId, username)) { return Task.CompletedTask; }
             if (!ListIsCollaborative(listId)) { return Task.CompletedTask; }
             _listMemberRepository.AddListMember(listId, username, false);
@@ -94,13 +95,16 @@ namespace TDC.Backend.Domain
 
         public Task AddItemToList(long listId, string itemDescription, uint itemEffort)
         {
+            if(!ListExists(listId)) {return Task.CompletedTask;}
             _listItemRepository.AddItemToList(listId, new ToDoListItemDbo(0, itemDescription, itemEffort));
             return Task.CompletedTask;
         }
 
         public Task DeleteItem(long itemId)
         {
-            _listItemRepository.RemoveItemFromList(itemId);
+            _listItemRepository.DeleteItem(itemId);
+
+            //TO-DO: can be removed when sql with foreign keys is implemented
             var listId = _listItemRepository.GetListIdFromItem(itemId);
             var listMembers = _listMemberRepository.GetListMembers(listId);
             foreach (var member in listMembers) {
@@ -168,6 +172,11 @@ namespace TDC.Backend.Domain
         private bool UserIsCreator(long listId, string username)
         {
             return _listMemberRepository.UserIsCreator(listId, username);
+        }
+
+        private bool ListExists(long listId)
+        {
+            return _listRepository.GetById(listId) != null;
         }
         #endregion
     }

@@ -51,5 +51,13 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
 
             _target._listMemberRepository.DidNotReceive().AddListMember(Arg.Any<long>(), Arg.Any<string>(), Arg.Any<bool>());
         }
+
+        [Test]
+        public void AddUserToList_ListDoesNotExist_CallsRepository()
+        {
+            _target.AddUserToList(2, "test-user");
+
+            _target._listMemberRepository.DidNotReceive().AddListMember(Arg.Any<long>(), Arg.Any<string>(), Arg.Any<bool>());
+        }
     }
 }
