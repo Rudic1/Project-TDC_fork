@@ -53,6 +53,13 @@ namespace TDC.Backend.DataRepository
             return GetAccountByEmailFromFile(email);
         }
 
+        public string? GetPasswordForAccount(string username)
+        {
+            var accounts = GetAllAccounts();
+            var account = accounts.FirstOrDefault(acc => acc.Username.Equals(username));
+            return account?.Password;
+        }
+
         #region privates
         public void UpdateUsernameInFile(string username, string newUsername)
         {

@@ -76,9 +76,12 @@ namespace TDC.Backend.Domain
 
         public bool UpdatePassword(string username, string password)
         {
+            if (!AccountWithUsernameExists(username)) { return false;}
+
+            var oldPassword = _accountRepository.GetPasswordForAccount(username);
+            if(oldPassword!.Equals(password)) { return false; }
+            
             _accountRepository.UpdatePassword(username, password);
-            //TO-DO: catch possible errors and return false if update failed -> check error case of existing password and sql exception
-            // existing password could also be checked in FE -> discuss
             return true;
         }
 
