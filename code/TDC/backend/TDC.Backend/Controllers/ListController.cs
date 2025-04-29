@@ -9,18 +9,15 @@ namespace TDC.Backend.Controllers
     [Route("api/[controller]")]
     [ApiController]
 
-    public class ListController : ControllerBase
+    public class ListController(IToDoListHandler listHandler) : ControllerBase
     {
-        internal readonly IToDoListHandler _listHandler;
-        public ListController(IToDoListHandler listHandler) {
-            _listHandler = listHandler;
-        }
+        internal readonly IToDoListHandler _listHandler = listHandler;
 
-        #region To-Do-List
+    #region To-Do-List
         [HttpPut("createList/{sender}")]
-        public async Task CreateToDoList([FromRoute] string sender, [FromBody] ToDoListDto listDto)
+        public async Task CreateToDoList([FromRoute] string sender, [FromBody] ToDoListSavingDto listLoadingDto)
         {
-           await _listHandler.CreateList(sender, listDto);
+           await _listHandler.CreateList(sender, listLoadingDto);
         }
 
         [HttpPost("updateListTitle/{listId}")]
@@ -54,7 +51,7 @@ namespace TDC.Backend.Controllers
         }
 
         [HttpGet("getListsForUser/{username}")]
-        public List<ToDoListDto> GetListsForUser([FromRoute] string username)
+        public List<ToDoListLoadingDto> GetListsForUser([FromRoute] string username)
         {
             return _listHandler.GetListsForUser(username);
         }

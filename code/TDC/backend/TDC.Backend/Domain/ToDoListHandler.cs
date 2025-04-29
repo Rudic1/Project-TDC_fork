@@ -11,13 +11,13 @@ namespace TDC.Backend.Domain
         IListMemberRepository listMemberRepository)
         : IToDoListHandler
     {
-        internal readonly IListRepository _listRepository = listRepository;
-        internal readonly IListItemRepository _listItemRepository = listItemRepository;
-        internal readonly IListMemberRepository _listMemberRepository = listMemberRepository;
+        public readonly IListRepository _listRepository = listRepository;
+        public readonly IListItemRepository _listItemRepository = listItemRepository;
+        public readonly IListMemberRepository _listMemberRepository = listMemberRepository;
 
-        public Task CreateList(string creator, ToDoListDto newList)
+        public Task CreateList(string creator, ToDoListSavingDto newList)
         {
-            var listDbo = new ToDoListDbo(newList.ListId, newList.Name, newList.IsCollaborative, false);
+            var listDbo = new ToDoListDbo(0, newList.Name, newList.IsCollaborative, false);
             var listId = _listRepository.CreateList(listDbo);
             _listMemberRepository.AddListMember(listId, creator, true);
             return Task.CompletedTask;
@@ -61,14 +61,14 @@ namespace TDC.Backend.Domain
 
         public Task DeleteList(long listId, string sender)
         {
-            if (!_listMemberRepository.UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if (!UserIsCreator(listId, sender)) { return Task.CompletedTask; }
             _listRepository.DeleteList(listId);
             return Task.CompletedTask;
         }
 
         public Task FinishList(long listId, string sender)
         {
-            if (!_listMemberRepository.UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if (!UserIsCreator(listId, sender)) { return Task.CompletedTask; }
             if (!ListCanBeFinished(listId)) { return Task.CompletedTask; }
 
             // TO-DO: add logic to grant every member rewards
@@ -76,7 +76,7 @@ namespace TDC.Backend.Domain
             return Task.CompletedTask;
         }
 
-        public List<ToDoListDto> GetListsForUser(string username)
+        public List<ToDoListLoadingDto> GetListsForUser(string username)
         {
             var listIds = _listMemberRepository.GetListsForUser(username);
             var listDbos = new List<ToDoListDbo>();
@@ -86,7 +86,7 @@ namespace TDC.Backend.Domain
                 if(list != null) { listDbos.Add(list); } //TO-DO: check can be removed as soon as sql with foreign keys is used
             }
 
-            var listDtos = new List<ToDoListDto>();
+            var listDtos = new List<ToDoListLoadingDto>();
             foreach (var listDbo in listDbos) {
                 var itemDbos = _listItemRepository.GetItemsForList(listDbo.ListId);
                 var listMembers = _listMemberRepository.GetListMembers(listDbo.ListId);
@@ -95,7 +95,7 @@ namespace TDC.Backend.Domain
                 foreach (var itemDbo in itemDbos) {
                     itemDtos.Add(ParseItemDboToDto(itemDbo, username, listMembers));
                 }
-                listDtos.Add(new ToDoListDto(listDbo.ListId, listDbo.Name, itemDtos, listMembers, listDbo.IsCollaborative));
+                listDtos.Add(new ToDoListLoadingDto(listDbo.ListId, listDbo.Name, itemDtos, listMembers, listDbo.IsCollaborative));
             }
             return listDtos;
         }
@@ -171,6 +171,11 @@ namespace TDC.Backend.Domain
         private bool ListIsCollaborative(long listId) {
             var list = _listRepository.GetById(listId)!;
             return list.IsCollaborative;
+        }
+
+        private bool UserIsCreator(long listId, string username)
+        {
+            return _listMemberRepository.UserIsCreator(listId, username);
         }
         #endregion
     }

@@ -1,10 +1,5 @@
-﻿using NSubstitute;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
+using NSubstitute;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
 using TDC.Backend.IDataRepository.Models;
