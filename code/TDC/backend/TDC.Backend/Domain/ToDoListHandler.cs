@@ -5,21 +5,15 @@ using TDC.Backend.IDomain.Models;
 
 namespace TDC.Backend.Domain
 {
-    public class ToDoListHandler : IToDoListHandler
+    public class ToDoListHandler(
+        IListRepository listRepository,
+        IListItemRepository listItemRepository,
+        IListMemberRepository listMemberRepository)
+        : IToDoListHandler
     {
-        internal readonly IListRepository _listRepository;
-        internal readonly IListItemRepository _listItemRepository;
-        internal readonly IListMemberRepository _listMemberRepository;
-
-        public ToDoListHandler(
-            IListRepository listRepository, 
-            IListItemRepository listItemRepository, 
-            IListMemberRepository listMemberRepository)
-        {
-            _listRepository = listRepository;
-            _listItemRepository = listItemRepository;
-            _listMemberRepository = listMemberRepository;
-        }
+        internal readonly IListRepository _listRepository = listRepository;
+        internal readonly IListItemRepository _listItemRepository = listItemRepository;
+        internal readonly IListMemberRepository _listMemberRepository = listMemberRepository;
 
         public Task CreateList(string creator, ToDoListDto newList)
         {
