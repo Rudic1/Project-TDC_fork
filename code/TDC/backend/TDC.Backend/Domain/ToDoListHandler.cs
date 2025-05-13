@@ -8,12 +8,14 @@ namespace TDC.Backend.Domain
     public class ToDoListHandler(
         IListRepository listRepository,
         IListItemRepository listItemRepository,
-        IListMemberRepository listMemberRepository)
+        IListMemberRepository listMemberRepository,
+        IListInvitationRepository listInvitationRepository)
         : IToDoListHandler
     {
         public readonly IListRepository _listRepository = listRepository;
         public readonly IListItemRepository _listItemRepository = listItemRepository;
         public readonly IListMemberRepository _listMemberRepository = listMemberRepository;
+        public readonly IListInvitationRepository _listInvitationRepository = listInvitationRepository;
 
         public Task CreateList(string creator, ToDoListSavingDto newList)
         {
