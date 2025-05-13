@@ -37,12 +37,6 @@ namespace TDC.Backend.Controllers
             await _listHandler.FinishList(listId, sender.Username);
         }
 
-        [HttpPut("addUserToList/{listId}/{username}")]
-        public async Task AddUserToList([FromRoute] long listId, [FromRoute] string username)
-        {
-            await _listHandler.AddUserToList(listId, username);
-        }
-
         [HttpPut("removeUserFromList/{listId}/{username}")]
         public async Task RemoveUserFromList([FromRoute] long listId, [FromRoute] string username)
         {
