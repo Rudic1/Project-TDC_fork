@@ -44,8 +44,8 @@ namespace TDC.Backend.Test.RepositoryTests
             _accountRepository.CreateAccount(friend1);
             _accountRepository.CreateAccount(friend2);
 
-            _target.SendFriendRequest("test-user", "friend1");
-            _target.SendFriendRequest("test-user", "friend2");
+            _target.AddFriendRequest("test-user", "friend1");
+            _target.AddFriendRequest("test-user", "friend2");
 
             var expected = new List<string>
             {
@@ -69,9 +69,9 @@ namespace TDC.Backend.Test.RepositoryTests
         {
             var friend1 = new AccountDbo("friend1", "1", "", "");
             _accountRepository.CreateAccount(friend1);
-            _target.SendFriendRequest("test-user", "friend1");
+            _target.AddFriendRequest("test-user", "friend1");
 
-            var act = () => _target.SendFriendRequest("test-user", "friend1");
+            var act = () => _target.AddFriendRequest("test-user", "friend1");
 
             act.Should().Throw<SqlException>();
         }
@@ -84,8 +84,8 @@ namespace TDC.Backend.Test.RepositoryTests
             _accountRepository.CreateAccount(friend1);
             _accountRepository.CreateAccount(friend2);
 
-            _target.SendFriendRequest("test-user", "friend1");
-            _target.SendFriendRequest("test-user", "friend2");
+            _target.AddFriendRequest("test-user", "friend1");
+            _target.AddFriendRequest("test-user", "friend2");
 
             var expected = new List<string>
             {
@@ -110,8 +110,8 @@ namespace TDC.Backend.Test.RepositoryTests
             _accountRepository.CreateAccount(friend1);
             _accountRepository.CreateAccount(friend2);
 
-            _target.SendFriendRequest("test-user", "friend1");
-            _target.SendFriendRequest("test-user", "friend2");
+            _target.AddFriendRequest("test-user", "friend1");
+            _target.AddFriendRequest("test-user", "friend2");
 
             var expected = new List<string>
             {
@@ -135,8 +135,8 @@ namespace TDC.Backend.Test.RepositoryTests
             _accountRepository.CreateAccount(friend1);
             _accountRepository.CreateAccount(friend2);
 
-            _target.SendFriendRequest("test-user", "friend1");
-            _target.SendFriendRequest("test-user", "friend2");
+            _target.AddFriendRequest("test-user", "friend1");
+            _target.AddFriendRequest("test-user", "friend2");
 
             var expected = new List<string>
             {

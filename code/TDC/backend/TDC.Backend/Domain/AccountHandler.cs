@@ -14,13 +14,17 @@ namespace TDC.Backend.Domain
 
         public Task AcceptFriendRequest(string username, string requestName)
         {
+            var friends = friendRepository.GetFriendsForUser(username);
+
+            if (friends.Contains(requestName)) {
+                return Task.CompletedTask;
+            }
             this.friendRepository.AddFriend(username, requestName);
             this.friendRepository.AddFriend(requestName, username);
-            var friends = friendRepository.GetFriendsForUser(username);
-            var requestFriends = friendRepository.GetFriendsForUser(requestName);
-            if (friends.Contains(requestName) && requestFriends.Contains(username)) {
-                this.friendRequestRepository.DeleteFriendRequest(username, requestName);
-            }
+
+            this.friendRequestRepository.DeleteFriendRequest(username, requestName);
+            this.friendRequestRepository.DeleteFriendRequest(requestName, username);
+            
             return Task.CompletedTask;
         }
 
@@ -81,12 +85,7 @@ namespace TDC.Backend.Domain
             if (requests.Contains(sender)) { return Task.CompletedTask; }
             if (friends.Contains(sender)) { return Task.CompletedTask; }
 
-            var senderRequests = friendRequestRepository.GetRequestsForUser(sender);
-            if (requests.Contains(receiver)) {
-                return AcceptFriendRequest(sender, receiver);
-            }
-
-            this.friendRequestRepository.SendFriendRequest(sender, receiver);
+            this.friendRequestRepository.AddFriendRequest(receiver, sender);
             return Task.CompletedTask;
         }
 

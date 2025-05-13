@@ -34,7 +34,7 @@ namespace TDC.Backend.DataRepository
                        .ToList();
         }
 
-        public void SendFriendRequest(string senderName, string receiverName)
+        public void AddFriendRequest(string senderName, string receiverName)
         {
             var sql = $"INSERT INTO dbo.{this.TableName} "
                       + $"  (Username, Request)"
