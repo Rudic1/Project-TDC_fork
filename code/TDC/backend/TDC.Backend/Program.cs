@@ -64,6 +64,8 @@ public class Program
     {
         services.AddTransient<ConnectionFactory>();
         services.AddTransient<IAccountRepository, AccountRepository>();
+        services.AddTransient<IFriendRepository, FriendRepository>();
+        services.AddTransient<IFriendRequestRepository, FriendRequestRepository>();
         services.AddTransient<IListItemRepository, ListItemRepository>();
         services.AddTransient<IListMemberRepository, ListMemberRepository>();
         services.AddTransient<IListRepository, ListRepository>();
