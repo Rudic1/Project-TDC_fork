@@ -40,12 +40,17 @@ namespace TDC.Backend.Domain
             return Task.CompletedTask;
         }
 
+        public Task CancelListInvitation(long listId, string fromUser, string forUser)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task SendListInvitation(long listId, string fromUser, string ForUser)
         {
             throw new NotImplementedException();
         }
 
-        public Task DeclineListInvitation(long listId, string decliningUser)
+        public Task DenyListInvitation(long listId, string decliningUser)
         {
             throw new NotImplementedException();
         }
