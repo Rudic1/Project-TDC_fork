@@ -5,13 +5,15 @@ using TDC.Backend.IDomain.Models;
 
 namespace TDC.Backend.Domain
 {
-    public class AccountHandler(IAccountRepository accountRepository) : IAccountHandler
+    public class AccountHandler(IAccountRepository accountRepository, IFriendRepository friendRepository, IFriendRequestRepository friendRequestRepository) : IAccountHandler
     {
         public readonly IAccountRepository _accountRepository = accountRepository;
+        public readonly IFriendRepository friendRepository = friendRepository;
+        public readonly IFriendRequestRepository friendRequestRepository = friendRequestRepository;
 
         public Task AcceptFriendRequest(string username, string requestName)
         {
-            throw new NotImplementedException();
+            
         }
 
         public Task CancelFriendRequest(string sender, string receiver)
