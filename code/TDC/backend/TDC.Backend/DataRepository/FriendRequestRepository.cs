@@ -15,7 +15,7 @@ namespace TDC.Backend.DataRepository
             var parameter = new
             {
                 username = username,
-                friend = requestName
+                request = requestName
             };
 
             this.Execute<RequestDbo>(sql, parameter);
@@ -44,7 +44,7 @@ namespace TDC.Backend.DataRepository
             var parameter = new
             {
                 username = senderName,
-                friend = receiverName
+                request = receiverName
             };
 
             this.Insert<RequestDbo>(sql, parameter);

@@ -23,7 +23,7 @@ namespace TDC.Backend.DataRepository
             this.Insert<FriendDbo>(sql, parameter);
         }
 
-        public List<string> GetFriendsforUser(string username)
+        public List<string> GetFriendsForUser(string username)
         {
             var sql = $"SELECT * FROM dbo.{this.TableName} "
                       + $"WHERE Username = @username;";
