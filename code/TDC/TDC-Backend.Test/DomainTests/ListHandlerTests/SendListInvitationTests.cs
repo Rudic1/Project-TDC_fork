@@ -1,10 +1,11 @@
 ﻿using NSubstitute;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
+using TDC.Backend.IDataRepository.Models;
 
 namespace TDC.Backend.Test.DomainTests.ListHandlerTests
 {
-    public class SetItemStatusTests
+    public class SendListInvitationTests
     {
         private ToDoListHandler _target;
         private IListRepository _listRepository;
@@ -23,10 +24,22 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void SetItemStatus_CallsRepository()
+        public void SendListInvitation_AlreadyInvitedByUser_DoesNotCallRepository() {
+            _listInvitationRepository.GetInvitationsForUser("test-user").Returns([new ListInvitationDbo("test-user", "test-sender", 1)]);
+
+            _target.SendListInvitation(1, "test-sender", "test-user");
+
+            _listInvitationRepository.DidNotReceive().AddListInvitation(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<long>());
+        }
+
+        [Test]
+        public void SendListInvitation_NotInvitedYet_CallsRepository()
         {
-            _target.SetItemStatus(1, "test-user", true);
-            _target._listItemRepository.Received().SetItemStatus(1, "test-user", true);
+            _listInvitationRepository.GetInvitationsForUser("test-user").Returns([]);
+
+            _target.SendListInvitation(1, "test-sender", "test-user");
+
+            _listInvitationRepository.Received().AddListInvitation("test-user", "test-sender", 1);
         }
     }
 }

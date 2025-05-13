@@ -4,7 +4,7 @@ using TDC.Backend.IDataRepository;
 
 namespace TDC.Backend.Test.DomainTests.ListHandlerTests
 {
-    public class SetItemStatusTests
+    public class CancelListInvitationTests
     {
         private ToDoListHandler _target;
         private IListRepository _listRepository;
@@ -23,10 +23,9 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void SetItemStatus_CallsRepository()
-        {
-            _target.SetItemStatus(1, "test-user", true);
-            _target._listItemRepository.Received().SetItemStatus(1, "test-user", true);
+        public void CancelListInvitation_CallsRepository() {
+            _target.CancelListInvitation(1, "test-sender", "test-user");
+            _target._listInvitationRepository.Received().DeleteListInvitation("test-user", "test-sender", 1);
         }
     }
 }

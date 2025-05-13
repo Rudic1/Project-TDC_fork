@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using FluentAssertions;
+using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
+using TDC.Backend.IDataRepository.Models;
+using TDC.Backend.IDomain.Models;
 
 namespace TDC.Backend.Test.DomainTests.ListHandlerTests
 {
-    public class UpdateItemEffortTests
+    public class LoadListInvitationsForUserTests
     {
         private ToDoListHandler _target;
         private IListRepository _listRepository;
@@ -28,10 +31,23 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void UpdateItemEffort_CallsRepository()
+        public void LoadListInvitationsForUser_CallsRepository() {
+            _listInvitationRepository.GetInvitationsForUser("test-user").Returns([]);
+            _target.LoadListInvitationsForUser("test-user");
+            _target._listInvitationRepository.Received().GetInvitationsForUser("test-user");
+        }
+
+        [Test]
+        public void LoadListInvitationsForUser_ReturnsCorrectValue()
         {
-            _target.UpdateItemEffort(1, 4);
-            _target._listItemRepository.Received().UpdateItemEffort(1, 4);
+            _listInvitationRepository.GetInvitationsForUser("test-user").Returns([new ListInvitationDbo("test-user", "test-sender", 1)]);
+            var actual = _target.LoadListInvitationsForUser("test-user");
+            var expected = new List<ListInvitationDto>()
+            {
+                new ListInvitationDto("test-sender", 1)
+            };
+
+            actual.Should().BeEquivalentTo(expected);
         }
     }
 }
