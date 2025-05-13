@@ -5,7 +5,7 @@ using TDC.Backend.IDataRepository.Models;
 
 namespace TDC.Backend.DataRepository
 {
-    public class FriendRequestRepository(ConnectionFactory connectionFactory) : BaseRepository(connectionFactory, "[Friends]"), IFriendRequestRepository
+    public class FriendRequestRepository(ConnectionFactory connectionFactory) : BaseRepository(connectionFactory, "[Requests]"), IFriendRequestRepository
     {
         public void DeleteFriendRequest(string username, string requestName)
         {
