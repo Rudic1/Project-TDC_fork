@@ -15,7 +15,7 @@
     <Color x:Key="Background">#393E46</Color>
     <Color x:Key="Dark">#222831</Color>
 
-    <Color x:Key="White">White</Color>
+    <Color x:Key="White">#EEEEEE</Color>
     <Color x:Key="Black">Black</Color>
     <Color x:Key="Magenta">#D600AA</Color>
     <Color x:Key="MidnightBlue">#190649</Color>
