@@ -13,7 +13,8 @@
                 </Grid.ColumnDefinitions>
 
                 <Label x:Name="TitleLabel"
-                       FontSize="Large"
+                       FontFamily="Text-Bold"
+                       FontSize="Medium"
                        HorizontalOptions="FillAndExpand"
                        HorizontalTextAlignment="Center"
                        Grid.Column="0" />
@@ -34,10 +35,10 @@
 
             <!-- Points -->
             <Label Text="Points: "
-                   FontSize="Large"
+                   FontSize="Medium"
                    HorizontalOptions="Center"/>
 
-            <Label x:Name="PointsLabel"
+            <Label x:Name="PointsLabel"                   
                    FontSize="Medium"
                    HorizontalOptions="Center"/>
 
