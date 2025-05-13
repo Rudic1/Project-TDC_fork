@@ -65,37 +65,37 @@ namespace TDC.Backend.Controllers
         [HttpGet("getFriendsForUser/{username}")]
         public Task<List<string>> GetFriendsForUser([FromRoute] string username)
         {
-            throw new NotImplementedException();
+            this._accountHandler.GetFriendsForUser(username);
         }
 
         [HttpGet("getFriendRequestsForUser/{username}")]
         public Task<List<string>> GetFriendRequestsForUser([FromRoute] string username)
         {
-            throw new NotImplementedException();
+            this._accountHandler.GetRequestsForUser(username);
         }
 
         [HttpPost("acceptFriendRequest/{username}/{requestName}")]
         public Task<bool> AcceptFriendRequest([FromRoute] string username, [FromRoute] string requestName)
         {
-            throw new NotImplementedException();
+            this._accountHandler.AcceptFriendRequest(username, requestName);
         }
 
         [HttpPost("denyFriendRequest/{username}/{requestName}")]
         public Task<bool> DenyFriendRequest([FromRoute] string senderName, [FromRoute] string requestName)
         {
-            throw new NotImplementedException();
+            this._accountHandler.DenyFriendRequest(senderName, requestName);   
         }
 
         [HttpPut("sendFriendRequest/{senderName}/{receiverName}")]
-        public Task<bool> SendFriendRequest([FromRoute] string senderName, [FromRoute] long receiverName)
+        public Task<bool> SendFriendRequest([FromRoute] string senderName, [FromRoute] string receiverName)
         {
-            throw new NotImplementedException();
+            this._accountHandler.SendFriendRequest(senderName, receiverName);
         }
 
         [HttpPut("cancelFriendRequest/{senderName}/{receiverName}")]
-        public Task<bool> CancelFriendRequest([FromRoute] string senderName, [FromRoute] long receiverName)
+        public Task<bool> CancelFriendRequest([FromRoute] string senderName, [FromRoute] string receiverName)
         {
-            throw new NotImplementedException();
+            this._accountHandler.CancelFriendRequest(senderName, receiverName);
         }
         #endregion
     }
