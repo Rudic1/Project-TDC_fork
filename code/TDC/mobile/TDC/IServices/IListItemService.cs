@@ -1,4 +1,5 @@
-﻿using TDC.Models.DTOs;
+﻿using TDC.Models;
+using TDC.Models.DTOs;
 
 namespace TDC.IServices
 {
@@ -8,6 +9,7 @@ namespace TDC.IServices
         public Task DeleteItem(long itemId);
         public Task UpdateItemDescription(long itemId, string description);
         public Task UpdateItemEffort(long itemId, int effort);
-        public Task SetItemStatus(long itemId, bool isDone);
+        public Task SetItemStatus(long itemId, string updateFor, bool isDone);
+        public Task<ListItem> GetItemsForList(long listId, string currentUser);
     }
 }

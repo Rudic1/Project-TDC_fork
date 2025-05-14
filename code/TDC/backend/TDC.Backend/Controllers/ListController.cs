@@ -64,7 +64,7 @@ namespace TDC.Backend.Controllers
             await _listHandler.AddItemToList(listId, itemData.Description, itemData.Effort);
         }
 
-        [HttpDelete("deleteItem/{itemId}")]
+        [HttpPost("deleteItem/{itemId}")]
         public async Task DeleteItem([FromRoute] long itemId)
         {
             await _listHandler.DeleteItem(itemId);

@@ -1,4 +1,7 @@
-﻿using TDC.IServices;
+﻿using System.Text;
+using System.Text.Json;
+using TDC.IServices;
+using TDC.Models;
 using TDC.Models.DTOs;
 
 namespace TDC.Services
@@ -6,29 +9,73 @@ namespace TDC.Services
     public class ListItemService : IListItemService
     {
         private readonly HttpClient httpClient = new();
-        public Task AddItemToList(long listId, ListItemSavingDto item)
+        public async Task AddItemToList(long listId, ListItemSavingDto item)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/addItemToList/{listId}";
+
+            var json = JsonSerializer.Serialize(item);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            await httpClient.PutAsync(url, content);
         }
 
-        public Task DeleteItem(long itemId)
+        public async Task DeleteItem(long itemId)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/deleteItem/{itemId}";
+            var data = new { };
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            await httpClient.PostAsync(url, content);
         }
 
-        public Task SetItemStatus(long itemId, bool isDone)
+        public async Task<ListItem> GetItemsForList(long listId, string currentUser)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/getItemsForList/{listId}/{currentUser}";
+
+            var response = await httpClient.GetAsync(url);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            var itemDto = JsonSerializer.Deserialize<ListItemDto>(responseContent)!;
+            return new ListItem(itemDto.ItemId, itemDto.Description, itemDto.IsDone, itemDto.FinishedMembers, itemDto.Effort);
         }
 
-        public Task UpdateItemDescription(long itemId, string description)
+        public async Task SetItemStatus(long itemId, string updateFor, bool isDone)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/setItemStatus/{itemId}";
+            var data = new
+            {
+                UpdateForUser = updateFor,
+                IsDone = isDone,
+            };
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            await httpClient.PostAsync(url, content);
         }
 
-        public Task UpdateItemEffort(long itemId, int effort)
+        public async Task UpdateItemDescription(long itemId, string description)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/updateItemDescription/{itemId}";
+            var data = new
+            {
+                description = description
+            };
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            await httpClient.PostAsync(url, content);
+        }
+
+        public async Task UpdateItemEffort(long itemId, int effort)
+        {
+            var url = ConnectionUrls.development + $"/api/List/updateItemEffort/{itemId}";
+            var data = new {
+                newEffort = effort
+            };
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            await httpClient.PostAsync(url, content);
         }
     }
 }
