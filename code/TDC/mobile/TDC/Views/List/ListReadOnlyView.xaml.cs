@@ -8,6 +8,7 @@ public partial class ListReadOnlyView
         InitializeComponent();
         this.FindByName<Label>("TitleLabel").Text = list.Name;
         this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
+        this.FindByName<Label>("AllPointsLabel").Text = GetAllListPoints(list).ToString();
         InitListItems(list);
 	}
 
@@ -26,7 +27,17 @@ public partial class ListReadOnlyView
 
     private static int GetListPoints(ToDoList list)
     {
-        return list.GetItems().Sum(listItem => listItem.GetEffort()*5);
+        return list
+            .GetItems()
+            .Where(item => item.IsDone())        // nur erledigte Items
+            .Sum(item => item.GetEffort() * 5);
+    }
+
+    private static int GetAllListPoints(ToDoList list)
+    {
+        return list
+            .GetItems()
+            .Sum(item => item.GetEffort() * 5);
     }
     #endregion
 }
