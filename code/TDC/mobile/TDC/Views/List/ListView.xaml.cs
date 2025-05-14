@@ -1,19 +1,12 @@
-using System.Diagnostics;
 using TDC.Models;
 using TDC.Constants;
 using TDC.Services;
-using Microsoft.Maui.Controls.PlatformConfiguration;
-
-<<<<<<< TODO: Nicht zusammengeführte Änderung von Projekt „TDC (net9.0-windows10.0.19041.0)“, Vor:
-=======
-using TDC.Services.Repository;
->>>>>>> Nach
-
+using TDC.IService;
+using TDC.Models.DTOs;
 
 
 #if ANDROID
 using Android.Views;
-using Android.Util;
 #endif
 
 
@@ -23,43 +16,29 @@ namespace TDC;
 [QueryProperty(nameof(ListId), "id")]
 public partial class ListView : IOnPageKeyDown
 {
-    private ToDoList list;
-    private readonly ListService listRepository;
+    private readonly IListService _listService;
+    private readonly IListItemService _listItemService;
     private readonly UserService _userService;
-    public string? ListId { get; set; }
+    
+    public long ListId { get; set; }
+    public ToDoList List { get; set; }
+    public List<ListItem> ExistingItems { get; set; }
+    public List<long> DeletedItems = new List<long>();
+    public List<ListItem> NewItems { get; set; }
 
     #region constructors
-    public ListView(UserService userService)
+    public ListView(IListService listService, IListItemService listitemService, UserService userService)
     {
         InitializeComponent();
         _userService = userService;
-        listRepository = new ListService();
-        list = new ToDoList("", _userService.CurrentUser.UserId);
+        _listService = listService;
+        _listItemService = listitemService;
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
-
-        // 1) Hole die aktuelle UserId
-        long currentUserId = _userService.CurrentUser?.UserId
-                             ?? throw new InvalidOperationException("CurrentUser or UserId is null");
-
-        // 2) Logge sie in Debug-Ausgabe (VS) und in Logcat (Android)
-        Debug.WriteLine($"[TDC][ListView] CurrentUserId = {currentUserId}");
-        #if ANDROID
-            Log.Debug("TDC", $"[ListView] CurrentUserId = {currentUserId}");
-        #endif
-
-        if (HasListId(ListId))
-        {
-            list = listRepository.GetListById(ListId!, currentUserId!)!;
-            this.FindByName<Entry>("TitleEntry").Text = list.Name;
-            AddItemsForExistingList();
-        }
-
-        // Punkte ebenfalls anzeigen
-        this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
+        _ = SetUpAsync();
     }
 
     #endregion
@@ -67,14 +46,13 @@ public partial class ListView : IOnPageKeyDown
     #region listeners
     private void OnNewItemClicked(object sender, EventArgs e)
     {
-        var item = new ListItem("", [], 5);
-        list.AddItem(item);
+        var item = new ListItem("", 5);
         AddItemToView(item);
     }
 
     private void TitleEntryChanged(object sender, EventArgs e)
     {
-        list.Name = this.FindByName<Entry>("TitleEntry").Text;
+        List.Name = this.FindByName<Entry>("TitleEntry").Text;
         if (!string.IsNullOrEmpty(this.FindByName<Entry>("TitleEntry").Text))
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = false;
@@ -83,7 +61,7 @@ public partial class ListView : IOnPageKeyDown
 
     private void OnEffortUpdated(object sender, EventArgs e)
     {
-        this.FindByName<Label>("PointsLabel").Text = GetListPoints(list).ToString();
+        this.FindByName<Label>("PointsLabel").Text = GetListPoints().ToString();
     }
 
     private async void OnSaveListClicked(object sender, EventArgs e)
@@ -97,12 +75,12 @@ public partial class ListView : IOnPageKeyDown
 
         if (HasListId(ListId))
         {
-            listRepository.UpdateList(list, ListId!, _userService.CurrentUser.UserId);
+            UpdateExistingList();
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
 
-        listRepository.CreateList(list);
+        CreateNewList();
         await Shell.Current.GoToAsync("///MainPage");
     }
 
@@ -110,7 +88,9 @@ public partial class ListView : IOnPageKeyDown
     {
         var answer = await DisplayAlert("Delete list", "Would you like to delete this list?\nThis action can't be undone.", "Yes", "No");
         if (!answer) return;
-        listRepository.DeleteList(list.ListID, list.UserId);
+
+        var currentUser = _userService.CurrentUser!.Username;
+        await _listService.DeleteList(ListId, currentUser);
         await Shell.Current.GoToAsync("///MainPage");
     }
 
@@ -139,9 +119,57 @@ public partial class ListView : IOnPageKeyDown
     #endregion
 
     #region privates
+    private async void UpdateExistingList() {
+
+        foreach (var existingItem in ExistingItems)
+        {
+            await _listItemService.UpdateItemDescription(existingItem.ItemId, existingItem.Description);
+            await _listItemService.UpdateItemEffort(existingItem.ItemId, existingItem.Effort);
+        }
+
+        foreach (var item in NewItems) {
+            var itemDto = new ListItemSavingDto(item.Description, item.Effort);
+            await _listItemService.AddItemToList(ListId, itemDto);
+        }
+
+        foreach (var id in DeletedItems)
+        {
+            await _listItemService.DeleteItem(id);
+        }
+    }
+
+    private async void CreateNewList()
+    {
+        var currentUser = _userService.CurrentUser!.Username;
+        var newId = await _listService.CreateList(List.Name, List.IsCollaborative, currentUser); //TODO: Add toggle option for collabs
+
+        foreach (var item in NewItems)
+        {
+            var itemDto = new ListItemSavingDto(item.Description, item.Effort);
+            await _listItemService.AddItemToList(newId, itemDto);
+        }
+    }
+
+    private async Task SetUpAsync()
+    {
+        if (HasListId(ListId))
+        {
+            var currentUser = _userService.CurrentUser!.Username;
+            List = await _listService.GetListById(ListId)!;
+            ExistingItems = await _listItemService.GetItemsForList(ListId, currentUser);
+            this.FindByName<Entry>("TitleEntry").Text = List.Name;
+            AddItemsForExistingList();
+
+            this.FindByName<Label>("PointsLabel").Text = GetListPoints().ToString();
+            return;
+        }
+        List = new ToDoList();
+        ExistingItems = new List<ListItem>();
+    }
+
     private void AddItemsForExistingList()
     {
-        foreach (var item in list.GetItems()) {
+        foreach (var item in ExistingItems) {
             AddItemToView(item);
         }
     }
@@ -157,18 +185,20 @@ public partial class ListView : IOnPageKeyDown
 
     private void RemoveItem(ListItemView view)
     {
-        list.RemoveItem(view.GetItem());
+        DeletedItems.Add(view.GetItem().ItemId);
+        ExistingItems.Remove(view.GetItem());
+        NewItems.Remove(view.GetItem());
         ItemsContainer.Children.Remove(view);
     }
 
-    private static bool HasListId(string? listId)
+    private static bool HasListId(long listId)
     {
-        return !string.IsNullOrEmpty(listId);
+        return listId != -1;
     }
 
-    private static int GetListPoints(ToDoList list)
+    private int GetListPoints()
     {
-        return list.GetItems().Sum(listItem => listItem.GetEffort() * 5);
+        return ExistingItems.Sum(listItem => listItem.Effort * 5) + NewItems.Sum(listItem => listItem.Effort * 5);
     }
 
     private static bool HasInvalidTitleCharacters(string title)

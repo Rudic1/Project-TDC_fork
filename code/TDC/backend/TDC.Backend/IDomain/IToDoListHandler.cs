@@ -4,7 +4,7 @@ namespace TDC.Backend.IDomain
 {
     public interface IToDoListHandler
     {
-        public Task CreateList(string creator, ToDoListSavingDto newListLoading);
+        public long CreateList(string creator, ToDoListSavingDto newListLoading);
         public Task UpdateListTitle(long listId, string newTitle);
         public Task DeleteList(long listId, string sender);
         public Task FinishList(long listId, string sender);

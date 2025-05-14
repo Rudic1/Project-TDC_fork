@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using TDC.IServices;
+using TDC.IService;
 using TDC.Models;
 using TDC.Models.DTOs;
 
@@ -29,14 +29,18 @@ namespace TDC.Services
             await httpClient.PostAsync(url, content);
         }
 
-        public async Task<ListItem> GetItemsForList(long listId, string currentUser)
+        public async Task<List<ListItem>> GetItemsForList(long listId, string currentUser)
         {
             var url = ConnectionUrls.development + $"/api/List/getItemsForList/{listId}/{currentUser}";
 
             var response = await httpClient.GetAsync(url);
             string responseContent = await response.Content.ReadAsStringAsync();
-            var itemDto = JsonSerializer.Deserialize<ListItemDto>(responseContent)!;
-            return new ListItem(itemDto.ItemId, itemDto.Description, itemDto.IsDone, itemDto.FinishedMembers, itemDto.Effort);
+            var itemDtos = JsonSerializer.Deserialize<List<ListItemDto>>(responseContent)!;
+            var items = new List<ListItem>();
+            foreach (var itemDto in itemDtos) {
+                items.Add(new ListItem(itemDto.ItemId, itemDto.Description, itemDto.IsDone, itemDto.FinishedMembers, itemDto.Effort));
+            }
+            return items;
         }
 
         public async Task SetItemStatus(long itemId, string updateFor, bool isDone)

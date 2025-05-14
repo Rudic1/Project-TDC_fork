@@ -1,7 +1,7 @@
 ﻿using TDC.Models;
 using TDC.Models.DTOs;
 
-namespace TDC.IServices
+namespace TDC.IService
 {
     public interface IListItemService
     {
@@ -10,6 +10,6 @@ namespace TDC.IServices
         public Task UpdateItemDescription(long itemId, string description);
         public Task UpdateItemEffort(long itemId, int effort);
         public Task SetItemStatus(long itemId, string updateFor, bool isDone);
-        public Task<ListItem> GetItemsForList(long listId, string currentUser);
+        public Task<List<ListItem>> GetItemsForList(long listId, string currentUser);
     }
 }

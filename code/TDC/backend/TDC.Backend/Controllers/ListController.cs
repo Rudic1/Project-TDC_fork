@@ -15,9 +15,9 @@ namespace TDC.Backend.Controllers
 
         #region To-Do-List
         [HttpPut("createList/{sender}")]
-        public async Task CreateToDoList([FromRoute] string sender, [FromBody] ToDoListSavingDto listLoadingDto)
+        public long CreateToDoList([FromRoute] string sender, [FromBody] ToDoListSavingDto listLoadingDto)
         {
-           await _listHandler.CreateList(sender, listLoadingDto);
+           return _listHandler.CreateList(sender, listLoadingDto);
         }
 
         [HttpPost("updateListTitle/{listId}")]

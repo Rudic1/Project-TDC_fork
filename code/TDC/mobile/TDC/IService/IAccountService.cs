@@ -1,6 +1,6 @@
 ﻿using TDC.Models;
 
-namespace TDC.IRepository;
+namespace TDC.IService;
 public interface IAccountService
 {
     public Task<Account> GetAccountByUsername(string username);

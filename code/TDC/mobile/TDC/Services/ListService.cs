@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using TDC.IRepository;
+using TDC.IService;
 using TDC.Models;
 using TDC.Models.DTOs;
 
@@ -11,7 +11,7 @@ namespace TDC.Services
         private readonly HttpClient httpClient = new();
 
         #region publics
-        public async Task CreateList(string name, bool isCollaborative, string creator)
+        public async Task<long> CreateList(string name, bool isCollaborative, string creator)
         {
             var dto = new ToDoListCreateDto(name, isCollaborative); //TODO: Add toggle button for collaborative 
             var url = ConnectionUrls.development + $"/api/List/createList/{creator}";
@@ -19,7 +19,9 @@ namespace TDC.Services
             var json = JsonSerializer.Serialize(dto);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            await httpClient.PutAsync(url, content);
+            var response = await httpClient.PutAsync(url, content);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            return long.Parse(responseContent);
         }
 
         public async Task UpdateListTitle(string newTitle, long listId)

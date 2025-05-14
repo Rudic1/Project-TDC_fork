@@ -18,12 +18,12 @@ namespace TDC.Backend.Domain
         public readonly IListMemberRepository _listMemberRepository = listMemberRepository;
         public readonly IListInvitationRepository _listInvitationRepository = listInvitationRepository;
 
-        public Task CreateList(string creator, ToDoListSavingDto newList)
+        public long CreateList(string creator, ToDoListSavingDto newList)
         {
             var listDbo = new ToDoListDbo(0, newList.Name, newList.IsCollaborative, false);
             var listId = _listRepository.CreateList(listDbo);
             _listMemberRepository.AddListMember(listId, creator, true);
-            return Task.CompletedTask;
+            return listId;
         }
 
         public Task AddUserToList(long listId, string username)
