@@ -7,9 +7,9 @@ namespace TDC.Views.Login;
 public partial class LoginPage : ContentPage
 {
     private readonly UserService _userService;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IAccountService _accountRepository;
 
-    public LoginPage(UserService userService, IAccountRepository accountRepository)
+    public LoginPage(UserService userService, IAccountService accountRepository)
     {
         InitializeComponent();
         _userService = userService;

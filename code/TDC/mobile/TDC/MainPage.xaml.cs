@@ -1,13 +1,12 @@
 ﻿using System.Diagnostics;
 using TDC.Models;
-using TDC.Repositories;
 using TDC.Services;
 
 namespace TDC
 {
     public partial class MainPage
     {
-        private ListRepository listRepository;
+        private ListService listRepository;
         private readonly UserService _userService;
         private List<ToDoList> availableLists;
         private int shownListIndex;
@@ -24,7 +23,7 @@ namespace TDC
 
             shownListIndex = 0;
             availableLists = new List<ToDoList>();
-            listRepository = new ListRepository();
+            listRepository = new ListService();
 
             LoadAvailableLists();
         }

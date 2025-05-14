@@ -3,12 +3,10 @@ using System.Text.Json;
 using TDC.IRepository;
 using TDC.Models;
 using TDC.Models.DTOs;
-using TDC.Repository;
-using TDC.Services;
 
-namespace TDC.Repositories
+namespace TDC.Services
 {
-    public class ListRepository : IListRepository
+    public class ListService : IListService
     {
         private readonly HttpClient httpClient = new();
         private readonly UserService userService = App.Services.GetService<UserService>()!;

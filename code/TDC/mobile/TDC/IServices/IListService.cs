@@ -1,7 +1,7 @@
 ﻿using TDC.Models;
 
 namespace TDC.IRepository;
-public interface IListRepository
+public interface IListService
 {
     public Task CreateList(string name, bool isCollaborative);
     public Task UpdateListTitle(string newTitle, long listId);

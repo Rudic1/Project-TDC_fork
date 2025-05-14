@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TDC.Repository
+namespace TDC.Services
 {
     public static class ConnectionUrls
     {

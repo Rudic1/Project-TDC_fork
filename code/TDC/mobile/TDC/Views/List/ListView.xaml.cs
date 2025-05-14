@@ -1,9 +1,14 @@
 using System.Diagnostics;
 using TDC.Models;
 using TDC.Constants;
-using TDC.Repositories;
 using TDC.Services;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+
+<<<<<<< TODO: Nicht zusammengeführte Änderung von Projekt „TDC (net9.0-windows10.0.19041.0)“, Vor:
+=======
+using TDC.Services.Repository;
+>>>>>>> Nach
+
 
 
 #if ANDROID
@@ -19,7 +24,7 @@ namespace TDC;
 public partial class ListView : IOnPageKeyDown
 {
     private ToDoList list;
-    private readonly ListRepository listRepository;
+    private readonly ListService listRepository;
     private readonly UserService _userService;
     public string? ListId { get; set; }
 
@@ -28,7 +33,7 @@ public partial class ListView : IOnPageKeyDown
     {
         InitializeComponent();
         _userService = userService;
-        listRepository = new ListRepository();
+        listRepository = new ListService();
         list = new ToDoList("", _userService.CurrentUser.UserId);
     }
 

@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using TDC.Services;             // <-- Hinzufügen
 using TDC.IRepository;          // <-- Hinzufügen
-using TDC.Repositories;         // <-- Hinzufügen
-using TDC.Views.Login;          // <-- Hinzufügen
+using TDC.Views.Login;
 
 namespace TDC
 {
@@ -30,7 +29,7 @@ namespace TDC
             // ------------ HIER DIE FEHLENDEN DI-REGISTRIERUNGEN EINFÜGEN ------------
             // Services registrieren
             builder.Services.AddSingleton<UserService>(); // Einmal pro App-Lebenszeit
-            builder.Services.AddSingleton<IAccountRepository, AccountRepository>(); // Einmal pro App-Lebenszeit
+            builder.Services.AddSingleton<IAccountService, AccountService>(); // Einmal pro App-Lebenszeit
             builder.Services.AddTransient<ListView>(); // wichtig für DI
 
 
