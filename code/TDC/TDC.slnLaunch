@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Start TDC + Backend",
+    "Projects": [
+      {
+        "Path": "backend\\TDC.Backend\\TDC.Backend.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "mobile\\TDC\\TDC.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

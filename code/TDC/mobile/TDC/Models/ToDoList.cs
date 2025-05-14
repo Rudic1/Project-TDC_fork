@@ -55,4 +55,18 @@ public class ToDoList
         Members.Remove(member);
     }
     #endregion
+    #region points logic
+    public int GetCompletedPoints()
+    {
+        return Items
+            .Where(item => item.IsDone())
+            .Sum(item => item.GetEffort() * 5);
+    }
+
+    public int GetTotalPoints()
+    {
+        return Items.Sum(item => item.GetEffort() * 5);
+    }
+    #endregion
+
 }
