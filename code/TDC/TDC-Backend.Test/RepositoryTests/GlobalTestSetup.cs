@@ -6,7 +6,12 @@
         [OneTimeSetUp]
         public void GlobalSetup()
         {
-            Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+            var current = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+
+            if (string.IsNullOrWhiteSpace(current))
+            {
+                Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+            }
         }
     }
 }
