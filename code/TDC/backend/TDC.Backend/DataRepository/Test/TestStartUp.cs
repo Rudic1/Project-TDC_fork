@@ -40,7 +40,14 @@ namespace TDC.Backend.DataRepository.Test
         {
             var workingDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
             var location = Path.Combine(workingDir, "Database", "migrations");
-            var connection = new SqlConnection(connectionStrings.Sql);
+
+            var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
+            var connectionString = env == "Development"
+                                       ? connectionStrings.Sql_Local
+                                       : connectionStrings.Sql;
+
+            var connection = new SqlConnection(connectionString);
 
             var evolve = new EvolveDb.Evolve(connection, message => Console.WriteLine(message))
             {
