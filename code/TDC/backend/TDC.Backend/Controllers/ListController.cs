@@ -59,9 +59,9 @@ namespace TDC.Backend.Controllers
 
         #region List-Items
         [HttpPut("addItemToList/{listId}")]
-        public async Task AddItemToList([FromRoute] long listId, [FromBody] ToDoListItemSavingDto itemData)
+        public long AddItemToList([FromRoute] long listId, [FromBody] ToDoListItemSavingDto itemData)
         {
-            await _listHandler.AddItemToList(listId, itemData.Description, itemData.Effort);
+            return _listHandler.AddItemToList(listId, itemData.Description, itemData.Effort);
         }
 
         [HttpPost("deleteItem/{itemId}")]

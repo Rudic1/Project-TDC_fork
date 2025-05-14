@@ -5,7 +5,7 @@ namespace TDC.IService
 {
     public interface IListItemService
     {
-        public Task AddItemToList(long listId, ListItemSavingDto item);
+        public Task<long> AddItemToList(long listId, ListItemSavingDto item);
         public Task DeleteItem(long itemId);
         public Task UpdateItemDescription(long itemId, string description);
         public Task UpdateItemEffort(long itemId, int effort);

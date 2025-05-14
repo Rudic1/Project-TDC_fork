@@ -130,11 +130,11 @@ namespace TDC.Backend.Domain
             return listDtoList;
         }
 
-        public Task AddItemToList(long listId, string itemDescription, int itemEffort)
+        public long AddItemToList(long listId, string itemDescription, int itemEffort)
         {
-            if(!ListExists(listId)) {return Task.CompletedTask;}
-            _listItemRepository.AddItemToList(new ToDoListItemDbo(0, listId, itemDescription, itemEffort));
-            return Task.CompletedTask;
+            if(!ListExists(listId)) { return -1;}
+            var itemId = _listItemRepository.AddItemToList(new ToDoListItemDbo(0, listId, itemDescription, itemEffort));
+            return itemId;
         }
 
         public Task DeleteItem(long itemId)

@@ -9,14 +9,16 @@ namespace TDC.Services
     public class ListItemService : IListItemService
     {
         private readonly HttpClient httpClient = new();
-        public async Task AddItemToList(long listId, ListItemSavingDto item)
+        public async Task<long> AddItemToList(long listId, ListItemSavingDto item)
         {
             var url = ConnectionUrls.development + $"/api/List/addItemToList/{listId}";
 
             var json = JsonSerializer.Serialize(item);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            await httpClient.PutAsync(url, content);
+            var response = await httpClient.PutAsync(url, content);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            return long.Parse(responseContent);
         }
 
         public async Task DeleteItem(long itemId)

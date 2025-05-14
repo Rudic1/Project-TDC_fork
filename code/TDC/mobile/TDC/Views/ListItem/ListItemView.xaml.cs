@@ -25,7 +25,7 @@ public partial class ListItemView
 
     private void DescriptionChanged(object sender, EventArgs e)
     {
-        item.SetDescription(this.FindByName<Entry>("TaskEntry").Text);
+        item.Description = this.FindByName<Entry>("TaskEntry").Text;
     }
 
     private void EnterPressed(object sender, EventArgs e)
@@ -38,7 +38,7 @@ public partial class ListItemView
     {
         if (IsInitialized)
         {
-            item.ToggleDone();
+            item.IsDone = !item.IsDone;
         }
     }
 

@@ -121,15 +121,18 @@ public partial class ListView : IOnPageKeyDown
     #region privates
     private async void UpdateExistingList() {
 
+        var currentUser = _userService.CurrentUser!.Username;
         foreach (var existingItem in ExistingItems)
         {
             await _listItemService.UpdateItemDescription(existingItem.ItemId, existingItem.Description);
             await _listItemService.UpdateItemEffort(existingItem.ItemId, existingItem.Effort);
+            await _listItemService.SetItemStatus(existingItem.ItemId, currentUser, existingItem.IsDone);
         }
 
         foreach (var item in NewItems) {
             var itemDto = new ListItemSavingDto(item.Description, item.Effort);
-            await _listItemService.AddItemToList(ListId, itemDto);
+            var itemId = await _listItemService.AddItemToList(ListId, itemDto);
+            await _listItemService.SetItemStatus(itemId, currentUser, item.IsDone);
         }
 
         foreach (var id in DeletedItems)
@@ -146,7 +149,8 @@ public partial class ListView : IOnPageKeyDown
         foreach (var item in NewItems)
         {
             var itemDto = new ListItemSavingDto(item.Description, item.Effort);
-            await _listItemService.AddItemToList(newId, itemDto);
+            var itemId = await _listItemService.AddItemToList(newId, itemDto);
+            await _listItemService.SetItemStatus(itemId, currentUser, item.IsDone);
         }
     }
 
