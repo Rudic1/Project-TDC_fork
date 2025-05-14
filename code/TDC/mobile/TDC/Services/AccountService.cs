@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text;
-using TDC.IRepository;
+using TDC.IService;
 using TDC.Models;
 using TDC.Models.DTOs;
 
