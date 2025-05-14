@@ -1,4 +1,5 @@
-﻿using TDC.Backend.IDataRepository;
+﻿using TDC.Backend.DataRepository;
+using TDC.Backend.IDataRepository;
 using TDC.Backend.IDataRepository.Models;
 using TDC.Backend.IDomain;
 using TDC.Backend.IDomain.Models;
@@ -106,6 +107,7 @@ namespace TDC.Backend.Domain
 
         public Task FinishList(long listId, string sender)
         {
+            if(!_listMemberRepository.GetListMembers(listId).Contains(sender)) { return Task.CompletedTask; }
             if (!ListCanBeFinished(listId)) { return Task.CompletedTask; }
 
             // TO-DO: add logic to grant every member rewards
