@@ -135,7 +135,8 @@ jobs:
 
   buildBackend:
     runs-on: ubuntu-latest
-
+    env:
+      ASPNETCORE_ENVIRONMENT: Production
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
