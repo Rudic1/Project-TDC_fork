@@ -24,18 +24,40 @@ namespace TDC.Services
             await httpClient.PutAsync(url, content);
         }
 
-        public Task UpdateListTitle(string newTitle, long listId)
+        public async Task UpdateListTitle(string newTitle, long listId)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/updateListTitle/{listId}";
+            var data = new
+            {
+                newTitle = newTitle,
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content);
         }
-        public Task DeleteList(long listId, string username)
+
+        public async Task DeleteList(long listId)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/deleteList/{listId}";
+            var currentUser = userService.CurrentUser!.Username;
+            var data = new
+            {
+                sender = currentUser,
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content);
         }
+
         public Task FinishList(long listId, string username)
         {
             throw new NotImplementedException();
         }
+
         public ToDoList? GetListById(long listId)
         {
             throw new NotImplementedException();

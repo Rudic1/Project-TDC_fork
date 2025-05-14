@@ -23,7 +23,7 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void DeleteList_UserIsCreator_CallsRepository()
+        public void DeleteList_UserIsCreator_CallsDeleteOnRepository()
         {
             _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(true);
             _target.DeleteList(1, "test-user");
@@ -31,11 +31,19 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void DeleteList_UserIsNotCreator_DoesNotCallRepository()
+        public void DeleteList_UserIsNotCreator_DoesNotCallDeleteRepository()
         {
             _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(false);
             _target.DeleteList(1, "test-user");
             _target._listRepository.DidNotReceive().DeleteList(Arg.Any<long>());
+        }
+
+        [Test]
+        public void DeleteList_UserIsNotCreator_CallsRemoveListMember()
+        {
+            _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(false);
+            _target.DeleteList(1, "test-user");
+            _target._listMemberRepository.Received().RemoveListMember(1, "test-user");
         }
     }
 }

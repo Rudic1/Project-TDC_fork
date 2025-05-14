@@ -25,7 +25,7 @@ namespace TDC.Backend.Controllers
             await _listHandler.UpdateListTitle(listId, newTitle.ListTitle);
         }
 
-        [HttpDelete("deleteList/{listId}")]
+        [HttpPost("deleteList/{listId}")]
         public async Task DeleteToDoList([FromRoute] long listId, [FromBody] UsernameHelper sender)
         {
             await _listHandler.DeleteList(listId, sender.Username);

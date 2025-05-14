@@ -96,14 +96,16 @@ namespace TDC.Backend.Domain
 
         public Task DeleteList(long listId, string sender)
         {
-            if (!UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if (!UserIsCreator(listId, sender)) { 
+                _listMemberRepository.RemoveListMember(listId, sender);
+                return Task.CompletedTask; 
+            }
             _listRepository.DeleteList(listId);
             return Task.CompletedTask;
         }
 
         public Task FinishList(long listId, string sender)
         {
-            if (!UserIsCreator(listId, sender)) { return Task.CompletedTask; }
             if (!ListCanBeFinished(listId)) { return Task.CompletedTask; }
 
             // TO-DO: add logic to grant every member rewards

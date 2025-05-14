@@ -23,13 +23,6 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
             _target = new ToDoListHandler(_listRepository, _listItemRepository, _listMemberRepository, _listInvitationRepository);
         }
 
-        [Test]
-        public void FinishList_UserIsNotCreator_DoesNotCallRepository()
-        {
-            _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(false);
-            _target.FinishList(1, "test-user");
-            _target._listRepository.DidNotReceive().FinishList(Arg.Any<long>());
-        }
 
         [Test]
         public void FinishList_NotAllItemsFinished_DoesNotCallRepository()
