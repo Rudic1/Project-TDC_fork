@@ -1,30 +1,28 @@
-﻿using System.Diagnostics;
-
-namespace TDC.Models;
+﻿namespace TDC.Models;
 public class ToDoList
 {
     private readonly List<ListItem> Items;
     private readonly List<Profile> Members;
     public string Name { get; set; }
-    public string ListID { get; } 
+    public long ListID { get; } 
     public long UserId { get; }
 
     #region constructors 
     public ToDoList(string name, long userId)
     {
-        ListID = Guid.NewGuid().ToString(); //TO-DO: Replace with long later and use database
+        ListID = 0;
         UserId = userId;
         Items = new List<ListItem>();
         Members = new List<Profile>();
         Name = name;
     }
 
-    public ToDoList(string name, string listId, long userId)
+    public ToDoList(long listId, string name, long userId)
     {
         ListID = listId;
         UserId = userId;
-        Items = new List<ListItem>();
-        Members = new List<Profile>();
+        Items = [];
+        Members = [];
         Name = name;
     }
     #endregion
