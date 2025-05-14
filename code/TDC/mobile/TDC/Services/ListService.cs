@@ -64,9 +64,15 @@ namespace TDC.Services
             var response = await httpClient.PostAsync(url, content);
         }
 
-        public Task<ToDoList> GetListById(long listId)
+        public async Task<ToDoList> GetListById(long listId)
         {
-            throw new NotImplementedException(); //To-DO: implement endpoint
+            var url = ConnectionUrls.development + $"/api/List/getListById/{listId}";
+
+            var response = await httpClient.GetAsync(url);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            var listDto = JsonSerializer.Deserialize<ToDoListDto>(responseContent)!;
+
+            return new ToDoList(listDto.ListId, listDto.Name, listDto.IsCollaborative);
         }
 
         public async Task<List<ToDoList>> GetAllListsForUser(string username)
