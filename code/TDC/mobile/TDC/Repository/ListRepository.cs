@@ -13,11 +13,10 @@ namespace TDC.Repositories
         private readonly HttpClient httpClient = new();
         private readonly UserService userService = App.Services.GetService<UserService>()!;
 
-
         #region publics
-        public async Task CreateList(ToDoList list)
+        public async Task CreateList(string name, bool isCollaborative)
         {
-            var dto = new ToDoListDto(0, list.Name, [], [], list.isCollaborative); //To-DO: Add toggle button for collaborative 
+            var dto = new ToDoListDto(0, name, [], [], isCollaborative); //TODO: Add toggle button for collaborative 
             var sender = userService.CurrentUser!.Username;
             var url = ConnectionUrls.development + $"/api/List/createList/{sender}";
 
@@ -27,26 +26,27 @@ namespace TDC.Repositories
             await httpClient.PutAsync(url, content);
         }
 
-        public void UpdateList(ToDoList newList, long listId, string username)
+        public Task UpdateListTitle(string newTitle, long listId)
         {
             throw new NotImplementedException();
         }
-
-        public void DeleteList(long listId, string username)
+        public Task DeleteList(long listId, string username)
         {
             throw new NotImplementedException();
         }
-
-        public ToDoList? GetListById(long listId, string username)
+        public Task FinishList(long listId, string username)
         {
             throw new NotImplementedException();
         }
-
+        public ToDoList? GetListById(long listId)
+        {
+            throw new NotImplementedException();
+        }
         public List<ToDoList> GetAllListsForUser(string username)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+    #endregion
     }
 }

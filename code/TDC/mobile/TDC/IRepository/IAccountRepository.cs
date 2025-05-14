@@ -3,12 +3,16 @@
 namespace TDC.IRepository;
 public interface IAccountRepository
 {
-    public Account GetAccountById(long id);
-    public void CreateAccount(Account account);
-    public void UpdateAccount(Account account);
-    public void DeleteAccount(Account account);
-    public bool EmailIsTaken(string email);
+    public Account GetAccountByUsername(string username);
+    public Account GetAccountByEmail(string email);
+    public bool CreateAccount(Account account);
+    public Task UpdateDescription(string description, string username);
+    public bool UpdateEmail(string email, string username);
+    public bool UpdatePassword(string password, string username);
+    public bool UpdateUsername(string newUsername, string oldUsername);
+    public bool DeleteAccount(string username);
     public bool UsernameIsTaken(string username);
-    public Account? AuthenticateUserLogin(string username, string password);
+    public bool EmailIsTaken(string email);
+    public bool AuthenticateUserLogin(string username, string password);
 
 }
