@@ -125,11 +125,7 @@ namespace TDC.Backend.Domain
             {
                 if (listDbo.IsFinished) { continue; }
 
-                var itemDboList = _listItemRepository.GetItemsForList(listDbo.Id);
-                var listMembers = _listMemberRepository.GetListMembers(listDbo.Id);
-                var itemDtoList = itemDboList.Select(itemDbo => ParseItemDboToDto(itemDbo, username, listMembers)).ToList();
-
-                listDtoList.Add(new ToDoListLoadingDto(listDbo.Id, listDbo.Name, itemDtoList, listMembers, listDbo.IsCollaborative));
+                listDtoList.Add(new ToDoListLoadingDto(listDbo.Id, listDbo.Name, listDbo.IsCollaborative));
             }
             return listDtoList;
         }
@@ -174,6 +170,18 @@ namespace TDC.Backend.Domain
             return Task.CompletedTask;
         }
 
+        public List<ToDoListItemLoadingDto> GetItemsForList(long listId, string username)
+        {
+            var dbos = _listItemRepository.GetItemsForList(listId);
+            var members = _listMemberRepository.GetListMembers(listId);
+            var dtos = new List<ToDoListItemLoadingDto>();
+            foreach (var dbo in dbos) {
+                var dto = ParseItemDboToDto(dbo, username, members);
+                dtos.Add(dto);
+            }
+            return dtos;
+        }
+
         #region privates
         private ToDoListItemLoadingDto ParseItemDboToDto(ToDoListItemDbo dbo, string currentUser, List<string> listMembers)
         {
@@ -215,6 +223,7 @@ namespace TDC.Backend.Domain
         {
             return _listRepository.GetById(listId) != null;
         }
+
         #endregion
     }
 }

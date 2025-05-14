@@ -21,5 +21,6 @@ namespace TDC.Backend.IDomain
         public Task UpdateItemDescription(long itemId, string description);
         public Task UpdateItemEffort(long itemId, int effort);
         public Task SetItemStatus(long itemId, string updateForUser, bool isDone);
+        public List<ToDoListItemLoadingDto> GetItemsForList(long listId, string username);
     }
 }

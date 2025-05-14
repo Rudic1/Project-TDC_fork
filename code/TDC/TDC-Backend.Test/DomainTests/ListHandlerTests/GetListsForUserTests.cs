@@ -47,19 +47,9 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
             _target._listMemberRepository.GetListMembers(2).Returns(["test-user"]);
 
             _target._listMemberRepository.GetListsForUser("test-user").Returns([1, 2, 3]);
-            var item1 = new ToDoListItemDbo(1, 1, "item1", 1);
-            var item2 = new ToDoListItemDbo(2, 2,"item2", 2);
-            _target._listItemRepository.GetItemsForList(1).Returns([item1]);
-            _target._listItemRepository.GetItemsForList(2).Returns([item2]);
-            _target._listItemRepository.GetItemsForList(3).Returns([]);
-            _target._listItemRepository.GetItemStatus(1, "test-user").Returns(true);
-            _target._listItemRepository.GetItemStatus(1, "test-user-2").Returns(true);
-            _target._listItemRepository.GetItemStatus(2, "test-user").Returns(false);
 
-            List<ToDoListItemLoadingDto> itemList1 = [new(1, "item1", true, ["test-user-2"], 1)];
-            List<ToDoListItemLoadingDto> itemList2 = [new(2, "item2", false, [], 2)];
-            var list1 = new ToDoListLoadingDto(1, "list1", itemList1, ["test-user", "test-user-2"], true);
-            var list2 = new ToDoListLoadingDto(2, "list2", itemList2, ["test-user"], false);
+            var list1 = new ToDoListLoadingDto(1, "list1", true);
+            var list2 = new ToDoListLoadingDto(2, "list2", false);
             var expected = new List<ToDoListLoadingDto>
             {
                 list1,

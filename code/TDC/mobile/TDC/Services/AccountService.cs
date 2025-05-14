@@ -70,11 +70,9 @@ public class AccountService : IAccountService
     public async Task<Account> GetAccountByUsername(string username)
     {
         var url = ConnectionUrls.development + $"/api/Account/getAccountData/{username}";
-        var data = new { };
-        var json = JsonSerializer.Serialize(data);
-        var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        var response = await httpClient.PostAsync(url, content);
+        var response = await httpClient.GetAsync(url);
+
         string responseContent = await response.Content.ReadAsStringAsync();
         var accountDto = JsonSerializer.Deserialize<AccountLoadingDto>(responseContent)!;
         return new Account(username, accountDto.Description, accountDto.Email);

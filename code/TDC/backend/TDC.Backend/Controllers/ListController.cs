@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using TDC.Backend.Helpers;
 using TDC.Backend.IDomain;
 using TDC.Backend.IDomain.Models;
@@ -80,6 +81,15 @@ namespace TDC.Backend.Controllers
         {
             await _listHandler.SetItemStatus(itemId, itemStatus.UpdateForUser, itemStatus.IsDone);
         }
+
+        [HttpGet("getItemsForList/{listId}/{username}")]
+        public List<ToDoListItemLoadingDto> GetItemsForList([FromRoute] long listId, [FromRoute] string username)
+        {
+            return _listHandler.GetItemsForList(listId, username);
+        }
+        #endregion
+
+        #region List-Invitations
 
         [HttpPut("sendListInvitaion/{listId}/{forUser}/{fromUser}")]
         public async Task SendListInvitation([FromRoute] long listId, [FromRoute] string forUser, [FromRoute] string fromUser)

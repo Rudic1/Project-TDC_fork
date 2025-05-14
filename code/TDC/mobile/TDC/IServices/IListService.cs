@@ -7,6 +7,6 @@ public interface IListService
     public Task UpdateListTitle(string newTitle, long listId);
     public Task DeleteList(long listId, string sender);
     public Task FinishList(long listId, string sender);
-    public ToDoList? GetListById(long listId);
-    public List<ToDoList> GetAllListsForUser(string username);
+    public Task<ToDoList> GetListById(long listId);
+    public Task<List<ToDoList>> GetAllListsForUser(string username);
 }

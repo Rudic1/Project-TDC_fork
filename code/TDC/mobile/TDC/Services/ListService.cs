@@ -13,7 +13,7 @@ namespace TDC.Services
         #region publics
         public async Task CreateList(string name, bool isCollaborative, string creator)
         {
-            var dto = new ToDoListDto(0, name, [], [], isCollaborative); //TODO: Add toggle button for collaborative 
+            var dto = new ToDoListCreateDto(name, isCollaborative); //TODO: Add toggle button for collaborative 
             var url = ConnectionUrls.development + $"/api/List/createList/{creator}";
 
             var json = JsonSerializer.Serialize(dto);
@@ -50,20 +50,43 @@ namespace TDC.Services
             var response = await httpClient.PostAsync(url, content);
         }
 
-        public Task FinishList(long listId, string sender)
+        public async Task FinishList(long listId, string sender)
         {
-            throw new NotImplementedException();
+            var url = ConnectionUrls.development + $"/api/List/finishList/{listId}";
+            var data = new
+            {
+                sender = sender,
+            };
+
+            var json = JsonSerializer.Serialize(data);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await httpClient.PostAsync(url, content);
         }
 
-        public ToDoList? GetListById(long listId)
+        public Task<ToDoList> GetListById(long listId)
         {
-            throw new NotImplementedException();
-        }
-        public List<ToDoList> GetAllListsForUser(string username)
-        {
-            throw new NotImplementedException();
+            throw new NotImplementedException(); //To-DO: implement endpoint
         }
 
-    #endregion
+        public async Task<List<ToDoList>> GetAllListsForUser(string username)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getListsForUser/{username}";
+
+            var response = await httpClient.GetAsync(url);
+            string responseContent = await response.Content.ReadAsStringAsync();
+            var listDtos = JsonSerializer.Deserialize<List<ToDoListDto>>(responseContent)!;
+
+            var listObjects = new List<ToDoList>();
+            foreach(var listDto in listDtos)
+            {
+                var list = new ToDoList(listDto.ListId, listDto.Name, listDto.IsCollaborative);
+                listObjects.Add(list);
+            }
+            return listObjects;
+        }
+        #endregion
+
+
     }
 }
