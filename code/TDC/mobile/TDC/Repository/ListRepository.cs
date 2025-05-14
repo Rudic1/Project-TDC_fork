@@ -27,22 +27,22 @@ namespace TDC.Repositories
             await httpClient.PutAsync(url, content);
         }
 
-        public void UpdateList(ToDoList newList, string listId, long userId)
+        public void UpdateList(ToDoList newList, long listId, string username)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteList(string listId, long userId)
+        public void DeleteList(long listId, string username)
         {
             throw new NotImplementedException();
         }
 
-        public ToDoList? GetListById(string listId, long userId)
+        public ToDoList? GetListById(long listId, string username)
         {
             throw new NotImplementedException();
         }
 
-        public List<ToDoList> GetAllListsForUser(long userId)
+        public List<ToDoList> GetAllListsForUser(string username)
         {
             throw new NotImplementedException();
         }

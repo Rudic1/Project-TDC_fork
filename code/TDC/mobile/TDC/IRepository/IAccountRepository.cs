@@ -9,6 +9,6 @@ public interface IAccountRepository
     public void DeleteAccount(Account account);
     public bool EmailIsTaken(string email);
     public bool UsernameIsTaken(string username);
-    public Account? AuthenticateUser(string username, string password);
+    public Account? AuthenticateUserLogin(string username, string password);
 
 }

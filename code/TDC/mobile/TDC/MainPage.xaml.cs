@@ -95,8 +95,8 @@ namespace TDC
                 return;
             }
 
-            long userId = _userService.CurrentUser.UserId;
-            availableLists = listRepository.GetAllListsForUser(userId);
+            var username = _userService.CurrentUser.Username;
+            availableLists = listRepository.GetAllListsForUser(username);
             UpdateShownList();
         }
 
