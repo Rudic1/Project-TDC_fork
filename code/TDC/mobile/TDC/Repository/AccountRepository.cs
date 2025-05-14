@@ -1,7 +1,5 @@
 ﻿using TDC.IRepository;
 using TDC.Models;
-using System.Linq; // Hinzugefügt für FirstOrDefault
-using System.Diagnostics; // <-- Hinzufügen für Debug.WriteLine
 
 namespace TDC.Repositories;
 

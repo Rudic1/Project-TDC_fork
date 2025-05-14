@@ -5,22 +5,23 @@ public class ToDoList
     private readonly List<Profile> Members;
     public string Name { get; set; }
     public long ListID { get; } 
-    public long UserId { get; }
+    public string Username { get; }
+    public bool isCollaborative { get; set; }
 
     #region constructors 
-    public ToDoList(string name, long userId)
+    public ToDoList(string name, string username)
     {
         ListID = 0;
-        UserId = userId;
-        Items = new List<ListItem>();
-        Members = new List<Profile>();
+        Username = username;
+        Items = [];
+        Members = [];
         Name = name;
     }
 
-    public ToDoList(long listId, string name, long userId)
+    public ToDoList(long listId, string name, string username)
     {
         ListID = listId;
-        UserId = userId;
+        Username = username;
         Items = [];
         Members = [];
         Name = name;
@@ -52,5 +53,11 @@ public class ToDoList
     {
         Members.Remove(member);
     }
-    #endregion
+
+    public List<Profile> GetMembers()
+    {
+        throw new NotImplementedException();
+    }
+
+#endregion
 }

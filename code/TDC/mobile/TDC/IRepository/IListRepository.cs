@@ -3,7 +3,7 @@
 namespace TDC.IRepository;
 public interface IListRepository
 {
-    public string CreateList(ToDoList list);
+    public Task CreateList(ToDoList list);
     public void UpdateList(ToDoList newList, string listId, long userId);
     public void DeleteList(string listId, long userId);
     public ToDoList? GetListById(string listId, long userId);

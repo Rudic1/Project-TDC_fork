@@ -1,7 +1,6 @@
 using TDC.Services;
 using TDC.Models;
-using TDC.IRepository; // Wichtig für IAccountRepository
-using TDC.Views; // für die MainPage Navigation (oder deine Zielseite)
+using TDC.IRepository;
 
 namespace TDC.Views.Login;
 
