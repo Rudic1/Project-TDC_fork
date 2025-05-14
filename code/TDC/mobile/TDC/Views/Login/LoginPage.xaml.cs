@@ -1,19 +1,19 @@
 using TDC.Services;
 using TDC.Models;
-using TDC.IRepository;
+using TDC.IService;
 
 namespace TDC.Views.Login;
 
 public partial class LoginPage : ContentPage
 {
     private readonly UserService _userService;
-    private readonly IAccountService _accountRepository;
+    private readonly IAccountService _accountService;
 
-    public LoginPage(UserService userService, IAccountService accountRepository)
+    public LoginPage(UserService userService, IAccountService accountService)
     {
         InitializeComponent();
         _userService = userService;
-        _accountRepository = accountRepository;
+        _accountService = accountService;
     }
 
     private async void LoginButton_Clicked(object sender, EventArgs e)
@@ -28,10 +28,11 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        Account? account = _accountRepository.AuthenticateUser(username, password);
+        var loginSuccessful = await _accountService.AuthenticateUserLogin(username, password);
 
-        if (account != null)
+        if (loginSuccessful)
         {
+            var account = await _accountService.GetAccountByUsername(username);
             _userService.Login(account);
 
             ErrorMessageLabel.IsVisible = false;
