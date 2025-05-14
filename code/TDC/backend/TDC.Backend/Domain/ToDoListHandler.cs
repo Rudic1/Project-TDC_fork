@@ -117,7 +117,10 @@ namespace TDC.Backend.Domain
             var listDboList = listIds.Select(listId => _listRepository.GetById(listId)).OfType<ToDoListDbo>().ToList();
 
             var listDtoList = new List<ToDoListLoadingDto>();
-            foreach (var listDbo in listDboList) {
+            foreach (var listDbo in listDboList)
+            {
+                if (listDbo.IsFinished) { continue; }
+
                 var itemDboList = _listItemRepository.GetItemsForList(listDbo.Id);
                 var listMembers = _listMemberRepository.GetListMembers(listDbo.Id);
                 var itemDtoList = itemDboList.Select(itemDbo => ParseItemDboToDto(itemDbo, username, listMembers)).ToList();
