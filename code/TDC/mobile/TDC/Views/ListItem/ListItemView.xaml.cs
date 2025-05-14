@@ -48,14 +48,14 @@ public partial class ListItemView
 
     private void SetComponentProperties()
     {
-        this.FindByName<Entry>("TaskEntry").Text = item.GetDescription();
-        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone();
-        this.FindByName<Picker>("TaskPicker").SelectedIndex = item.GetEffort() - 1;
+        this.FindByName<Entry>("TaskEntry").Text = item.Description;
+        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone;
+        this.FindByName<Picker>("TaskPicker").SelectedIndex = item.Effort - 1;
     }
 
     private void SetEventHandlers()
     {
-        LayoutChanged += (_, _) =>
+        SizeChanged += (_, _) =>
         {
             this.FindByName<Entry>("TaskEntry").Focus();
         };
@@ -69,7 +69,7 @@ public partial class ListItemView
         var selectedIndex = picker.SelectedIndex;
 
         if (selectedIndex == -1 || !IsInitialized) return;
-        item.SetEffort(selectedIndex + 1);
+        item.Effort = selectedIndex + 1;
         EffortChanged?.Invoke(this, e);
     }
 
