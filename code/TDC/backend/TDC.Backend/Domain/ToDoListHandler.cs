@@ -182,6 +182,12 @@ namespace TDC.Backend.Domain
             return dtos;
         }
 
+        public ToDoListLoadingDto GetListById(long listId)
+        {
+            var dbo = _listRepository.GetById(listId)!;
+            return new ToDoListLoadingDto(dbo.Id, dbo.Name, dbo.IsCollaborative);
+        }
+
         #region privates
         private ToDoListItemLoadingDto ParseItemDboToDto(ToDoListItemDbo dbo, string currentUser, List<string> listMembers)
         {

@@ -49,6 +49,12 @@ namespace TDC.Backend.Controllers
         {
             return _listHandler.GetListsForUser(username);
         }
+
+        [HttpGet("getListById/{listId}")]
+        public ToDoListLoadingDto GetListById([FromRoute] long listId)
+        {
+            return _listHandler.GetListById(listId);
+        }
         #endregion
 
         #region List-Items
