@@ -3,6 +3,7 @@ using TDC.Constants;
 using TDC.Services;
 using TDC.IService;
 using TDC.Models.DTOs;
+using TDC.Views.ListItem;
 
 
 #if ANDROID
@@ -192,6 +193,7 @@ public partial class ListView : IOnPageKeyDown
         ItemsContainer.Children.Add(listItemView);
         listItemView.NewItemOnEnter += OnNewItemClicked!;
         listItemView.EffortChanged += OnEffortUpdated!;
+        listItemView.DeletePressed += (s, e) => RemoveItem(listItemView);
         listItemView.IsInitialized = true;
         OnEffortUpdated(this, EventArgs.Empty);
     }

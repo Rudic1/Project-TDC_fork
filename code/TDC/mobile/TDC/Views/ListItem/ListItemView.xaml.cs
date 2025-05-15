@@ -1,15 +1,15 @@
-using TDC.Models;
-namespace TDC;
+namespace TDC.Views.ListItem;
 
 public partial class ListItemView 
 {
     public event EventHandler? NewItemOnEnter;
     public event EventHandler? EffortChanged;
+    public event EventHandler? DeletePressed;
     public bool IsInitialized;
-    private readonly ListItem item;
+    private readonly Models.ListItem item;
 
     #region constructors
-    public ListItemView(ListItem item)
+    public ListItemView(Models.ListItem item)
     {
         IsInitialized = false;
         this.item = item;
@@ -40,6 +40,11 @@ public partial class ListItemView
         {
             item.IsDone = !item.IsDone;
         }
+    }
+
+    private void OnDeletePressed(object sender, EventArgs e)
+    {
+        DeletePressed?.Invoke(this,e);
     }
 
     #endregion
@@ -76,7 +81,7 @@ public partial class ListItemView
     #endregion
 
     #region publics
-    public ListItem GetItem()
+    public Models.ListItem GetItem()
     {
         return item;
     }
