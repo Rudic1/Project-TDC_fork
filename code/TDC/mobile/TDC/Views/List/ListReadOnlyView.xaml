@@ -55,6 +55,15 @@
                    FontSize="Medium"
                    HorizontalOptions="Center"/>
 
+            <!-- All Points -->
+            <Label Text="All Points: "
+                   FontSize="Medium"
+                   HorizontalOptions="Center"/>
+
+            <Label x:Name="AllPointsLabel"                   
+                   FontSize="Medium"
+                   HorizontalOptions="Center"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentView>

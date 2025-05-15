@@ -19,5 +19,4 @@ public class ToDoList
         IsCollaborative = false;
     }
     #endregion
-
 }
