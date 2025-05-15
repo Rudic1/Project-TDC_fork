@@ -24,17 +24,25 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void FinishList_UserIsNotCreator_DoesNotCallRepository()
-        {
-            _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(false);
+        public void FinishList_UserIsNotMember_DoesNotCallRepository() {
+            _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(true);
+            _target._listMemberRepository.GetListMembers(1).Returns([]);
+            _target._listItemRepository.GetItemsForList(1).Returns([new ToDoListItemDbo(1, 1, "", 1), new ToDoListItemDbo(2, 1, "", 1)]);
+
+            _target._listItemRepository.GetItemStatus(1, "test-user").Returns(true);
+            _target._listItemRepository.GetItemStatus(1, "test-user-2").Returns(false);
+            _target._listItemRepository.GetItemStatus(2, "test-user").Returns(true);
+            _target._listItemRepository.GetItemStatus(2, "test-user-2").Returns(false);
+
+
             _target.FinishList(1, "test-user");
+
             _target._listRepository.DidNotReceive().FinishList(Arg.Any<long>());
         }
 
         [Test]
         public void FinishList_NotAllItemsFinished_DoesNotCallRepository()
         {
-            _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(true);
             _target._listMemberRepository.GetListMembers(1).Returns(["test-user", "test-user-2"]);
             _target._listItemRepository.GetItemsForList(1).Returns([new ToDoListItemDbo(1, 1, "", 1), new ToDoListItemDbo(2, 1,"", 1)]);
 

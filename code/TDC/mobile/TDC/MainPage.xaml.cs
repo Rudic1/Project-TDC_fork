@@ -1,13 +1,13 @@
-﻿using System.Diagnostics;
+﻿using TDC.IService;
 using TDC.Models;
-using TDC.Repositories;
 using TDC.Services;
 
 namespace TDC
 {
     public partial class MainPage
     {
-        private ListRepository listRepository;
+        private IListService _listService;
+        private IListItemService _listItemService;
         private readonly UserService _userService;
         private List<ToDoList> availableLists;
         private int shownListIndex;
@@ -17,16 +17,15 @@ namespace TDC
         {
             InitializeComponent();
 
-            Application.Current.UserAppTheme = AppTheme.Dark;
+            Application.Current!.UserAppTheme = AppTheme.Dark;
 
-            _userService = App.Services.GetService<UserService>();
+            _userService = App.Services.GetService<UserService>()!;
+            _listService = App.Services.GetService<IListService>()!;
+            _listItemService = App.Services.GetService<IListItemService>()!;
 
 
             shownListIndex = 0;
-            availableLists = new List<ToDoList>();
-            listRepository = new ListRepository();
-
-            LoadAvailableLists();
+            availableLists = [];
         }
         #endregion
 
@@ -36,7 +35,7 @@ namespace TDC
             base.OnNavigatedTo(args);
             shownListIndex = 0;
             availableLists = [];
-            LoadAvailableLists();
+            _ = LoadAvailableLists();
         }
 
         private async void OnNewListClicked(object sender, EventArgs e)
@@ -51,7 +50,7 @@ namespace TDC
                 return;
             }
             var id = availableLists[shownListIndex].ListID;
-            await Shell.Current.GoToAsync($"ToDoListPage?id={id}");
+            await Shell.Current.GoToAsync($"ToDoListPage?id={(long?)id}");
         }
 
         private void OnNextClicked(object sender, EventArgs e)
@@ -61,7 +60,7 @@ namespace TDC
             {
                 shownListIndex = 0;
             }
-            UpdateShownList();
+            _ = UpdateShownList();
         }
 
         private void OnPrevClicked(object sender, EventArgs e)
@@ -71,7 +70,7 @@ namespace TDC
             {
                 shownListIndex = availableLists.Count - 1;
             }
-            UpdateShownList();
+            _ = UpdateShownList();
         }
 
         #endregion
@@ -81,40 +80,41 @@ namespace TDC
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            LoadAvailableLists(); // Laden der Listen beim Anzeigen der Seite
+            _ = LoadAvailableLists();
         }
-        private void LoadAvailableLists()
+
+        private async Task LoadAvailableLists()
         {
             if (_userService.CurrentUser == null)
             {
-                // Kein Benutzer eingeloggt – keine Listen anzeigen
-                availableLists = new List<ToDoList>();
+                availableLists = [];
 
-                // UI trotzdem updaten, damit z.B. "No Lists available" angezeigt wird
-                UpdateShownList();
+                _ = UpdateShownList();
                 return;
             }
 
-            long userId = _userService.CurrentUser.UserId;
-            availableLists = listRepository.GetAllListsForUser(userId);
-            UpdateShownList();
+            var username = _userService.CurrentUser.Username;
+            availableLists = await _listService.GetAllListsForUser(username);
+            _ = UpdateShownList();
         }
 
-        private void UpdateShownList()
+        private async Task UpdateShownList()
         {
-            ListPreview.Children.Clear();
             if (availableLists.Count == 0)
             {
                 var emptyListEntry = new Label
                 {
                     Text = "No Lists available"
                 };
+                ListPreview.Children.Clear();
                 ListPreview.Children.Add(emptyListEntry);
                 return;
             }
             var list = availableLists[shownListIndex];
-            var listView = new ListReadOnlyView(list);
-            ListPreview.Children.Add(listView);
+            var currentUser = _userService.CurrentUser!.Username;
+            var listItems = await _listItemService.GetItemsForList(list.ListID, currentUser);
+            ListPreview.Children.Clear();
+            ListPreview.Children.Add(new ListReadOnlyView(list, listItems));
         }
         #endregion
     }

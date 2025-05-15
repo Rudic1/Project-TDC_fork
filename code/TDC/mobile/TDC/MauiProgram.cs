@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using TDC.Services;             // <-- Hinzufügen
-using TDC.IRepository;          // <-- Hinzufügen
-using TDC.Repositories;         // <-- Hinzufügen
-using TDC.Views.Login;          // <-- Hinzufügen
+using TDC.IService;          // <-- Hinzufügen
+using TDC.Views.Login;
 
 namespace TDC
 {
@@ -23,24 +22,27 @@ namespace TDC
                     fonts.AddFont("Montserrat-Bold.ttf", "Text-Bold");
                 });
 
-#if DEBUG
+            #if DEBUG
             builder.Logging.AddDebug();
-#endif
+            #endif
 
-            // ------------ HIER DIE FEHLENDEN DI-REGISTRIERUNGEN EINFÜGEN ------------
-            // Services registrieren
-            builder.Services.AddSingleton<UserService>(); // Einmal pro App-Lebenszeit
-            builder.Services.AddSingleton<IAccountRepository, AccountRepository>(); // Einmal pro App-Lebenszeit
-            builder.Services.AddTransient<ListView>(); // wichtig für DI
-
-
-            // Pages registrieren (Transient = jedes Mal eine neue Instanz, wenn sie benötigt wird)
-            builder.Services.AddTransient<LoginPage>();
-            // Füge hier ggf. weitere Pages hinzu, die DI verwenden
-            // builder.Services.AddTransient<MainPage>(); // Beispiel, falls MainPage auch DI braucht
-            // -----------------------------------------------------------------------
+            AddServices(builder.Services);
+            AddPages(builder.Services);
 
             return builder.Build();
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddSingleton<UserService>();
+            services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IListService, ListService>();
+            services.AddTransient<IListItemService, ListItemService>();
+            services.AddTransient<ListView>();
+        }
+
+        private static void AddPages(IServiceCollection services) {
+            services.AddTransient<LoginPage>();
         }
     }
 }

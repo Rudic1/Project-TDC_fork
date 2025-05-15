@@ -8,9 +8,9 @@ public partial class ListItemReadOnlyView
     public ListItemReadOnlyView(ListItem item)
 	{
         InitializeComponent();
-        this.FindByName<Label>("TaskLabel").Text = item.GetDescription();
-        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone();
-        this.FindByName<Label>("PointsLabel").Text = (item.GetEffort() * 5).ToString();
+        this.FindByName<Label>("TaskLabel").Text = item.Description;
+        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone;
+        this.FindByName<Label>("PointsLabel").Text = (item.Effort * 5).ToString();
     }
 	#endregion
 }

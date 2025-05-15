@@ -1,15 +1,15 @@
-using TDC.Models;
-namespace TDC;
+namespace TDC.Views.ListItem;
 
 public partial class ListItemView 
 {
     public event EventHandler? NewItemOnEnter;
     public event EventHandler? EffortChanged;
+    public event EventHandler? DeletePressed;
     public bool IsInitialized;
-    private readonly ListItem item;
+    private readonly Models.ListItem item;
 
     #region constructors
-    public ListItemView(ListItem item)
+    public ListItemView(Models.ListItem item)
     {
         IsInitialized = false;
         this.item = item;
@@ -25,7 +25,7 @@ public partial class ListItemView
 
     private void DescriptionChanged(object sender, EventArgs e)
     {
-        item.SetDescription(this.FindByName<Entry>("TaskEntry").Text);
+        item.Description = this.FindByName<Entry>("TaskEntry").Text;
     }
 
     private void EnterPressed(object sender, EventArgs e)
@@ -38,8 +38,13 @@ public partial class ListItemView
     {
         if (IsInitialized)
         {
-            item.ToggleDone();
+            item.IsDone = !item.IsDone;
         }
+    }
+
+    private void OnDeletePressed(object sender, EventArgs e)
+    {
+        DeletePressed?.Invoke(this,e);
     }
 
     #endregion
@@ -48,14 +53,14 @@ public partial class ListItemView
 
     private void SetComponentProperties()
     {
-        this.FindByName<Entry>("TaskEntry").Text = item.GetDescription();
-        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone();
-        this.FindByName<Picker>("TaskPicker").SelectedIndex = item.GetEffort() - 1;
+        this.FindByName<Entry>("TaskEntry").Text = item.Description;
+        this.FindByName<CheckBox>("TaskCheckBox").IsChecked = item.IsDone;
+        this.FindByName<Picker>("TaskPicker").SelectedIndex = item.Effort - 1;
     }
 
     private void SetEventHandlers()
     {
-        LayoutChanged += (_, _) =>
+        SizeChanged += (_, _) =>
         {
             this.FindByName<Entry>("TaskEntry").Focus();
         };
@@ -69,14 +74,14 @@ public partial class ListItemView
         var selectedIndex = picker.SelectedIndex;
 
         if (selectedIndex == -1 || !IsInitialized) return;
-        item.SetEffort(selectedIndex + 1);
+        item.Effort = selectedIndex + 1;
         EffortChanged?.Invoke(this, e);
     }
 
     #endregion
 
     #region publics
-    public ListItem GetItem()
+    public Models.ListItem GetItem()
     {
         return item;
     }

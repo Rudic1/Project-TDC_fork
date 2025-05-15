@@ -1,4 +1,5 @@
-﻿using TDC.Backend.IDataRepository;
+﻿using TDC.Backend.DataRepository;
+using TDC.Backend.IDataRepository;
 using TDC.Backend.IDataRepository.Models;
 using TDC.Backend.IDomain;
 using TDC.Backend.IDomain.Models;
@@ -17,12 +18,12 @@ namespace TDC.Backend.Domain
         public readonly IListMemberRepository _listMemberRepository = listMemberRepository;
         public readonly IListInvitationRepository _listInvitationRepository = listInvitationRepository;
 
-        public Task CreateList(string creator, ToDoListSavingDto newList)
+        public long CreateList(string creator, ToDoListSavingDto newList)
         {
             var listDbo = new ToDoListDbo(0, newList.Name, newList.IsCollaborative, false);
             var listId = _listRepository.CreateList(listDbo);
             _listMemberRepository.AddListMember(listId, creator, true);
-            return Task.CompletedTask;
+            return listId;
         }
 
         public Task AddUserToList(long listId, string username)
@@ -96,14 +97,17 @@ namespace TDC.Backend.Domain
 
         public Task DeleteList(long listId, string sender)
         {
-            if (!UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if (!UserIsCreator(listId, sender)) { 
+                _listMemberRepository.RemoveListMember(listId, sender);
+                return Task.CompletedTask; 
+            }
             _listRepository.DeleteList(listId);
             return Task.CompletedTask;
         }
 
         public Task FinishList(long listId, string sender)
         {
-            if (!UserIsCreator(listId, sender)) { return Task.CompletedTask; }
+            if(!_listMemberRepository.GetListMembers(listId).Contains(sender)) { return Task.CompletedTask; }
             if (!ListCanBeFinished(listId)) { return Task.CompletedTask; }
 
             // TO-DO: add logic to grant every member rewards
@@ -117,29 +121,25 @@ namespace TDC.Backend.Domain
             var listDboList = listIds.Select(listId => _listRepository.GetById(listId)).OfType<ToDoListDbo>().ToList();
 
             var listDtoList = new List<ToDoListLoadingDto>();
-            foreach (var listDbo in listDboList) {
-                var itemDboList = _listItemRepository.GetItemsForList(listDbo.Id);
-                var listMembers = _listMemberRepository.GetListMembers(listDbo.Id);
-                var itemDtoList = itemDboList.Select(itemDbo => ParseItemDboToDto(itemDbo, username, listMembers)).ToList();
+            foreach (var listDbo in listDboList)
+            {
+                if (listDbo.IsFinished) { continue; }
 
-                listDtoList.Add(new ToDoListLoadingDto(listDbo.Id, listDbo.Name, itemDtoList, listMembers, listDbo.IsCollaborative));
+                listDtoList.Add(new ToDoListLoadingDto(listDbo.Id, listDbo.Name, listDbo.IsCollaborative));
             }
             return listDtoList;
         }
 
-        public Task AddItemToList(long listId, string itemDescription, int itemEffort)
+        public long AddItemToList(long listId, string itemDescription, int itemEffort)
         {
-            if(!ListExists(listId)) {return Task.CompletedTask;}
-            _listItemRepository.AddItemToList(new ToDoListItemDbo(0, listId, itemDescription, itemEffort));
-            return Task.CompletedTask;
+            if(!ListExists(listId)) { return -1;}
+            var itemId = _listItemRepository.AddItemToList(new ToDoListItemDbo(0, listId, itemDescription, itemEffort));
+            return itemId;
         }
 
         public Task DeleteItem(long itemId)
         {
             _listItemRepository.DeleteItem(itemId);
-
-            var listId = _listItemRepository.GetListIdFromItem(itemId);
-            var listMembers = _listMemberRepository.GetListMembers(listId);
             return Task.CompletedTask;
         }
 
@@ -165,6 +165,24 @@ namespace TDC.Backend.Domain
         {
             _listItemRepository.SetItemStatus(itemId, updateForUser, isDone);
             return Task.CompletedTask;
+        }
+
+        public List<ToDoListItemLoadingDto> GetItemsForList(long listId, string username)
+        {
+            var dbos = _listItemRepository.GetItemsForList(listId);
+            var members = _listMemberRepository.GetListMembers(listId);
+            var dtos = new List<ToDoListItemLoadingDto>();
+            foreach (var dbo in dbos) {
+                var dto = ParseItemDboToDto(dbo, username, members);
+                dtos.Add(dto);
+            }
+            return dtos;
+        }
+
+        public ToDoListLoadingDto? GetListById(long listId)
+        {
+            var dbo = _listRepository.GetById(listId);
+            return dbo == null ? null : new ToDoListLoadingDto(dbo.Id, dbo.Name, dbo.IsCollaborative);
         }
 
         #region privates
@@ -208,6 +226,7 @@ namespace TDC.Backend.Domain
         {
             return _listRepository.GetById(listId) != null;
         }
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using TDC.Backend.Helpers;
 using TDC.Backend.IDomain;
 using TDC.Backend.IDomain.Models;
@@ -12,11 +13,11 @@ namespace TDC.Backend.Controllers
     {
         internal readonly IToDoListHandler _listHandler = listHandler;
 
-    #region To-Do-List
+        #region To-Do-List
         [HttpPut("createList/{sender}")]
-        public async Task CreateToDoList([FromRoute] string sender, [FromBody] ToDoListSavingDto listLoadingDto)
+        public long CreateToDoList([FromRoute] string sender, [FromBody] ToDoListSavingDto listLoadingDto)
         {
-           await _listHandler.CreateList(sender, listLoadingDto);
+           return _listHandler.CreateList(sender, listLoadingDto);
         }
 
         [HttpPost("updateListTitle/{listId}")]
@@ -25,7 +26,7 @@ namespace TDC.Backend.Controllers
             await _listHandler.UpdateListTitle(listId, newTitle.ListTitle);
         }
 
-        [HttpDelete("deleteList/{listId}")]
+        [HttpPost("deleteList/{listId}")]
         public async Task DeleteToDoList([FromRoute] long listId, [FromBody] UsernameHelper sender)
         {
             await _listHandler.DeleteList(listId, sender.Username);
@@ -48,16 +49,22 @@ namespace TDC.Backend.Controllers
         {
             return _listHandler.GetListsForUser(username);
         }
+
+        [HttpGet("getListById/{listId}")]
+        public ToDoListLoadingDto GetListById([FromRoute] long listId)
+        {
+            return _listHandler.GetListById(listId);
+        }
         #endregion
 
         #region List-Items
         [HttpPut("addItemToList/{listId}")]
-        public async Task AddItemToList([FromRoute] long listId, [FromBody] ToDoListItemSavingDto itemData)
+        public long AddItemToList([FromRoute] long listId, [FromBody] ToDoListItemSavingDto itemData)
         {
-            await _listHandler.AddItemToList(listId, itemData.Description, itemData.Effort);
+            return _listHandler.AddItemToList(listId, itemData.Description, itemData.Effort);
         }
 
-        [HttpDelete("deleteItem/{itemId}")]
+        [HttpPost("deleteItem/{itemId}")]
         public async Task DeleteItem([FromRoute] long itemId)
         {
             await _listHandler.DeleteItem(itemId);
@@ -80,6 +87,15 @@ namespace TDC.Backend.Controllers
         {
             await _listHandler.SetItemStatus(itemId, itemStatus.UpdateForUser, itemStatus.IsDone);
         }
+
+        [HttpGet("getItemsForList/{listId}/{username}")]
+        public List<ToDoListItemLoadingDto> GetItemsForList([FromRoute] long listId, [FromRoute] string username)
+        {
+            return _listHandler.GetItemsForList(listId, username);
+        }
+        #endregion
+
+        #region List-Invitations
 
         [HttpPut("sendListInvitaion/{listId}/{forUser}/{fromUser}")]
         public async Task SendListInvitation([FromRoute] long listId, [FromRoute] string forUser, [FromRoute] string fromUser)

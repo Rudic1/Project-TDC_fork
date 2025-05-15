@@ -1,55 +1,27 @@
 ﻿namespace TDC.Models;
-public class ListItem(string description, bool done, List<Profile> finishedMembers, int effort)
+public class ListItem
 {
-    #region constructors
-    public ListItem() : this("", false, [], 0) {}
-
-    public ListItem(string description, List<Profile> finishedMembers, int effort) : this(description, false, finishedMembers, effort) {}
-
-    #endregion
-
-    #region getters & setters
-    public void SetDescription(string newDescription)
+    public ListItem(long itemId, string description, bool isDone, List<string> finishedMembers, int effort)
     {
-        description = newDescription;
+        this.ItemId = itemId;
+        this.Description = description;
+        this.IsDone = isDone;
+        this.FinishedMembers = finishedMembers;
+        this.Effort = effort;
     }
 
-    public string GetDescription()
-    {
-        return description;
+    public ListItem(string description, int effort) {
+        this.Description = description;
+        this.IsDone = false;
+        this.FinishedMembers = new List<string>();
+        this.Effort = effort;
+        this.ItemId = 0;
     }
 
-    public void ToggleDone()
-    {
-        done = !done;
-    }
+    public long ItemId { get; set; }
+    public string Description { get; set; }
+    public bool IsDone { get; set; }
+    public List<string> FinishedMembers { get; set; }
+    public int Effort { get; set; }
 
-    public bool IsDone()
-    {
-        return done;
-    }
-
-    public void AddFinishedMember(Profile member)
-    {
-        finishedMembers.Add(member);
-    }
-
-    public void RemoveFinishedMember(Profile member)
-    {
-        finishedMembers.Remove(member);
-    }
-
-    public List<Profile> GetFinishedMembers()
-    {
-        return finishedMembers;
-    }
-
-    public int GetEffort() {
-        return effort;
-    }
-
-    public void SetEffort(int newEffort) { 
-        effort = newEffort;
-    }
-    #endregion
 }
