@@ -47,6 +47,7 @@ public partial class ListView : IOnPageKeyDown
     private void OnNewItemClicked(object sender, EventArgs e)
     {
         var item = new ListItem("", 5);
+        NewItems.Add(item);
         AddItemToView(item);
     }
 
