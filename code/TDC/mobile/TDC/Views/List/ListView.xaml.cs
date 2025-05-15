@@ -20,19 +20,19 @@ public partial class ListView : IOnPageKeyDown
     private readonly IListItemService _listItemService;
     private readonly UserService _userService;
     
-    public long ListId { get; set; }
+    public long? ListId { get; set; }
     public ToDoList List { get; set; }
     public List<ListItem> ExistingItems { get; set; }
-    public List<long> DeletedItems = new List<long>();
-    public List<ListItem> NewItems { get; set; }
+    public List<long> DeletedItems = [];
+    public List<ListItem> NewItems { get; set; } = [];
 
     #region constructors
-    public ListView(IListService listService, IListItemService listitemService, UserService userService)
+    public ListView(IListService listService, IListItemService listItemService, UserService userService)
     {
         InitializeComponent();
         _userService = userService;
         _listService = listService;
-        _listItemService = listitemService;
+        _listItemService = listItemService;
     }
 
     protected override void OnAppearing()
@@ -90,7 +90,7 @@ public partial class ListView : IOnPageKeyDown
         if (!answer) return;
 
         var currentUser = _userService.CurrentUser!.Username;
-        await _listService.DeleteList(ListId, currentUser);
+        await _listService.DeleteList((long)ListId!, currentUser);
         await Shell.Current.GoToAsync("///MainPage");
     }
 
@@ -131,7 +131,7 @@ public partial class ListView : IOnPageKeyDown
 
         foreach (var item in NewItems) {
             var itemDto = new ListItemSavingDto(item.Description, item.Effort);
-            var itemId = await _listItemService.AddItemToList(ListId, itemDto);
+            var itemId = await _listItemService.AddItemToList((long)ListId!, itemDto);
             await _listItemService.SetItemStatus(itemId, currentUser, item.IsDone);
         }
 
@@ -159,8 +159,8 @@ public partial class ListView : IOnPageKeyDown
         if (HasListId(ListId))
         {
             var currentUser = _userService.CurrentUser!.Username;
-            List = await _listService.GetListById(ListId)!;
-            ExistingItems = await _listItemService.GetItemsForList(ListId, currentUser);
+            List = await _listService.GetListById((long)ListId!)!;
+            ExistingItems = await _listItemService.GetItemsForList((long)ListId!, currentUser);
             this.FindByName<Entry>("TitleEntry").Text = List.Name;
             AddItemsForExistingList();
 
@@ -168,7 +168,7 @@ public partial class ListView : IOnPageKeyDown
             return;
         }
         List = new ToDoList();
-        ExistingItems = new List<ListItem>();
+        ExistingItems = [];
     }
 
     private void AddItemsForExistingList()
@@ -195,9 +195,9 @@ public partial class ListView : IOnPageKeyDown
         ItemsContainer.Children.Remove(view);
     }
 
-    private static bool HasListId(long listId)
+    private static bool HasListId(long? listId)
     {
-        return listId != -1;
+        return listId != null;
     }
 
     private int GetListPoints()
