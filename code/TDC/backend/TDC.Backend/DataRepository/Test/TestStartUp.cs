@@ -18,14 +18,14 @@ namespace TDC.Backend.DataRepository.Test
 
         public static ConnectionStrings GetConnectionStrings()
         {
-            var connectionString = new ConnectionStrings();
+            var connectionStrings = new ConnectionStrings();
 
             var config = new ConfigurationBuilder()
                          .AddJsonFile("appsettings.dbtest.json")
                          .Build();
-            config.Bind("ConnectionStrings", connectionString);
+            config.Bind("ConnectionStrings", connectionStrings);
 
-            return connectionString;
+            return connectionStrings;
         }
 
         public static void CleanTables(IEnumerable<BaseRepository> repositories)

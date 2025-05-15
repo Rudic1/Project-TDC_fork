@@ -12,9 +12,12 @@ namespace TDC.Backend.DataRepository.Helper
         {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
-            return env == "Development"
+            var connection = env == "Development"
                                        ? new SqlConnection(_sqlConnectionLocal)
                                        : new SqlConnection(_sqlConnectionString);
+            if (_sqlConnectionLocal == null)
+                return new SqlConnection(_sqlConnectionString);
+            return connection;
         }
     }
 }

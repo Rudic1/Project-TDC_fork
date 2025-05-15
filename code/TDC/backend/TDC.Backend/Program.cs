@@ -28,7 +28,7 @@ public class Program
 
 
         builder.Services.AddDbContext<TdcDbContext>(options =>
-                                                        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                                                        options.UseSqlServer(builder.Configuration.GetConnectionString("Sql")));
         RunServiceSetup(builder.Services);
         BuildApp(builder);
     }

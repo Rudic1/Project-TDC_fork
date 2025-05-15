@@ -22,7 +22,7 @@ public class AccountService : IAccountService
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await httpClient.PostAsync(url, content);
-        string responseContent = await response.Content.ReadAsStringAsync();
+        var responseContent = await response.Content.ReadAsStringAsync();
         return bool.Parse(responseContent);
     }
 
