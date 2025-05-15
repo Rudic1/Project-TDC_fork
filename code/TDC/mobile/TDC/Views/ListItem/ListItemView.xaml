@@ -37,11 +37,6 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
-
-            <Button x:Name="DeleteButton"
-                    Text = "Del"
-                    Grid.Column="3"
-                    Pressed="OnDeletePressed"/>
         </Grid>
         
 

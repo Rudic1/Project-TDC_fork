@@ -140,9 +140,6 @@ namespace TDC.Backend.Domain
         public Task DeleteItem(long itemId)
         {
             _listItemRepository.DeleteItem(itemId);
-
-            var listId = _listItemRepository.GetListIdFromItem(itemId);
-            var listMembers = _listMemberRepository.GetListMembers(listId);
             return Task.CompletedTask;
         }
 
