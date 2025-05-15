@@ -20,8 +20,8 @@ namespace TDC
             Application.Current!.UserAppTheme = AppTheme.Dark;
 
             _userService = App.Services.GetService<UserService>()!;
-            _listService = App.Services.GetService<ListService>()!;
-            _listItemService = App.Services.GetService<ListItemService>()!;
+            _listService = App.Services.GetService<IListService>()!;
+            _listItemService = App.Services.GetService<IListItemService>()!;
 
 
             shownListIndex = 0;
