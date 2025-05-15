@@ -49,7 +49,7 @@ namespace TDC
                 return;
             }
             var id = availableLists[shownListIndex].ListID;
-            await Shell.Current.GoToAsync($"ToDoListPage?id={id}");
+            await Shell.Current.GoToAsync($"ToDoListPage?id={(long?)id}");
         }
 
         private void OnNextClicked(object sender, EventArgs e)

@@ -13,7 +13,7 @@ using Android.Views;
 
 namespace TDC;
 
-[QueryProperty(nameof(ListId), "id")]
+[QueryProperty(nameof(IdString), "id")]
 public partial class ListView : IOnPageKeyDown
 {
     private readonly IListService _listService;
@@ -21,6 +21,7 @@ public partial class ListView : IOnPageKeyDown
     private readonly UserService _userService;
     
     public long? ListId { get; set; }
+    public string? IdString { get; set; }
     public ToDoList List { get; set; }
     public List<ListItem> ExistingItems { get; set; }
     public List<long> DeletedItems = [];
@@ -37,6 +38,15 @@ public partial class ListView : IOnPageKeyDown
 
     protected override void OnAppearing()
     {
+        if (long.TryParse(IdString, out var parsed))
+        {
+            ListId = parsed;
+        }
+        else
+        {
+            ListId = null;
+        }
+
         base.OnAppearing();
         _ = SetUpAsync();
     }
