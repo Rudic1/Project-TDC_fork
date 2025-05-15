@@ -182,10 +182,10 @@ namespace TDC.Backend.Domain
             return dtos;
         }
 
-        public ToDoListLoadingDto GetListById(long listId)
+        public ToDoListLoadingDto? GetListById(long listId)
         {
-            var dbo = _listRepository.GetById(listId)!;
-            return new ToDoListLoadingDto(dbo.Id, dbo.Name, dbo.IsCollaborative);
+            var dbo = _listRepository.GetById(listId);
+            return dbo == null ? null : new ToDoListLoadingDto(dbo.Id, dbo.Name, dbo.IsCollaborative);
         }
 
         #region privates
