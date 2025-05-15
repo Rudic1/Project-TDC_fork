@@ -20,7 +20,7 @@ namespace TDC.Services
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             var response = await httpClient.PutAsync(url, content);
-            string responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
             return long.Parse(responseContent);
         }
 
@@ -43,13 +43,13 @@ namespace TDC.Services
             var url = ConnectionUrls.development + $"/api/List/deleteList/{listId}";
             var data = new
             {
-                sender = sender,
+                username = sender,
             };
 
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync(url, content);
+            await httpClient.PostAsync(url, content);
         }
 
         public async Task FinishList(long listId, string sender)
