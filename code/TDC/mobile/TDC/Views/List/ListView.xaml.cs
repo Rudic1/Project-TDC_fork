@@ -9,8 +9,6 @@ using TDC.Models.DTOs;
 using Android.Views;
 #endif
 
-
-
 namespace TDC;
 
 [QueryProperty(nameof(IdString), "id")]
@@ -86,12 +84,12 @@ public partial class ListView : IOnPageKeyDown
 
         if (HasListId(ListId))
         {
-            UpdateExistingList();
+            await UpdateExistingList();
             await Shell.Current.GoToAsync("///MainPage");
             return;
         }
 
-        CreateNewList();
+        await CreateNewList();
         await Shell.Current.GoToAsync("///MainPage");
     }
 
@@ -130,7 +128,7 @@ public partial class ListView : IOnPageKeyDown
     #endregion
 
     #region privates
-    private async void UpdateExistingList() {
+    private async Task UpdateExistingList() {
 
         var currentUser = _userService.CurrentUser!.Username;
         foreach (var existingItem in ExistingItems)
@@ -152,7 +150,7 @@ public partial class ListView : IOnPageKeyDown
         }
     }
 
-    private async void CreateNewList()
+    private async Task CreateNewList()
     {
         var currentUser = _userService.CurrentUser!.Username;
         var newId = await _listService.CreateList(List.Name, List.IsCollaborative, currentUser); //TODO: Add toggle option for collabs

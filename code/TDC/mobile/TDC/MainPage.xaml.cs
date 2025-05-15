@@ -35,6 +35,7 @@ namespace TDC
             base.OnNavigatedTo(args);
             shownListIndex = 0;
             availableLists = [];
+            _ = LoadAvailableLists();
         }
 
         private async void OnNewListClicked(object sender, EventArgs e)
@@ -99,21 +100,21 @@ namespace TDC
 
         private async Task UpdateShownList()
         {
-            ListPreview.Children.Clear();
             if (availableLists.Count == 0)
             {
                 var emptyListEntry = new Label
                 {
                     Text = "No Lists available"
                 };
+                ListPreview.Children.Clear();
                 ListPreview.Children.Add(emptyListEntry);
                 return;
             }
             var list = availableLists[shownListIndex];
             var currentUser = _userService.CurrentUser!.Username;
             var listItems = await _listItemService.GetItemsForList(list.ListID, currentUser);
-            var listView = new ListReadOnlyView(list, listItems);
-            ListPreview.Children.Add(listView);
+            ListPreview.Children.Clear();
+            ListPreview.Children.Add(new ListReadOnlyView(list, listItems));
         }
         #endregion
     }

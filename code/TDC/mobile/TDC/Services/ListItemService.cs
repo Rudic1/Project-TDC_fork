@@ -36,13 +36,9 @@ namespace TDC.Services
             var url = ConnectionUrls.development + $"/api/List/getItemsForList/{listId}/{currentUser}";
 
             var response = await httpClient.GetAsync(url);
-            string responseContent = await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
             var itemDtos = JsonSerializer.Deserialize<List<ListItemDto>>(responseContent)!;
-            var items = new List<ListItem>();
-            foreach (var itemDto in itemDtos) {
-                items.Add(new ListItem(itemDto.ItemId, itemDto.Description, itemDto.IsDone, itemDto.FinishedMembers, itemDto.Effort));
-            }
-            return items;
+            return itemDtos.Select(itemDto => new ListItem(itemDto.ItemId, itemDto.Description, itemDto.IsDone, itemDto.FinishedMembers, itemDto.Effort)).ToList();
         }
 
         public async Task SetItemStatus(long itemId, string updateFor, bool isDone)
@@ -74,10 +70,8 @@ namespace TDC.Services
 
         public async Task UpdateItemEffort(long itemId, int effort)
         {
-            var url = ConnectionUrls.development + $"/api/List/updateItemEffort/{itemId}";
-            var data = new {
-                newEffort = effort
-            };
+            var url = ConnectionUrls.development + $"/api/List/updateItemEffort/{itemId}/{effort}";
+            var data = new { };
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
