@@ -11,7 +11,7 @@ namespace TDC.Models.DTOs
     {
         public ToDoListDto() { }
 
-        public ToDoListDto(long listId, string name, List<ListItemDto> items, List<string> members, bool isCollaborative)
+        public ToDoListDto(long listId, string name, bool isCollaborative)
         {
             ListId = listId;
             Name = name;
