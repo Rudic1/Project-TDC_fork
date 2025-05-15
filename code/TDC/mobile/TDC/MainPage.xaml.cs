@@ -35,7 +35,6 @@ namespace TDC
             base.OnNavigatedTo(args);
             shownListIndex = 0;
             availableLists = [];
-            _ = LoadAvailableLists();
         }
 
         private async void OnNewListClicked(object sender, EventArgs e)
