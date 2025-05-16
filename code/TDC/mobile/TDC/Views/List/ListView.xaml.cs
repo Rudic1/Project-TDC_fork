@@ -5,7 +5,6 @@ using TDC.IService;
 using TDC.Models.DTOs;
 using TDC.Views.ListItem;
 
-
 #if ANDROID
 using Android.Views;
 #endif
@@ -212,7 +211,8 @@ public partial class ListView : IOnPageKeyDown
         ItemsContainer.Children.Add(listItemView);
         listItemView.NewItemOnEnter += OnNewItemClicked!;
         listItemView.EffortChanged += OnEffortUpdated!;
-        listItemView.DeletePressed += (s, e) => RemoveItem(listItemView);
+        listItemView.DeletePressed += (s, e) => RemoveItem(listItemView); //TODO: for testing onl windows only, can be deleted later
+        listItemView.CheckBoxChanged += (s, e) => UpdatePointLabels();
         listItemView.IsInitialized = true;
         OnEffortUpdated(this, EventArgs.Empty);
     }
