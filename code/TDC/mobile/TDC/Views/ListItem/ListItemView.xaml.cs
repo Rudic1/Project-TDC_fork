@@ -5,6 +5,7 @@ public partial class ListItemView
     public event EventHandler? NewItemOnEnter;
     public event EventHandler? EffortChanged;
     public event EventHandler? DeletePressed;
+    public event EventHandler? CheckBoxChanged;
     public bool IsInitialized;
     private readonly Models.ListItem item;
 
@@ -39,9 +40,11 @@ public partial class ListItemView
         if (IsInitialized)
         {
             item.IsDone = !item.IsDone;
+            CheckBoxChanged?.Invoke(this, e);
         }
     }
 
+    //TODO: ONLY FOR TESTING ON WINDOWS, CAN BE DELETED LATER ON
     private void OnDeletePressed(object sender, EventArgs e)
     {
         DeletePressed?.Invoke(this,e);

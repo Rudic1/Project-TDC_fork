@@ -5,7 +5,6 @@ using TDC.IService;
 using TDC.Models.DTOs;
 using TDC.Views.ListItem;
 
-
 #if ANDROID
 using Android.Views;
 #endif
@@ -71,7 +70,7 @@ public partial class ListView : IOnPageKeyDown
 
     private void OnEffortUpdated(object sender, EventArgs e)
     {
-        this.FindByName<Label>("PointsLabel").Text = GetListPoints().ToString();
+        UpdatePointLabels();
     }
 
     private async void OnSaveListClicked(object sender, EventArgs e)
@@ -125,10 +124,29 @@ public partial class ListView : IOnPageKeyDown
         }
         return false;
     }
-    #endif
+#endif
     #endregion
 
     #region privates
+    public void UpdatePointLabels()
+    {
+        var allItems = ExistingItems.Union(NewItems).ToList();
+        this.FindByName<Label>("AllPointsLabel").Text = GetTotalPoints(allItems).ToString();
+        this.FindByName<Label>("PointsLabel").Text = GetCompletedPoints(allItems).ToString();
+    }
+
+    public int GetCompletedPoints(List<ListItem> items)
+    {
+        return items
+            .Where(item => item.IsDone)
+            .Sum(item => item.Effort * 5);
+    }
+
+    public int GetTotalPoints(List<ListItem> items)
+    {
+        return items.Sum(item => item.Effort * 5);
+    }
+
     private async Task UpdateExistingList() {
 
         var currentUser = _userService.CurrentUser!.Username;
@@ -174,7 +192,7 @@ public partial class ListView : IOnPageKeyDown
             this.FindByName<Entry>("TitleEntry").Text = List.Name;
             AddItemsForExistingList();
 
-            this.FindByName<Label>("PointsLabel").Text = GetListPoints().ToString();
+            UpdatePointLabels();
             return;
         }
         List = new ToDoList();
@@ -193,7 +211,8 @@ public partial class ListView : IOnPageKeyDown
         ItemsContainer.Children.Add(listItemView);
         listItemView.NewItemOnEnter += OnNewItemClicked!;
         listItemView.EffortChanged += OnEffortUpdated!;
-        listItemView.DeletePressed += (s, e) => RemoveItem(listItemView);
+        listItemView.DeletePressed += (s, e) => RemoveItem(listItemView); //TODO: for testing onl windows only, can be deleted later
+        listItemView.CheckBoxChanged += (s, e) => UpdatePointLabels();
         listItemView.IsInitialized = true;
         OnEffortUpdated(this, EventArgs.Empty);
     }
