@@ -69,6 +69,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AndroidResource Update="Platforms\Android\Resources\xml\network_security_config.xml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </AndroidResource>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Update="Views\List\ListView.xaml.cs">
 	    <DependentUpon>ListView.xaml</DependentUpon>
 	  </Compile>
@@ -87,6 +93,12 @@
 	  <MauiXaml Update="Views\Login\LoginPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Platforms\Android\Resources\xml\network_security_config.xml">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>
