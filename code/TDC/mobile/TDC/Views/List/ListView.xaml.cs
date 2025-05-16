@@ -71,7 +71,7 @@ public partial class ListView : IOnPageKeyDown
 
     private void OnEffortUpdated(object sender, EventArgs e)
     {
-        this.FindByName<Label>("PointsLabel").Text = GetListPoints().ToString();
+        UpdatePointLabels();
     }
 
     private async void OnSaveListClicked(object sender, EventArgs e)
@@ -125,10 +125,29 @@ public partial class ListView : IOnPageKeyDown
         }
         return false;
     }
-    #endif
+#endif
     #endregion
 
     #region privates
+    public void UpdatePointLabels()
+    {
+        var allItems = ExistingItems.Union(NewItems).ToList();
+        this.FindByName<Label>("AllPointsLabel").Text = GetTotalPoints(allItems).ToString();
+        this.FindByName<Label>("PointsLabel").Text = GetCompletedPoints(allItems).ToString();
+    }
+
+    public int GetCompletedPoints(List<ListItem> items)
+    {
+        return items
+            .Where(item => item.IsDone)
+            .Sum(item => item.Effort * 5);
+    }
+
+    public int GetTotalPoints(List<ListItem> items)
+    {
+        return items.Sum(item => item.Effort * 5);
+    }
+
     private async Task UpdateExistingList() {
 
         var currentUser = _userService.CurrentUser!.Username;
@@ -174,7 +193,7 @@ public partial class ListView : IOnPageKeyDown
             this.FindByName<Entry>("TitleEntry").Text = List.Name;
             AddItemsForExistingList();
 
-            this.FindByName<Label>("PointsLabel").Text = GetListPoints().ToString();
+            UpdatePointLabels();
             return;
         }
         List = new ToDoList();

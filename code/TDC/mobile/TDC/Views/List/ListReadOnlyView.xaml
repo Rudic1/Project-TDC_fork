@@ -47,7 +47,7 @@
             </Grid>
 
             <!-- Points -->
-            <Label Text="Points: "
+            <Label Text="Completed Points: "
                    FontSize="Medium"
                    HorizontalOptions="Center"/>
 

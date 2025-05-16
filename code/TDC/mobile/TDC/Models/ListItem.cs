@@ -23,5 +23,4 @@ public class ListItem
     public bool IsDone { get; set; }
     public List<string> FinishedMembers { get; set; }
     public int Effort { get; set; }
-
 }
