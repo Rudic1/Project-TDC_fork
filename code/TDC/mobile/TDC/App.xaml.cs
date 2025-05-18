@@ -10,6 +10,15 @@
             Services = services;
 
             MainPage = new AppShell();
+
+            GoToLoginPage();
+        }
+
+        private async void GoToLoginPage()
+        {
+            await Task.Delay(100);
+
+            await Shell.Current.GoToAsync("LoginPage");
         }
     }
 }
