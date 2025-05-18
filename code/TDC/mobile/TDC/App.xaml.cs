@@ -9,16 +9,16 @@
 
             Services = services;
 
-            MainPage = new AppShell();
+            var userService = services.GetRequiredService<Services.UserService>();
 
-            GoToLoginPage();
-        }
-
-        private async void GoToLoginPage()
-        {
-            await Task.Delay(100);
-
-            await Shell.Current.GoToAsync("LoginPage");
+            if (userService.IsLoggedIn)
+            {
+                MainPage = new AppShell();
+            }
+            else
+            {
+                MainPage = new LoginShell();
+            }
         }
     }
 }

@@ -36,9 +36,8 @@ public partial class LoginPage : ContentPage
             _userService.Login(account);
 
             ErrorMessageLabel.IsVisible = false;
-
-            // Erfolgreich eingeloggt -> zur Zielseite navigieren
-            await Shell.Current.GoToAsync($"//{nameof(MainPage)}");
+                        
+            Application.Current.MainPage = new AppShell();
         }
         else
         {
