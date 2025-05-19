@@ -226,19 +226,10 @@ jobs:
           name: backend-unit-test-results
           path: ./output/backend-test-results/backend-unit-tests.trx
 
-      - name: Upload coverage report to SonarCloud
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
         with:
-          organization: rudic1
-          projectKey: Rudic1_Project-TDC_fork
-          token: ${{ secrets.SONAR_TOKEN }}
-          coverageReportPaths: './coverage/lcov.info'
-          args: >
-              -Dsonar.organization=rudic1
-              -Dsonar.projectKey=Rudic1_Project-TDC_fork
-              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
-              -Dsonar.coverageReportPaths=./coverage/lcov.info
-              -Dsonar.branch.name=${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          name: backend-coverage-report
+          path: ./coverage/lcov.info
+
+ 
