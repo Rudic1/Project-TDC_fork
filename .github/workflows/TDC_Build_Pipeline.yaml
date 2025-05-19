@@ -206,7 +206,7 @@ jobs:
              echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
       - name: SonarCloud Begin Analysis
-        run: dotnet sonarscanner begin /k:"rudic1" /o:"Rudic1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+        run: dotnet sonarscanner begin /k:"Rudic1_Project-TDC_fork" /o:"rudic1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
       - name: Build backend project
         run: dotnet build code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
