@@ -200,36 +200,40 @@ jobs:
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
       
-      #- name: Build backend project
-      #  run: dotnet publish code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
+      - name: Build backend project
+        run: dotnet publish code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
 
-      #- name: Upload Backend Artifact
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: backend-artifact
-      #    path: ./output/backend
+      - name: Upload Backend Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-artifact
+          path: ./output/backend
 
-      - name: Install SonarScanner for .NET
-        run: dotnet tool install --global dotnet-sonarscanner
-
-      - name: SonarCloud Scan Start
+      - name: Run tests with coverage
         run: |
-            dotnet sonarscanner begin /k:"rudic-test" /o:"Rudic_Test" \
-            /d:sonar.token=${{ secrets.SONAR_TOKEN }} \
-            /d:sonar.host.url=https://sonarcloud.io \
-            /d:sonar.cs.opencover.reportsPaths="**/coverage.opencover.xml" \
-            /d:sonar.coverage.exclusions="**Test*.cs"
-
-      - name: Build and Test
-        run: |
-            dotnet build code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release --no-restore
             dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
               --configuration Release \
+              --logger "trx;LogFileName=test-results.trx" \
               --collect:"XPlat Code Coverage" \
+              --results-directory ./test-results \
               -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
 
-      - name: SonarCloud Scan End
-        run: dotnet sonarscanner end /d:sonar.token=${{ secrets.SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.2.0
+        with:
+            projectBaseDir: code/TDC/backend/TDC.Backend
+            args: >
+              -Dsonar.projectKey=rudic-test
+              -Dsonar.organization=Rudic_Test
+              -Dsonar.projectName=TDC_Backend
+              -Dsonar.host.url=https://sonarcloud.io
+              -Dsonar.cs.vstest.reportsPaths=**/test-results/*.trx
+              -Dsonar.cs.opencover.reportsPaths=**/test-results/*/coverage.opencover.xml
+              -Dsonar.sourceEncoding=UTF-8
+              -Dsonar.working.directory=${{ github.workspace }}/.sonar
+        env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run backend tests
         run: |
