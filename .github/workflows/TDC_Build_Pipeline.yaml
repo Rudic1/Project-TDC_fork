@@ -234,7 +234,11 @@ jobs:
           token: ${{ secrets.SONAR_TOKEN }}
           coverageReportPaths: './coverage/lcov.info'
           args: >
-           -Dsonar.branch.name=${{ github.ref_name }}
+              -Dsonar.organization=rudic1
+              -Dsonar.projectKey=Rudic1_Project-TDC_fork
+              -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+              -Dsonar.coverageReportPaths=./coverage/lcov.info
+              -Dsonar.branch.name=${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
