@@ -200,14 +200,6 @@ jobs:
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
 
-      - name: Install SonarScanner for .NET
-        run: |
-             dotnet tool install --global dotnet-sonarscanner
-             echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
-      - name: SonarCloud Begin Analysis
-        run: dotnet sonarscanner begin /k:"Rudic1_Project-TDC_fork" /o:"rudic1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
-
       - name: Build backend project
         run: dotnet build code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
 
@@ -222,6 +214,9 @@ jobs:
           mkdir -p ./output/backend-test-results
           dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
           --configuration Release \
+          /p:CollectCoverage=true \
+          /p:CoverletOutputFormat=lcov \
+          /p:CoverletOutput=./coverage/ \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --results-directory ./output/backend-test-results
 
@@ -231,5 +226,15 @@ jobs:
           name: backend-unit-test-results
           path: ./output/backend-test-results/backend-unit-tests.trx
 
-      - name: SonarCloud End Analysis
-        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+      - name: Upload coverage report to SonarCloud
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
+        with:
+          organization: rudic1
+          projectKey: Rudic1_Project-TDC_fork
+          token: ${{ secrets.SONAR_TOKEN }}
+          coverageReportPaths: './coverage/lcov.info'
+          args: >
+           -Dsonar.branch.name=${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
