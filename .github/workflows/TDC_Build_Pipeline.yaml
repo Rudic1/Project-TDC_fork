@@ -211,6 +211,7 @@ jobs:
 
       - name: Run backend tests
         run: |
+          mkdir -p ./coverage
           mkdir -p ./output/backend-test-results
           dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
           --configuration Release \
@@ -219,6 +220,9 @@ jobs:
           /p:CoverletOutput=./coverage/ \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --results-directory ./output/backend-test-results
+
+      - name: Find coverage files
+        run: find code/TDC/TDC-Backend.Test -name '*.info'
 
       - name: Upload Backend Unit Test Results
         uses: actions/upload-artifact@v4
