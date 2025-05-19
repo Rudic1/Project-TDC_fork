@@ -217,7 +217,7 @@ jobs:
             -Dsonar.organization=Rudic_Test
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
 
       - name: Run backend tests
         run: |
