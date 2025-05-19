@@ -75,22 +75,6 @@ jobs:
           name: windows-artifact
           path: ./output/windows
 
-      # Code-Metriken-Tool installieren
-      - name: Install Code Metrics Tool
-        run: dotnet tool install --global dotnet-code-metrics || echo "Tool already installed"
-
-      # Code-Metriken analysieren 
-      - name: Analyze Code Metrics
-        run: dotnet code-metrics analyze ./code/TDC/mobile/TDC/TDC.csproj --output-format json --output-file metrics-windows.json
-
-      # Code-Metriken-Datei als Artefakt hochladen
-      - name: Upload Code Metrics artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: code-metrics-windows
-          path: metrics-windows.json
-
-
   buildAndroid:
     runs-on: windows-2022
 
@@ -133,12 +117,12 @@ jobs:
       - name: Restore nuget packages
         run: dotnet restore code/TDC/mobile/TDC/TDC.csproj
 
-      #Android publishen
+      # Android publishen
       - name : Build Android App
         shell: bash
         run: dotnet publish code/TDC/mobile/TDC/TDC.csproj -c:Release -f:net9.0-android -o:output/android --no-restore
 
-      #Tests ausführen
+      # Tests ausführen
       - name: Run tests
         run: dotnet test --no-build --configuration Release ./code/TDC/mobile/TDC/TDC.csproj
 
@@ -181,12 +165,6 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('code/TDC/backend/TDC.Backend/TDC.Backend.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
-      - name: Setup Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'   
-          java-version: '17'
 
       - name: Setup .NET SDK ${{ env.DOTNETVERSION }}
         uses: actions/setup-dotnet@v4
@@ -231,22 +209,13 @@ jobs:
           name: backend-artifact
           path: ./output/backend
 
-      # SonarCloud vorbereiten 
-      - name: SonarCloud Scan - Begin Analysis
-        uses: SonarSource/sonarcloud-github-action@v1.9
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v5.2.0
         with:
-          organization: 'Rudic_Test'          
-          projectKey: 'rudic-test'  
-          projectName: 'Rudic_Test'       
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-      # SonarCloud Abschluss
-      - name: SonarCloud Scan - End Analysis
-        uses: SonarSource/sonarcloud-github-action@v1.9
-        with:
-          organization: 'Rudic_Test'
-          projectKey: 'rudic-test'
+          args: >
+            -Dsonar.projectKey=rudic-test
+            -Dsonar.organization=Rudic_Test
+            -Dsonar.host.url=https://sonarcloud.io
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
