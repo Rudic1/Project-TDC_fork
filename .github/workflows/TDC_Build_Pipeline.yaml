@@ -68,12 +68,28 @@ jobs:
       - name: Build and Publish Windows App
         run: dotnet publish code/TDC/mobile/TDC/TDC.csproj -c Release -f net9.0-windows10.0.19041.0 -o ./output/windows
 
-              # Artefakte hochladen
+      # Artefakte hochladen
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
           name: windows-artifact
           path: ./output/windows
+
+      # Code-Metriken-Tool installieren
+      - name: Install Code Metrics Tool
+        run: dotnet tool install --global dotnet-code-metrics || echo "Tool already installed"
+
+      # Code-Metriken analysieren 
+      - name: Analyze Code Metrics
+        run: dotnet code-metrics analyze ./code/TDC/mobile/TDC/TDC.csproj --output-format json --output-file metrics-windows.json
+
+      # Code-Metriken-Datei als Artefakt hochladen
+      - name: Upload Code Metrics artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics-windows
+          path: metrics-windows.json
+
 
   buildAndroid:
     runs-on: windows-2022
@@ -126,17 +142,34 @@ jobs:
       - name: Run tests
         run: dotnet test --no-build --configuration Release ./code/TDC/mobile/TDC/TDC.csproj
 
-              # Build-Artefakte hochladen
+      # Build-Artefakte hochladen
       - name: Upload Android Artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-artifact
           path: ./output/android
 
+    # Code-Metriken-Tool installieren
+      - name: Install Code Metrics Tool
+        run: dotnet tool install --global dotnet-code-metrics || echo "Tool already installed"
+
+      # Code-Metriken analysieren
+      - name: Analyze Code Metrics
+        run: dotnet code-metrics analyze ./code/TDC/mobile/TDC/TDC.csproj --output-format json --output-file metrics-android.json
+
+      # Code-Metriken als Artefakt hochladen
+      - name: Upload Code Metrics artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics-android
+          path: metrics-android.json
+
   buildBackend:
     runs-on: ubuntu-latest
+
     env:
       ASPNETCORE_ENVIRONMENT: Production
+
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
@@ -150,6 +183,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -161,6 +195,7 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('code/TDC/backend/TDC.Backend/TDC.Backend.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
+
       - name: Setup .NET SDK ${{ env.DOTNETVERSION }}
         uses: actions/setup-dotnet@v4
         with:
@@ -180,6 +215,7 @@ jobs:
             echo "Waiting for SQL Server..."
             sleep 2
           done
+
       - name: Install sqlcmd
         run: |
           curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
@@ -187,11 +223,13 @@ jobs:
           sudo apt-get update
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
           echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> $GITHUB_ENV
+
       - name: Create TDC.Test database
         env:
           SA_PASSWORD: ${{ secrets.SQL_SERVER_PASSWORD }}
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
+      
       - name: Build backend project
         run: dotnet publish code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
 
@@ -201,6 +239,21 @@ jobs:
           name: backend-artifact
           path: ./output/backend
 
+      # Code-Metriken-Tool installieren
+      - name: Install Code Metrics Tool
+        run: dotnet tool install --global dotnet-code-metrics || echo "Tool already installed"
+
+      # Code-Metriken analysieren
+      - name: Analyze Code Metrics
+        run: dotnet code-metrics analyze ./code/TDC/backend/TDCBackend.csproj --output-format json --output-file metrics-backend.json
+
+      # Code-Metriken als Artefakt hochladen
+      - name: Upload Code Metrics artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-metrics-backend
+          path: metrics-backend.json
+
       - name: Run backend tests
         run: |
           mkdir -p ./output/backend-test-results
@@ -208,6 +261,7 @@ jobs:
           --configuration Release \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --results-directory ./output/backend-test-results
+
       - name: Upload Backend Unit Test Results
         uses: actions/upload-artifact@v4
         with:
