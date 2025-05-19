@@ -215,11 +215,11 @@ jobs:
           mkdir -p ./output/backend-test-results
           dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
           --configuration Release \
-          /p:CollectCoverage=true \
-          /p:CoverletOutputFormat=lcov \
-          /p:CoverletOutput=./coverage/ \
+          --collect:"XPlat Code Coverage" \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --results-directory ./output/backend-test-results
+          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov \
+          /p:CoverletOutput=./coverage/lcov.info
 
       - name: Find coverage files
         run: find code/TDC/TDC-Backend.Test -name '*.info'
