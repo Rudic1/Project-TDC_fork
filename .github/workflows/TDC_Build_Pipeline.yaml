@@ -217,7 +217,7 @@ jobs:
           --configuration Release \
           --collect:"XPlat Code Coverage" \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
-          --results-directory ./output/backend-test-results
+          --results-directory ./output/backend-test-results \
           -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov \
           /p:CoverletOutput=./coverage/lcov.info
 
