@@ -200,40 +200,17 @@ jobs:
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
       
+      - name: SonarCloud Begin Analysis
+        run: dotnet sonarscanner begin /k:"rudic1" /o:"Rudic1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
       - name: Build backend project
-        run: dotnet publish code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
+        run: dotnet build code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
 
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v4
         with:
           name: backend-artifact
           path: ./output/backend
-
-      - name: Run tests with coverage
-        run: |
-            dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
-              --configuration Release \
-              --logger "trx;LogFileName=test-results.trx" \
-              --collect:"XPlat Code Coverage" \
-              --results-directory ./test-results \
-              -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
-
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarqube-scan-action@v5.2.0
-        with:
-            projectBaseDir: code/TDC/backend/TDC.Backend
-            args: >
-              -Dsonar.projectKey=rudic-test
-              -Dsonar.organization=Rudic_Test
-              -Dsonar.projectName=TDC_Backend
-              -Dsonar.host.url=https://sonarcloud.io
-              -Dsonar.cs.vstest.reportsPaths=**/test-results/*.trx
-              -Dsonar.cs.opencover.reportsPaths=**/test-results/*/coverage.opencover.xml
-              -Dsonar.sourceEncoding=UTF-8
-              -Dsonar.working.directory=${{ github.workspace }}/.sonar
-        env:
-            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-            GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run backend tests
         run: |
@@ -248,3 +225,6 @@ jobs:
         with:
           name: backend-unit-test-results
           path: ./output/backend-test-results/backend-unit-tests.trx
+
+      - name: SonarCloud End Analysis
+        run: dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
