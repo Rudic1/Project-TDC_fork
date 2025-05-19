@@ -218,11 +218,9 @@ jobs:
           --collect:"XPlat Code Coverage" \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --results-directory ./output/backend-test-results \
-          -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=lcov \
-          /p:CoverletOutput=./coverage/lcov.info
 
       - name: Find coverage files
-        run: find code/TDC/TDC-Backend.Test -name '*.info'
+        run: find code/TDC/TDC-Backend.Test -name '*.xml'
 
       - name: Upload Backend Unit Test Results
         uses: actions/upload-artifact@v4
@@ -234,6 +232,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage-report
-          path: ./coverage/lcov.info
-
+          path: ./output/backend-test-results/**/coverage.cobertura.xml
  
