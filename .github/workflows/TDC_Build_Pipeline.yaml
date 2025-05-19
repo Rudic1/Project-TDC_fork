@@ -199,7 +199,12 @@ jobs:
           SA_PASSWORD: ${{ secrets.SQL_SERVER_PASSWORD }}
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
-      
+
+      - name: Install SonarScanner for .NET
+        run: |
+             dotnet tool install --global dotnet-sonarscanner
+             echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
       - name: SonarCloud Begin Analysis
         run: dotnet sonarscanner begin /k:"rudic1" /o:"Rudic1" /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
 
