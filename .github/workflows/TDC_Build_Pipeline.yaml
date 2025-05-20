@@ -39,9 +39,9 @@ jobs:
       - name: Setup .NET SDK ${{env.DOTNETVERSION}}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version:  '${{env.DOTNETVERSION }}'
+          dotnet-version:  '${{env.DOTNETVERSION}}'
 
-      #Version überprüfen
+      # Version überprüfen
       - name: List installed .NET info
         shell: pwsh
         run: dotnet --info
@@ -68,7 +68,7 @@ jobs:
       - name: Build and Publish Windows App
         run: dotnet publish code/TDC/mobile/TDC/TDC.csproj -c Release -f net9.0-windows10.0.19041.0 -o ./output/windows
 
-              # Artefakte hochladen
+      # Artefakte hochladen
       - name: Upload Windows Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -96,9 +96,9 @@ jobs:
       - name: Setup .NET SDK ${{env.DOTNETVERSION}}
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version:  '${{env.DOTNETVERSION }}'
+          dotnet-version:  '${{env.DOTNETVERSION}}'
 
-      #Version überprüfen
+      # Version überprüfen
       - name: List installed .NET info
         shell: pwsh
         run: dotnet --info
@@ -117,16 +117,16 @@ jobs:
       - name: Restore nuget packages
         run: dotnet restore code/TDC/mobile/TDC/TDC.csproj
 
-      #Android publishen
+      # Android publishen
       - name : Build Android App
         shell: bash
         run: dotnet publish code/TDC/mobile/TDC/TDC.csproj -c:Release -f:net9.0-android -o:output/android --no-restore
 
-      #Tests ausführen
+      # Tests ausführen
       - name: Run tests
         run: dotnet test --no-build --configuration Release ./code/TDC/mobile/TDC/TDC.csproj
 
-              # Build-Artefakte hochladen
+      # Build-Artefakte hochladen
       - name: Upload Android Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -135,8 +135,10 @@ jobs:
 
   buildBackend:
     runs-on: ubuntu-latest
+
     env:
       ASPNETCORE_ENVIRONMENT: Production
+
     services:
       sqlserver:
         image: mcr.microsoft.com/mssql/server:2022-latest
@@ -150,6 +152,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -161,6 +164,7 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('code/TDC/backend/TDC.Backend/TDC.Backend.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
+
       - name: Setup .NET SDK ${{ env.DOTNETVERSION }}
         uses: actions/setup-dotnet@v4
         with:
@@ -180,6 +184,7 @@ jobs:
             echo "Waiting for SQL Server..."
             sleep 2
           done
+
       - name: Install sqlcmd
         run: |
           curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
@@ -187,13 +192,15 @@ jobs:
           sudo apt-get update
           sudo ACCEPT_EULA=Y apt-get install -y mssql-tools unixodbc-dev
           echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> $GITHUB_ENV
+
       - name: Create TDC.Test database
         env:
           SA_PASSWORD: ${{ secrets.SQL_SERVER_PASSWORD }}
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
+
       - name: Build backend project
-        run: dotnet publish code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
+        run: dotnet build code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release -o ./output/backend --no-restore
 
       - name: Upload Backend Artifact
         uses: actions/upload-artifact@v4
@@ -203,13 +210,26 @@ jobs:
 
       - name: Run backend tests
         run: |
+          mkdir -p ./coverage
           mkdir -p ./output/backend-test-results
           dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
           --configuration Release \
+          --collect:"XPlat Code Coverage" \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
-          --results-directory ./output/backend-test-results
+          --results-directory ./output/backend-test-results 
+
+      - name: Find coverage files
+        run: find ./output/backend-test-results  -name '*.xml'
+
       - name: Upload Backend Unit Test Results
         uses: actions/upload-artifact@v4
         with:
           name: backend-unit-test-results
           path: ./output/backend-test-results/backend-unit-tests.trx
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: ./output/backend-test-results/**/coverage.cobertura.xml
+ 
