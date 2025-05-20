@@ -24,13 +24,13 @@
                     FontAttributes="Bold" 
                     Margin="0,0,0,0"/>
                 <Button
-                    Text="Login"                   
+                    Text="Logout"                   
                     Clicked="LoginButton_Clicked"
                     Grid.Column="1"
                     VerticalOptions="Center"
                     HorizontalOptions="End"
                     Margin="5,0,10,0"
-                    WidthRequest="70"
+                    WidthRequest="80"
                     HeightRequest="40"/>
 
             </Grid>
