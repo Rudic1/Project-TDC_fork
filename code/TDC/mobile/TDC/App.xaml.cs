@@ -9,7 +9,16 @@
 
             Services = services;
 
-            MainPage = new AppShell();
+            var userService = services.GetRequiredService<Services.UserService>();
+
+            if (userService.IsLoggedIn)
+            {
+                MainPage = new AppShell();
+            }
+            else
+            {
+                MainPage = new LoginShell();
+            }
         }
     }
 }

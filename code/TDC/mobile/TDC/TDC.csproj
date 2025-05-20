@@ -69,12 +69,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="LoginShell.xaml.cs">
+	    <DependentUpon>LoginShell.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\List\ListView.xaml.cs">
 	    <DependentUpon>ListView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="LoginShell.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ListItem\ListItemReadOnlyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
