@@ -1,4 +1,5 @@
 ﻿using TDC.Views.Login;
+using TDC.Views.Profile;
 
 namespace TDC
 {
@@ -13,6 +14,7 @@ namespace TDC
 
             Routing.RegisterRoute("ToDoListPage", typeof(ListView));
             Routing.RegisterRoute("LoginPage", typeof(LoginPage));
+            Routing.RegisterRoute("ProfilePage", typeof(ProfilePage));
         }
         private async void LoginButton_Clicked(object sender, EventArgs e)
         {
@@ -21,10 +23,9 @@ namespace TDC
             Application.Current.MainPage = new LoginShell();
         }
 
-        private void ProfileIcon_Clicked(object sender, EventArgs e)
+        private async void ProfileIcon_Clicked(object sender, EventArgs e)
         {
-            // TODO: Navigiere zur Profilseite
-            // z.B. await Shell.Current.GoToAsync("ProfilePage");
+            await Shell.Current.GoToAsync("ProfilePage");
         }
     }
 

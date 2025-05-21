@@ -5,13 +5,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:TDC"
     xmlns:login="clr-namespace:TDC.Views.Login"
+    xmlns:profile="clr-namespace:TDC.Views.Profile"
     Shell.FlyoutBehavior="Disabled"
     Title="TDC">
 
     <ShellContent Route="LoginPage"
                   ContentTemplate="{DataTemplate login:LoginPage}"
                   IsVisible="False" />
-    
+
+    <ShellContent Route="ProfilePage"
+              ContentTemplate="{DataTemplate profile:ProfilePage}"
+              IsVisible="False" />
+
     <ShellContent Route="MainPage">
         <Shell.TitleView>
             <Grid ColumnDefinitions="Auto,Auto,Auto" VerticalOptions="FillAndExpand">
