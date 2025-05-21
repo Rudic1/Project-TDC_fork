@@ -12,6 +12,8 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         private IListItemRepository _listItemRepository;
         private IListMemberRepository _listMemberRepository;
         private IListInvitationRepository _listInvitationRepository;
+        private IListRewardingRepository _listRewardingRepository;
+        private IOpenRewardsRepository _openRewardsRepository;
 
         [SetUp]
         public void SetUp()
@@ -20,7 +22,9 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
             _listItemRepository = Substitute.For<IListItemRepository>();
             _listMemberRepository = Substitute.For<IListMemberRepository>();
             _listInvitationRepository = Substitute.For<IListInvitationRepository>();
-            _target = new ToDoListHandler(_listRepository, _listItemRepository, _listMemberRepository, _listInvitationRepository);
+            _listRewardingRepository = Substitute.For<IListRewardingRepository>();
+            _openRewardsRepository = Substitute.For<IOpenRewardsRepository>();
+            _target = new ToDoListHandler(_listRepository, _listItemRepository, _listMemberRepository, _listInvitationRepository, _listRewardingRepository, _openRewardsRepository);
         }
 
         [Test]
@@ -73,6 +77,27 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
             _target.FinishList(1, "test-user");
 
             _target._listRepository.Received().FinishList(1);
+        }
+
+        [Test]
+        public void FinishList_AllItemsFinished_GrantsCorrectRewards()
+        {
+            _target._listMemberRepository.UserIsCreator(1, "test-user").Returns(true);
+            _target._listMemberRepository.GetListMembers(1).Returns(["test-user", "test-user-2"]);
+            _target._listItemRepository.GetItemsForList(1).Returns([new ToDoListItemDbo(1, 1, "", 1), new ToDoListItemDbo(2, 1, "", 3)]);
+
+            _target._listItemRepository.GetItemStatus(1, "test-user").Returns(true);
+            _target._listItemRepository.GetItemStatus(1, "test-user-2").Returns(true);
+            _target._listItemRepository.GetItemStatus(2, "test-user").Returns(true);
+            _target._listItemRepository.GetItemStatus(2, "test-user-2").Returns(false);
+
+            var expectedMessage = "test-user;20;1" + System.Environment.NewLine + "test-user-2;5;2";
+
+            _target.FinishList(1, "test-user");
+
+            _listRewardingRepository.Received().AddNewRewarding(1, expectedMessage);
+            _openRewardsRepository.Received().AddOpenRewardForUser("test-user", 1);
+            _openRewardsRepository.Received().AddOpenRewardForUser("test-user-2", 1);
         }
     }
 }

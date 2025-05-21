@@ -1,10 +1,15 @@
 ﻿using NSubstitute;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
 
 namespace TDC.Backend.Test.DomainTests.ListHandlerTests
 {
-    public class SetItemStatusTests
+    public class GetOpenRewardsForUserTests
     {
         private ToDoListHandler _target;
         private IListRepository _listRepository;
@@ -27,10 +32,16 @@ namespace TDC.Backend.Test.DomainTests.ListHandlerTests
         }
 
         [Test]
-        public void SetItemStatus_CallsRepository()
+        public void GetOpenRewardsForUser_CallsRepositoryForAllIds()
         {
-            _target.SetItemStatus(1, "test-user", true);
-            _target._listItemRepository.Received().SetItemStatus(1, "test-user", true);
+            _openRewardsRepository.GetOpenRewardsForUser("test-user").Returns(new List<long> { 1, 2, 3 });
+            _listRewardingRepository.GetRewardingById(Arg.Any<long>()).Returns("");
+
+            _target.GetOpenRewardsForUser("test-user");
+
+            _listRewardingRepository.Received().GetRewardingById(1);
+            _listRewardingRepository.Received().GetRewardingById(2);
+            _listRewardingRepository.Received().GetRewardingById(3);
         }
     }
 }
