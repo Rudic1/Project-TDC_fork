@@ -20,6 +20,12 @@ namespace TDC
             //await Shell.Current.GoToAsync(nameof(LoginPage));
             Application.Current.MainPage = new LoginShell();
         }
+
+        private void ProfileIcon_Clicked(object sender, EventArgs e)
+        {
+            // TODO: Navigiere zur Profilseite
+            // z.B. await Shell.Current.GoToAsync("ProfilePage");
+        }
     }
 
 }
