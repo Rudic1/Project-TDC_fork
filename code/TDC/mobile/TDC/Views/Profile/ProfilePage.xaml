@@ -12,7 +12,8 @@
                 Source="to_dewey.png"
                 WidthRequest="2000"
                 HeightRequest="150"
-                HorizontalOptions="Center" />
+                HorizontalOptions="Center"
+                Margin="0,15,0,10"/>
 
             <Label Text="To-Dewey"
                    FontFamily="Text-Bold"
