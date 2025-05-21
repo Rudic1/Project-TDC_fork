@@ -2,11 +2,54 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TDC.Views.Profile.ProfilePage"
-             Title="ProfilePage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Profil">
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="25">
+
+            <Image 
+                Source="to_dewey.png"
+                WidthRequest="2000"
+                HeightRequest="150"
+                HorizontalOptions="Center" />
+
+            <Label Text="To-Dewey"
+                   FontFamily="Text-Bold"
+                   FontSize="Medium"
+                   HorizontalOptions="Center" />
+            
+            <Border
+                Stroke="#EEEEEE"
+                StrokeThickness="1"
+                BackgroundColor="#393E46"
+                Padding="10"
+                StrokeShape="RoundRectangle 8"
+                HeightRequest="200">
+
+                <Grid>
+                    <Editor
+                        x:Name="DescriptionEditor"
+                        Placeholder="Erzähl etwas über dich..."
+                        TextChanged="DescriptionEditor_TextChanged"
+                        MaxLength="150"
+                        AutoSize="TextChanges" />
+
+                    <Label
+                        x:Name="CharacterCountLabel"
+                        Text="150 Zeichen übrig"
+                        FontSize="12"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        TextColor="Gray"
+                        Margin="0,0,4,2" />
+                </Grid>
+            </Border>
+
+            <Label Text="to-dewey@example.com" 
+                   FontSize="Default"
+                   HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
