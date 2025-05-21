@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TDC.Views.Profile.ProfilePage"
-             Title="Profil">
+             Title="Profile">
     <ScrollView>
         <VerticalStackLayout
             Padding="20"
@@ -30,14 +30,14 @@
                 <Grid>
                     <Editor
                         x:Name="DescriptionEditor"
-                        Placeholder="Erzähl etwas über dich..."
+                        Placeholder="Tell us about yourself..."
                         TextChanged="DescriptionEditor_TextChanged"
                         MaxLength="150"
                         AutoSize="TextChanges" />
 
                     <Label
                         x:Name="CharacterCountLabel"
-                        Text="150 Zeichen übrig"
+                        Text="150"
                         FontSize="12"
                         HorizontalOptions="End"
                         VerticalOptions="End"
@@ -46,9 +46,13 @@
                 </Grid>
             </Border>
 
-            <Label Text="to-dewey@example.com" 
+            <Label Text="to-dewey@example.com"
                    FontSize="Default"
                    HorizontalOptions="Center"/>
+
+            <Button Text="Open Friend List"
+                    FontSize="Default"
+                    Clicked="OpenFriendList_Clicked"/>
 
         </VerticalStackLayout>
     </ScrollView>
