@@ -15,7 +15,7 @@
                 HorizontalOptions="Center"
                 Margin="0,15,0,10"/>
 
-            <Label Text="To-Dewey"
+            <Label x:Name="UserNameLabel"
                    FontFamily="Text-Bold"
                    FontSize="Medium"
                    HorizontalOptions="Center" />
