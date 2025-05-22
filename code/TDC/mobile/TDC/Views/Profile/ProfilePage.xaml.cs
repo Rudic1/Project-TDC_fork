@@ -6,6 +6,7 @@ public partial class ProfilePage : ContentPage
 {
     private readonly Services.UserService _userService;
     private readonly IService.IAccountService _accountService;
+    private readonly IService.ICharacterService _characterService;
 
     public ProfilePage()
 	{
@@ -13,8 +14,27 @@ public partial class ProfilePage : ContentPage
 
         _userService = App.Services.GetRequiredService<Services.UserService>();
         _accountService = App.Services.GetRequiredService<IService.IAccountService>();
+        _characterService = App.Services.GetRequiredService<IService.ICharacterService>();
 
+        LoadProfileImage();
         LoadUserData();
+    }
+
+    private async Task LoadProfileImage()
+    {
+        try
+        {
+            var imageUrl = await _characterService.GetDefaultCharacterImage();
+
+            if (!string.IsNullOrWhiteSpace(imageUrl))
+            {
+                ProfileImage.Source = ImageSource.FromUri(new Uri(imageUrl));
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Fehler beim Laden des Profilbildes: " + ex.Message);
+        }
     }
 
     private async Task LoadUserData()
