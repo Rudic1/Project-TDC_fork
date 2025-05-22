@@ -36,17 +36,26 @@
                         MaxLength="150"
                         AutoSize="TextChanges" />
 
+                    <Button
+                        Text="Save"
+                        Clicked="SaveDescriptionButton_Clicked"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        FontSize="10"
+                        HeightRequest="5"                        
+                        Margin="0,0,7,7" />
+
                     <Label
                         x:Name="CharacterCountLabel"
                         Text="150"
                         FontSize="12"
-                        HorizontalOptions="End"
+                        HorizontalOptions="Start"
                         VerticalOptions="End"
                         TextColor="Gray"
-                        Margin="0,0,4,2" />
+                        Margin="4,0,4,2" />
                 </Grid>
             </Border>
-
+            
             <Label x:Name="EmailLabel"
                    FontSize="Default"
                    HorizontalOptions="Center"/>

@@ -37,6 +37,23 @@ public partial class ProfilePage : ContentPage
         CharacterCountLabel.Text = $"{remaining}";
     }
 
+    private async void SaveDescriptionButton_Clicked(object sender, EventArgs e)
+    {
+        string newDescription = DescriptionEditor.Text ?? string.Empty;
+        string username = _userService.CurrentUser!.Username;
+
+        try
+        {
+            await _accountService.UpdateDescription(newDescription, username);
+            await DisplayAlert("Erfolg", "Beschreibung gespeichert.", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Fehler", "Beim Speichern ist ein Fehler aufgetreten.", "OK");
+            Console.WriteLine(ex.Message);
+        }
+    }
+
     private async void OpenFriendList_Clicked(object sender, EventArgs e)
     {
         // TODO: Navigation to FriendListPage
