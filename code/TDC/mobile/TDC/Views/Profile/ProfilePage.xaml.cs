@@ -5,20 +5,29 @@ namespace TDC.Views.Profile;
 public partial class ProfilePage : ContentPage
 {
     private readonly Services.UserService _userService;
+    private readonly IService.IAccountService _accountService;
 
     public ProfilePage()
 	{
 		InitializeComponent();
 
         _userService = App.Services.GetRequiredService<Services.UserService>();
-        LoadUserData(_userService);
+        _accountService = App.Services.GetRequiredService<IService.IAccountService>();
+
+        LoadUserData();
     }
 
-    private void LoadUserData(UserService userService)
+    private async Task LoadUserData()
     {
-        if (userService.IsLoggedIn)
+        if (_userService.IsLoggedIn)
         {
-            UserNameLabel.Text = userService.CurrentUser!.Username;
+            string username = _userService.CurrentUser!.Username;
+                                  
+            var fullAccount = await _accountService.GetAccountByUsername(username);
+
+            UserNameLabel.Text = username;
+            DescriptionEditor.Text = fullAccount.Description;
+            EmailLabel.Text = fullAccount.Email; 
         }
     }
 

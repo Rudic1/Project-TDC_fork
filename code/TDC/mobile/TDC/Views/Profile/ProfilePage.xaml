@@ -47,7 +47,7 @@
                 </Grid>
             </Border>
 
-            <Label Text="to-dewey@example.com"
+            <Label x:Name="EmailLabel"
                    FontSize="Default"
                    HorizontalOptions="Center"/>
 
