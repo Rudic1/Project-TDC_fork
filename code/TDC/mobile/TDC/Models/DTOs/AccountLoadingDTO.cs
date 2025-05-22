@@ -3,11 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace TDC.Models.DTOs
 {
-    internal class AccountLoadingDto
+    public class AccountLoadingDto
     {
         public AccountLoadingDto() { }
         public AccountLoadingDto(string username, string email, string description)
@@ -17,8 +18,13 @@ namespace TDC.Models.DTOs
             Description = description;
         }
 
+        [JsonPropertyName("username")]
         public string Username { get; set; }
+
+        [JsonPropertyName("email")]
         public string Email { get; set; }
+
+        [JsonPropertyName("description")]
         public string Description { get; set; }
     }
 }

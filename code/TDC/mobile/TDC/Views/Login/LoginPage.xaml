@@ -4,11 +4,11 @@
              x:Class="TDC.Views.Login.LoginPage"
              Title="Login">
     <VerticalStackLayout Padding="20">
-        <Label Text="Benutzername:" />
-        <Entry x:Name="UsernameEntry" Placeholder="Benutzername eingeben" Margin="0,0,0,10"/>
+        <Label Text="Username:" />
+        <Entry x:Name="UsernameEntry" Placeholder="enter username..." Margin="0,0,0,10"/>
 
-        <Label Text="Passwort:" />
-        <Entry x:Name="PasswordEntry" Placeholder="Passwort eingeben" IsPassword="True" Margin="0,0,0,20" />
+        <Label Text="Password:" />
+        <Entry x:Name="PasswordEntry" Placeholder="enter password..." IsPassword="True" Margin="0,0,0,20" />
 
         <Button Text="Login" Clicked="LoginButton_Clicked" />
         <Label x:Name="ErrorMessageLabel" TextColor="Red" IsVisible="False"/>
