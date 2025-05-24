@@ -4,6 +4,6 @@ namespace TDC.IService
 {
     public interface IFriendService
     {
-        Task<List<Friend>> GetFriendsForUser(string username);
+        Task<List<string>> GetFriendsForUser(string username);
     }
 }

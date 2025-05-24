@@ -10,11 +10,11 @@ namespace TDC.Services
     {
         private readonly HttpClient _httpClient = new();
 
-        public async Task<List<Friend>> GetFriendsForUser(string username)
+        public async Task<List<string>> GetFriendsForUser(string username)
         {
-            var url = ConnectionUrls.development + $"/api/Friends/getFriends/{username}";
-            var friends = await _httpClient.GetFromJsonAsync<List<Friend>>(url);
-            return friends ?? new List<Friend>();
+            var url = ConnectionUrls.development + $"/api/Account/getFriendsForUser/{username}";
+            var friends = await _httpClient.GetFromJsonAsync<List<string>>(url);
+            return friends ?? new List<string>();
         }
     }
 }

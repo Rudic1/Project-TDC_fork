@@ -76,7 +76,6 @@ public partial class ProfilePage : ContentPage
 
     private async void OpenFriendList_Clicked(object sender, EventArgs e)
     {
-        // TODO: Navigation to FriendListPage
-        //await Shell.Current.GoToAsync("FriendListPage");
+        await Shell.Current.GoToAsync("FriendListPage");
     }
 }

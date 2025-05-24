@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:TDC"
     xmlns:login="clr-namespace:TDC.Views.Login"
     xmlns:profile="clr-namespace:TDC.Views.Profile"
+    xmlns:friendlist="clr-namespace:TDC.Views.FriendList"
     Shell.FlyoutBehavior="Disabled"
     Title="TDC">
 
@@ -16,6 +17,11 @@
     <ShellContent Route="ProfilePage"
               ContentTemplate="{DataTemplate profile:ProfilePage}"
               IsVisible="False" />
+
+    <ShellContent Route="FriendListPage"
+              ContentTemplate="{DataTemplate friendlist:FriendListPage}"
+              IsVisible="False" />
+
 
     <ShellContent Route="MainPage">
         <Shell.TitleView>

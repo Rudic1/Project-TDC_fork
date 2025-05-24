@@ -1,5 +1,4 @@
 using TDC.IService;
-using TDC.Models;
 
 namespace TDC.Views.FriendList;
 
