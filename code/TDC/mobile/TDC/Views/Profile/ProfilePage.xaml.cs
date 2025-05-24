@@ -76,6 +76,14 @@ public partial class ProfilePage : ContentPage
 
     private async void OpenFriendList_Clicked(object sender, EventArgs e)
     {
-        await Shell.Current.GoToAsync("FriendListPage");
+        try
+        {
+            await Shell.Current.GoToAsync("FriendListPage");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Fehler", "Beim Öffnen der Freundesliste ist ein Fehler aufgetreten.", "OK");
+            Console.WriteLine("Fehler beim Navigieren zur Freundesliste: " + ex.Message);
+        }
     }
 }

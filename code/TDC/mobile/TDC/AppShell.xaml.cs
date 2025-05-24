@@ -1,5 +1,6 @@
 ﻿using TDC.Views.Login;
 using TDC.Views.Profile;
+using TDC.Views.FriendList;
 
 namespace TDC
 {
@@ -15,6 +16,7 @@ namespace TDC
             Routing.RegisterRoute("ToDoListPage", typeof(ListView));
             Routing.RegisterRoute("LoginPage", typeof(LoginPage));
             Routing.RegisterRoute("ProfilePage", typeof(ProfilePage));
+            Routing.RegisterRoute("FriendListPage", typeof(FriendListPage));
         }
         private async void LoginButton_Clicked(object sender, EventArgs e)
         {
