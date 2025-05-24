@@ -40,6 +40,7 @@ namespace TDC
             services.AddTransient<IListItemService, ListItemService>();
             services.AddTransient<ListView>();
             services.AddTransient<ICharacterService, CharacterService>();
+            services.AddTransient<IFriendService, FriendService>();
         }
 
         private static void AddPages(IServiceCollection services) {
