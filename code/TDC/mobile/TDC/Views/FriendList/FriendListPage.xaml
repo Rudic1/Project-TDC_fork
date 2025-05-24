@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TDC.Views.FriendList.FriendListPage"
+             Title="Friends">
+
+    <CollectionView x:Name="FriendsCollectionView" Margin="10">
+        <CollectionView.ItemTemplate>
+            <DataTemplate>
+                <Grid Padding="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Image Source="{Binding ProfileImageUrl}" WidthRequest="50" HeightRequest="50" Aspect="AspectFill" Grid.Column="0" />
+
+                    <Label Text="{Binding Username}" VerticalOptions="Center" FontSize="Medium" Grid.Column="1" Margin="10,0,0,0" />
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
+
+</ContentPage>
