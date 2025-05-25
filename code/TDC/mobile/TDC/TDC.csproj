@@ -84,6 +84,9 @@
 	  <MauiXaml Update="Views\FriendList\FriendListPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\FriendRequests\FriendRequestsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ListItem\ListItemReadOnlyView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

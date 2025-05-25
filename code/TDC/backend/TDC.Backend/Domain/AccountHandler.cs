@@ -80,6 +80,12 @@ namespace TDC.Backend.Domain
 
         public Task SendFriendRequest(string sender, string receiver)
         {
+            if (string.Equals(sender, receiver, StringComparison.OrdinalIgnoreCase))
+                throw new ArgumentException("You cannot send a friend request to yourself.");
+
+            if (_accountRepository.GetAccountByUsername(receiver) == null)
+                   throw new ArgumentException($"User '{receiver}' does not exist.");
+        
             var requests = friendRequestRepository.GetRequestsForUser(receiver);
             var friends = friendRepository.GetFriendsForUser(receiver);
             if (requests.Contains(sender)) { return Task.CompletedTask; }

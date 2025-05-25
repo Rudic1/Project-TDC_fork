@@ -16,5 +16,34 @@ namespace TDC.Services
             var friends = await _httpClient.GetFromJsonAsync<List<string>>(url);
             return friends ?? new List<string>();
         }
+
+        public async Task<List<string>> GetFriendRequestsForUser(string username)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/getFriendRequestsForUser/{username}";
+            var requests = await _httpClient.GetFromJsonAsync<List<string>>(url);
+            return requests ?? new List<string>();
+        }
+
+        public async Task SendFriendRequest(string sender, string receiver)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/sendFriendRequest/{sender}/{receiver}";
+            var response = await _httpClient.PutAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task AcceptFriendRequest(string username, string requestName)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/acceptFriendRequest/{username}/{requestName}";
+            var response = await _httpClient.PostAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task DenyFriendRequest(string username, string requestName)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/denyFriendRequest/{username}/{requestName}";
+            var response = await _httpClient.PostAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
     }
+
 }

@@ -64,6 +64,10 @@
                     FontSize="Default"
                     Clicked="OpenFriendList_Clicked"/>
 
+            <Button Text="Open Friend Requests"
+                    FontSize="Default"
+                    Clicked="OpenFriendRequests_Clicked"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
