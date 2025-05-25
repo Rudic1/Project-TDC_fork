@@ -17,8 +17,6 @@ namespace TDC
         {
             InitializeComponent();
 
-            Application.Current!.UserAppTheme = AppTheme.Dark;
-
             _userService = App.Services.GetService<UserService>()!;
             _listService = App.Services.GetService<IListService>()!;
             _listItemService = App.Services.GetService<IListItemService>()!;
