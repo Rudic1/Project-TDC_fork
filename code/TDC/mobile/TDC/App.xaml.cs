@@ -7,6 +7,8 @@
         {
             InitializeComponent();
 
+            Application.Current.UserAppTheme = AppTheme.Dark;
+
             Services = services;
 
             var userService = services.GetRequiredService<Services.UserService>();
