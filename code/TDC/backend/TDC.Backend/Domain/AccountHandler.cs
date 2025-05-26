@@ -90,7 +90,7 @@ namespace TDC.Backend.Domain
             if (requests.Contains(sender)) { return Task.CompletedTask; }
             if (friends.Contains(sender)) { return Task.CompletedTask; }
 
-            this.friendRequestRepository.AddFriendRequest(receiver, sender);
+            this.friendRequestRepository.AddFriendRequest(sender, receiver);
             return Task.CompletedTask;
         }
 

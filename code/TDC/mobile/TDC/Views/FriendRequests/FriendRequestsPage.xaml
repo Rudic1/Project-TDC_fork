@@ -4,23 +4,57 @@
              x:Class="TDC.Views.FriendRequests.FriendRequestsPage"
              Title="Friend Requests">
 
-    <VerticalStackLayout Padding="10">
-        <Label Text="Incoming Friend Requests" FontSize="Large" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
 
-        <CollectionView x:Name="IncomingRequestsView">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <HorizontalStackLayout Spacing="10">
-                        <Label Text="{Binding}" VerticalOptions="Center"/>
-                        <Button Text="Accept" Clicked="Accept_Clicked"/>
-                        <Button Text="Decline" Clicked="Decline_Clicked"/>
-                    </HorizontalStackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            <!-- Incoming Friend Requests -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Incoming Friend Requests" FontSize="20" FontAttributes="Bold" />
+                <CollectionView x:Name="IncomingRequestsView" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label Text="-" 
+                               TextColor="Gray" 
+                               FontSize="12" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout Spacing="15" Padding="10" VerticalOptions="Center">
+                                <Label Text="{Binding}" VerticalOptions="Center" FontSize="16" />
+                                <Button Text="Accept" Clicked="Accept_Clicked" />
+                                <Button Text="Decline" Clicked="Decline_Clicked" />
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
 
-        <Label Text="Send Friend Request" FontSize="Medium" Margin="0,20,0,0"/>
-        <Entry x:Name="UsernameEntry" Placeholder="Enter username..." />
-        <Button Text="Send Request" Clicked="SendRequest_Clicked"/>
-    </VerticalStackLayout>
+            <!-- Sent Requests -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Sent Requests" FontSize="20" FontAttributes="Bold" />
+                <CollectionView x:Name="SentRequestsView" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label Text="-"
+                               TextColor="Gray" 
+                               FontSize="12" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout Spacing="15" Padding="10" VerticalOptions="Center">
+                                <Label Text="{Binding .}" VerticalOptions="Center" FontSize="16" />
+                                <Button Text="Cancel" Clicked="CancelSentRequest_Clicked" />
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Send Friend Request -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Send Friend Request" FontSize="20" FontAttributes="Bold" />
+                <Entry x:Name="UsernameEntry" Placeholder="Enter username..." FontSize="16" />
+                <Button Text="Send Request" Clicked="SendRequest_Clicked" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

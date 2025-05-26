@@ -56,6 +56,20 @@ namespace TDC.Services
             var content = await response.Content.ReadAsStringAsync();
             return bool.TryParse(content, out var exists) && exists;
         }
+
+        public async Task<List<string>> GetSentFriendRequestsForUser(string username)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/getSentFriendRequestsForUser/{username}";
+            var requests = await _httpClient.GetFromJsonAsync<List<string>>(url);
+            return requests ?? new List<string>();
+        }
+
+        public async Task CancelFriendRequest(string sender, string receiver)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/cancelFriendRequest/{sender}/{receiver}";
+            var response = await _httpClient.PutAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 
 }
