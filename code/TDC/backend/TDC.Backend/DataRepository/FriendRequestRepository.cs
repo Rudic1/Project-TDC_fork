@@ -24,13 +24,13 @@ namespace TDC.Backend.DataRepository
         public List<string> GetRequestsForUser(string username)
         {
             var sql = $"SELECT * FROM dbo.{this.TableName} "
-                     + $"WHERE Request = @username;";
+                     + $"WHERE Username = @username;";
             var parameters = new
             {
                 username,
             };
 
-            return this.Query<RequestDbo>(sql, parameters).Select(m => m.Username)
+            return this.Query<RequestDbo>(sql, parameters).Select(m => m.Request)
                        .ToList();
         }
 
@@ -53,13 +53,13 @@ namespace TDC.Backend.DataRepository
         public List<string> GetSentRequestsForUser(string username)
         {
             var sql = $"SELECT * FROM dbo.{this.TableName} "
-                      + $"WHERE Username = @username;";
+                      + $"WHERE Request = @username;";
             var parameters = new
             {
                 username,
             };
 
-            return this.Query<RequestDbo>(sql, parameters).Select(m => m.Request)
+            return this.Query<RequestDbo>(sql, parameters).Select(m => m.Username)
                        .ToList();
         }
     }

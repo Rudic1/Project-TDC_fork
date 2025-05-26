@@ -27,9 +27,9 @@ namespace TDC.Backend.Domain
             return Task.CompletedTask;
         }
 
-        public Task CancelFriendRequest(string sender, string receiver)
+        public Task CancelFriendRequest(string username, string request)
         {
-            this.friendRequestRepository.DeleteFriendRequest(sender, receiver);
+            this.friendRequestRepository.DeleteFriendRequest(username, request);
             return Task.CompletedTask;
         }
 
@@ -77,20 +77,20 @@ namespace TDC.Backend.Domain
             return true;
         }
 
-        public Task SendFriendRequest(string sender, string receiver)
+        public Task SendFriendRequest(string username, string request)
         {
 
-            if (_accountRepository.GetAccountByUsername(receiver) == null)
+            if (_accountRepository.GetAccountByUsername(username) == null)
             { return Task.CompletedTask; }
 
-            if(sender.Equals(receiver)) { return Task.CompletedTask; }
+            if(username.Equals(request)) { return Task.CompletedTask; }
         
-            var requests = friendRequestRepository.GetRequestsForUser(receiver);
-            var friends = friendRepository.GetFriendsForUser(receiver);
-            if (requests.Contains(sender)) { return Task.CompletedTask; }
-            if (friends.Contains(sender)) { return Task.CompletedTask; }
+            var requests = friendRequestRepository.GetRequestsForUser(username);
+            var friends = friendRepository.GetFriendsForUser(username);
+            if (requests.Contains(request)) { return Task.CompletedTask; }
+            if (friends.Contains(request)) { return Task.CompletedTask; }
 
-            this.friendRequestRepository.AddFriendRequest(sender, receiver);
+            this.friendRequestRepository.AddFriendRequest(username, request);
             return Task.CompletedTask;
         }
 

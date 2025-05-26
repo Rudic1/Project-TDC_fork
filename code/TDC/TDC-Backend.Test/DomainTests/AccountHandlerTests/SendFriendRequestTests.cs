@@ -27,7 +27,7 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
             _friendRepository.GetFriendsForUser("test-user").Returns([]);
             _accountRepository.GetAccountByUsername("test-user").Returns(new AccountDbo("test-user", "", "", ""));
 
-            _target.SendFriendRequest("test-sender", "test-user");
+            _target.SendFriendRequest("test-user", "test-sender");
 
             _friendRequestRepository.Received().AddFriendRequest("test-user", "test-sender");
         }
