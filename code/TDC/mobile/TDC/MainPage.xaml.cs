@@ -79,7 +79,23 @@ namespace TDC
         {
             base.OnAppearing();
             _ = LoadAvailableLists();
+            _ = CheckAndShowRewardsAsync();
         }
+
+        private async Task CheckAndShowRewardsAsync()
+        {
+            if (_userService.CurrentUser == null)
+                return;
+
+            var rewards = await _listService.GetOpenRewardsForUser(_userService.CurrentUser.Username);
+
+            foreach (var reward in rewards)
+            {
+                await DisplayAlert("List " + reward.ListId + " finished", reward.Message, "OK");
+                await _listService.RemoveSeenReward(_userService.CurrentUser.Username, reward.ListId);
+            }
+        }
+
 
         private async Task LoadAvailableLists()
         {

@@ -93,6 +93,28 @@ namespace TDC.Services
             }
             return listObjects;
         }
+
+        public async Task<List<RewardingMessageDto>> GetOpenRewardsForUser(string username)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getOpenRewardsForUser/{username}";
+
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var rewards = JsonSerializer.Deserialize<List<RewardingMessageDto>>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return rewards ?? new List<RewardingMessageDto>();
+        }
+
+        public async Task RemoveSeenReward(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/removeSeenRewarding/{username}/{listId}";
+            await httpClient.PostAsync(url, null);
+        }
         #endregion
 
 
