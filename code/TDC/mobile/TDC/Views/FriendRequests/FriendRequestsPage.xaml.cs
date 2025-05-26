@@ -33,7 +33,7 @@ public partial class FriendRequestsPage : ContentPage
     {
         if (sender is Button button && button.BindingContext is string requester)
         {
-            await _friendService.AcceptFriendRequest(requester, _userService.CurrentUser!.Username);
+            await _friendService.AcceptFriendRequest(_userService.CurrentUser!.Username, requester);
             await DisplayAlert("Success", "Friend request accepted.", "OK");
             OnAppearing();
         }
@@ -43,7 +43,7 @@ public partial class FriendRequestsPage : ContentPage
     {
         if (sender is Button button && button.BindingContext is string requester)
         {
-            await _friendService.DenyFriendRequest(requester, _userService.CurrentUser!.Username);
+            await _friendService.DenyFriendRequest(_userService.CurrentUser!.Username, requester);
             await DisplayAlert("Success", "Friend request declined.", "OK");
             OnAppearing();
         }
@@ -82,7 +82,21 @@ public partial class FriendRequestsPage : ContentPage
                 return;
             }
 
-            await _friendService.SendFriendRequest(senderUsername, receiver);
+            var alreadySentRequests = await _friendService.GetSentFriendRequestsForUser(senderUsername);
+            if (alreadySentRequests.Contains(receiver, StringComparer.OrdinalIgnoreCase))
+            {
+                await DisplayAlert("Info", $"You already sent a request to {receiver}.", "OK");
+                return;
+            }
+
+            var incomingRequests = await _friendService.GetFriendRequestsForUser(senderUsername);
+            if (incomingRequests.Contains(receiver, StringComparer.OrdinalIgnoreCase))
+            {
+                await DisplayAlert("Info", $"{receiver} already sent you a friend request. Accept or Decline it.", "OK");
+                return;
+            }
+
+            await _friendService.SendFriendRequest(receiver, senderUsername);
             await DisplayAlert("Request Sent", $"You sent a request to {receiver}.", "OK");
             UsernameEntry.Text = string.Empty;
 
@@ -104,7 +118,7 @@ public partial class FriendRequestsPage : ContentPage
             {
                 var senderUsername = _userService.CurrentUser!.Username; 
 
-                await _friendService.CancelFriendRequest(senderUsername, receiver);
+                await _friendService.CancelFriendRequest(receiver, senderUsername);
                 await DisplayAlert("Success", "Request cancelled.", "OK");
 
                 var updatedSentRequests = await _friendService.GetSentFriendRequestsForUser(senderUsername);
