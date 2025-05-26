@@ -79,6 +79,12 @@ namespace TDC.Backend.Controllers
             return this._accountHandler.GetRequestsForUser(username);
         }
 
+        [HttpGet("getSentFriendRequestsForUser/{username}")]
+        public List<string> GetSentFriendRequestsForUser([FromRoute] string username)
+        {
+            return this._accountHandler.GetSentRequestsForUser(username);
+        }
+
         [HttpPost("acceptFriendRequest/{username}/{requestName}")]
         public async Task AcceptFriendRequest([FromRoute] string username, [FromRoute] string requestName)
         {

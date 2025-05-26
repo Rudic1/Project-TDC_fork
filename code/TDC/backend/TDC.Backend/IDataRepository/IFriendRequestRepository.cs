@@ -5,5 +5,6 @@
         public void AddFriendRequest(string senderName, string receiverName);
         public void DeleteFriendRequest(string username, string requestName);
         public List<string> GetRequestsForUser(string username);
+        public List<string> GetSentRequestsForUser(string username);
     }
 }

@@ -134,6 +134,11 @@ namespace TDC.Backend.Domain
             return true;
         }
 
+        public List<string> GetSentRequestsForUser(string username)
+        {
+            return friendRequestRepository.GetSentRequestsForUser(username);
+        }
+
         #region privates
         private bool AccountWithUsernameExists(string username)
         {
