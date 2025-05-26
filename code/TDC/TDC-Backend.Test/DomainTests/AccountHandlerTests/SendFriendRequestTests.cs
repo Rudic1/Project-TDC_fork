@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
+using TDC.Backend.IDataRepository.Models;
 
 namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 {
@@ -21,9 +22,10 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
         }
 
         [Test]
-        public void SendFriendRequest_UserHasNotSendRequestYetAndIsntFriends_CallsRepository() {
+        public void SendFriendRequest_UserHasNotSendRequestYetAndIsNotFriends_CallsRepository() {
             _friendRequestRepository.GetRequestsForUser("test-user").Returns([]);
             _friendRepository.GetFriendsForUser("test-user").Returns([]);
+            _accountRepository.GetAccountByUsername("test-user").Returns(new AccountDbo("test-user", "", "", ""));
 
             _target.SendFriendRequest("test-sender", "test-user");
 

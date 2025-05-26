@@ -18,5 +18,7 @@ namespace TDC.Backend.IDomain
         public Task DenyFriendRequest(string username, string requestName);
         public Task SendFriendRequest(string sender, string receiver);
         public Task CancelFriendRequest(string sender, string receiver);
+
+        public bool AccountExists(string username);
     }
 }

@@ -59,6 +59,12 @@ namespace TDC.Backend.Controllers
             return _accountHandler.GetAccountByUsername(username);
         }
 
+        [HttpGet("accountExists/{username}")]
+        public bool AccountExists([FromRoute] string username)
+        {
+            return _accountHandler.AccountExists(username);
+        }
+
         #region Friend Management
 
         [HttpGet("getFriendsForUser/{username}")]

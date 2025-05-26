@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using TDC.Backend.IDataRepository;
+﻿using TDC.Backend.IDataRepository;
 using TDC.Backend.IDataRepository.Models;
 using TDC.Backend.IDomain;
 using TDC.Backend.IDomain.Models;
@@ -80,11 +79,11 @@ namespace TDC.Backend.Domain
 
         public Task SendFriendRequest(string sender, string receiver)
         {
-            if (string.Equals(sender, receiver, StringComparison.OrdinalIgnoreCase))
-                throw new ArgumentException("You cannot send a friend request to yourself.");
 
             if (_accountRepository.GetAccountByUsername(receiver) == null)
-                   throw new ArgumentException($"User '{receiver}' does not exist.");
+            { return Task.CompletedTask; }
+
+            if(sender.Equals(receiver)) { return Task.CompletedTask; }
         
             var requests = friendRequestRepository.GetRequestsForUser(receiver);
             var friends = friendRepository.GetFriendsForUser(receiver);
@@ -93,6 +92,12 @@ namespace TDC.Backend.Domain
 
             this.friendRequestRepository.AddFriendRequest(receiver, sender);
             return Task.CompletedTask;
+        }
+
+        public bool AccountExists(string username)
+        {
+            var account = _accountRepository.GetAccountByUsername(username);
+            return account != null;
         }
 
         public bool UpdateEmail(string username, string email)
@@ -106,7 +111,7 @@ namespace TDC.Backend.Domain
         {
             if (!AccountWithUsernameExists(username)) { return false;}
 
-            var oldPassword = _accountRepository.GetAccountByUsername(username).Password;
+            var oldPassword = _accountRepository.GetAccountByUsername(username)!.Password;
             if(oldPassword!.Equals(password)) { return false; }
             
             _accountRepository.UpdatePassword(username, password);
