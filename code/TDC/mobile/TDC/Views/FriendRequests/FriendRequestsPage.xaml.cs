@@ -51,19 +51,30 @@ public partial class FriendRequestsPage : ContentPage
         try
         {
             var receiver = UsernameEntry.Text?.Trim();
+            var senderUsername = _userService.CurrentUser!.Username;
+
             if (string.IsNullOrWhiteSpace(receiver))
             {
                 await DisplayAlert("Error", "Please enter a valid username.", "OK");
                 return;
             }
 
-            await _friendService.SendFriendRequest(_userService.CurrentUser!.Username, receiver);
+            if (receiver.Equals(senderUsername, StringComparison.OrdinalIgnoreCase))
+            {
+                await DisplayAlert("Error", "You cannot send a request to yourself.", "OK");
+                return;
+            }
+
+            var exists = await _friendService.AccountExists(receiver);
+            if (!exists)
+            {
+                await DisplayAlert("Error", $"User '{receiver}' does not exist.", "OK");
+                return;
+            }
+
+            await _friendService.SendFriendRequest(senderUsername, receiver);
             await DisplayAlert("Request Sent", $"You sent a request to {receiver}.", "OK");
             UsernameEntry.Text = string.Empty;
-        }
-        catch (ArgumentException argEx)
-        {
-            await DisplayAlert("Error", argEx.Message, "OK");
         }
         catch (Exception ex)
         {

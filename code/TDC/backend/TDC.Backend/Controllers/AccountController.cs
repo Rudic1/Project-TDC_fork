@@ -85,10 +85,10 @@ namespace TDC.Backend.Controllers
             await this._accountHandler.AcceptFriendRequest(username, requestName);
         }
 
-        [HttpPost("denyFriendRequest/{username}/{requestName}")]
+        [HttpPost("denyFriendRequest/{senderName}/{requestName}")]
         public async Task DenyFriendRequest([FromRoute] string senderName, [FromRoute] string requestName)
         {
-            await this._accountHandler.DenyFriendRequest(senderName, requestName);   
+            await this._accountHandler.DenyFriendRequest(senderName, requestName);
         }
 
         [HttpPut("sendFriendRequest/{senderName}/{receiverName}")]

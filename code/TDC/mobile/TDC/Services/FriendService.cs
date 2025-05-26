@@ -44,6 +44,18 @@ namespace TDC.Services
             var response = await _httpClient.PostAsync(url, null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task<bool> AccountExists(string username)
+        {
+            var url = ConnectionUrls.development + $"/api/Account/accountExists/{username}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return false;
+
+            var content = await response.Content.ReadAsStringAsync();
+            return bool.TryParse(content, out var exists) && exists;
+        }
     }
 
 }
