@@ -18,10 +18,13 @@
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <HorizontalStackLayout Spacing="15" Padding="10" VerticalOptions="Center">
-                                <Label Text="{Binding}" VerticalOptions="Center" FontSize="16" />
-                                <Button Text="Accept" Clicked="Accept_Clicked" />
-                                <Button Text="Decline" Clicked="Decline_Clicked" />
+                            <HorizontalStackLayout Padding="10" VerticalOptions="Center" Spacing="15">
+                                <Image Source="{Binding ProfileImage}" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" />
+                                <Label Text="{Binding Username}" VerticalOptions="Center" FontSize="16" WidthRequest="150" LineBreakMode="TailTruncation" />
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Button Text="Accept" Clicked="Accept_Clicked" />
+                                    <Button Text="Decline" Clicked="Decline_Clicked" />
+                                </HorizontalStackLayout>
                             </HorizontalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
@@ -39,9 +42,12 @@
                     </CollectionView.EmptyView>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <HorizontalStackLayout Spacing="15" Padding="10" VerticalOptions="Center">
-                                <Label Text="{Binding .}" VerticalOptions="Center" FontSize="16" />
-                                <Button Text="Cancel" Clicked="CancelSentRequest_Clicked" />
+                            <HorizontalStackLayout Padding="10" VerticalOptions="Center" Spacing="15">
+                                <Image Source="{Binding ProfileImage}" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" />
+                                <Label Text="{Binding Username}" VerticalOptions="Center" FontSize="16" WidthRequest="150" LineBreakMode="TailTruncation" />
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Button Text="Cancel" Clicked="CancelSentRequest_Clicked" />
+                                </HorizontalStackLayout>
                             </HorizontalStackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

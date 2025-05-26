@@ -1,4 +1,5 @@
 using TDC.IService;
+using TDC.Models;
 using TDC.Services;
 
 namespace TDC.Views.FriendRequests;
@@ -6,12 +7,17 @@ namespace TDC.Views.FriendRequests;
 public partial class FriendRequestsPage : ContentPage
 {
     private readonly IFriendService _friendService;
+    private readonly IService.ICharacterService _characterService;
     private readonly UserService _userService;
 
-    public FriendRequestsPage(IFriendService friendService, UserService userService)
+    private string? _defaultImageUrl;
+
+    public FriendRequestsPage(IFriendService friendService, IService.ICharacterService characterService, UserService userService)
     {
         InitializeComponent();
+
         _friendService = friendService;
+        _characterService = characterService;
         _userService = userService;
     }
 
@@ -22,18 +28,37 @@ public partial class FriendRequestsPage : ContentPage
         var username = _userService.CurrentUser?.Username;
         if (string.IsNullOrWhiteSpace(username)) return;
 
-        var requests = await _friendService.GetFriendRequestsForUser(username);
-        IncomingRequestsView.ItemsSource = requests;
+        if (string.IsNullOrWhiteSpace(_defaultImageUrl))
+        {
+            _defaultImageUrl = await _characterService.GetDefaultCharacterImage();
+        }
 
-        var sentRequests = await _friendService.GetSentFriendRequestsForUser(username);
+        var incomingUsernames = await _friendService.GetFriendRequestsForUser(username);
+        var incomingRequests = incomingUsernames
+            .Select(u => new FriendRequestItem(u)
+            {
+                ProfileImage = ImageSource.FromUri(new Uri(_defaultImageUrl!))
+            })
+            .ToList();
+
+        IncomingRequestsView.ItemsSource = incomingRequests;
+
+        var sentUsernames = await _friendService.GetSentFriendRequestsForUser(username);
+        var sentRequests = sentUsernames
+            .Select(u => new FriendRequestItem(u)
+            {
+                ProfileImage = ImageSource.FromUri(new Uri(_defaultImageUrl!))
+            })
+            .ToList();
+
         SentRequestsView.ItemsSource = sentRequests;
     }
 
     private async void Accept_Clicked(object sender, EventArgs e)
     {
-        if (sender is Button button && button.BindingContext is string requester)
+        if (sender is Button button && button.BindingContext is FriendRequestItem friendRequestItem)
         {
-            await _friendService.AcceptFriendRequest(_userService.CurrentUser!.Username, requester);
+            await _friendService.AcceptFriendRequest(_userService.CurrentUser!.Username, friendRequestItem.Username);
             await DisplayAlert("Success", "Friend request accepted.", "OK");
             OnAppearing();
         }
@@ -41,9 +66,9 @@ public partial class FriendRequestsPage : ContentPage
 
     private async void Decline_Clicked(object sender, EventArgs e)
     {
-        if (sender is Button button && button.BindingContext is string requester)
+        if (sender is Button button && button.BindingContext is FriendRequestItem friendRequestItem)
         {
-            await _friendService.DenyFriendRequest(_userService.CurrentUser!.Username, requester);
+            await _friendService.DenyFriendRequest(_userService.CurrentUser!.Username, friendRequestItem.Username);
             await DisplayAlert("Success", "Friend request declined.", "OK");
             OnAppearing();
         }
@@ -78,21 +103,21 @@ public partial class FriendRequestsPage : ContentPage
             var friends = await _friendService.GetFriendsForUser(senderUsername);
             if (friends.Contains(receiver, StringComparer.OrdinalIgnoreCase))
             {
-                await DisplayAlert("Info", $"You are already friends with {receiver}.", "OK");
+                await DisplayAlert("Info", $"You are already friends with User {receiver}.", "OK");
                 return;
             }
 
             var alreadySentRequests = await _friendService.GetSentFriendRequestsForUser(senderUsername);
             if (alreadySentRequests.Contains(receiver, StringComparer.OrdinalIgnoreCase))
             {
-                await DisplayAlert("Info", $"You already sent a request to {receiver}.", "OK");
+                await DisplayAlert("Info", $"You already sent a request to User {receiver}.", "OK");
                 return;
             }
 
             var incomingRequests = await _friendService.GetFriendRequestsForUser(senderUsername);
             if (incomingRequests.Contains(receiver, StringComparer.OrdinalIgnoreCase))
             {
-                await DisplayAlert("Info", $"{receiver} already sent you a friend request. Accept or Decline it.", "OK");
+                await DisplayAlert("Info", $"User {receiver} already sent you a friend request. Accept or Decline it.", "OK");
                 return;
             }
 
@@ -100,8 +125,7 @@ public partial class FriendRequestsPage : ContentPage
             await DisplayAlert("Request Sent", $"You sent a request to {receiver}.", "OK");
             UsernameEntry.Text = string.Empty;
 
-            var sentRequests = await _friendService.GetSentFriendRequestsForUser(senderUsername);
-            SentRequestsView.ItemsSource = sentRequests;
+            OnAppearing();
         }
         catch (Exception ex)
         {
@@ -112,17 +136,16 @@ public partial class FriendRequestsPage : ContentPage
 
     private async void CancelSentRequest_Clicked(object sender, EventArgs e)
     {
-        if (sender is Button button && button.BindingContext is string receiver)
+        if (sender is Button button && button.BindingContext is FriendRequestItem friendRequestItem)
         {
             try
             {
                 var senderUsername = _userService.CurrentUser!.Username; 
 
-                await _friendService.CancelFriendRequest(receiver, senderUsername);
+                await _friendService.CancelFriendRequest(friendRequestItem.Username, senderUsername);
                 await DisplayAlert("Success", "Request cancelled.", "OK");
 
-                var updatedSentRequests = await _friendService.GetSentFriendRequestsForUser(senderUsername);
-                SentRequestsView.ItemsSource = updatedSentRequests;
+                OnAppearing();
             }
             catch (Exception ex)
             {
