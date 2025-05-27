@@ -75,7 +75,7 @@ public partial class ListView : IOnPageKeyDown
 
     private async void OnSaveListClicked(object sender, EventArgs e)
     {
-        var listName = TitleEntry.Text.Trim();
+        var listName = TitleEntry.Text?.Trim();
         if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName))
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = true;
