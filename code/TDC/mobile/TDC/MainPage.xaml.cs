@@ -91,11 +91,13 @@ namespace TDC
 
             foreach (var reward in rewards)
             {
-                await DisplayAlert("List " + reward.ListId + " finished", reward.Message, "OK");
+                var prettyMessage = FormatRewardingMessage(reward.Message);
+                var list = await _listService.GetListById(reward.ListId);
+                string rewardListName = list.Name;
+                await DisplayAlert("List " + rewardListName + " finished", prettyMessage, "OK");
                 await _listService.RemoveSeenReward(_userService.CurrentUser.Username, reward.ListId);
             }
         }
-
 
         private async Task LoadAvailableLists()
         {
@@ -111,6 +113,27 @@ namespace TDC
             availableLists = await _listService.GetAllListsForUser(username);
             _ = UpdateShownList();
         }
+
+        private string FormatRewardingMessage(string rawMessage)
+        {
+            var lines = rawMessage.Split(Environment.NewLine);
+            var formattedLines = new List<string>();
+
+            foreach (var line in lines)
+            {
+                var parts = line.Split(';');
+                if (parts.Length != 3) continue;
+
+                var username = parts[0];
+                var points = parts[1];
+                var place = int.TryParse(parts[2], out int p) ? p : -1;
+
+                formattedLines.Add($"{username} – {points} Punkte (Platz {place})");
+            }
+
+            return string.Join(Environment.NewLine, formattedLines);
+        }
+
 
         private async Task UpdateShownList()
         {
