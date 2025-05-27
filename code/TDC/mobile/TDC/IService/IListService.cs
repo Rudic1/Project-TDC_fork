@@ -1,4 +1,5 @@
 ﻿using TDC.Models;
+using TDC.Models.DTOs;
 
 namespace TDC.IService;
 public interface IListService
@@ -9,4 +10,7 @@ public interface IListService
     public Task FinishList(long listId, string sender);
     public Task<ToDoList> GetListById(long listId);
     public Task<List<ToDoList>> GetAllListsForUser(string username);
+    public Task<List<RewardingMessageDto>> GetOpenRewardsForUser(string username);
+    public Task RemoveSeenReward(string username, long listId);
 }
+
