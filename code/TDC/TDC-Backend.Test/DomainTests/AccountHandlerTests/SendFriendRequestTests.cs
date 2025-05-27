@@ -19,17 +19,22 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
             _friendRepository = Substitute.For<IFriendRepository>();
             _friendRequestRepository = Substitute.For<IFriendRequestRepository>();
             _target = new AccountHandler(_accountRepository, _friendRepository, _friendRequestRepository);
+
+            _accountRepository.GetAccountByUsername("test-user").Returns(new AccountDbo("test-user", "", "", ""));
+            _accountRepository.GetAccountByUsername("test-request").Returns(new AccountDbo("test-request", "", "", ""));
         }
 
         [Test]
         public void SendFriendRequest_UserHasNotSendRequestYetAndIsNotFriends_CallsRepository() {
             _friendRequestRepository.GetRequestsForUser("test-user").Returns([]);
             _friendRepository.GetFriendsForUser("test-user").Returns([]);
-            _accountRepository.GetAccountByUsername("test-user").Returns(new AccountDbo("test-user", "", "", ""));
+            _friendRequestRepository.GetRequestsForUser("test-request").Returns([]);
+            _friendRepository.GetFriendsForUser("test-request").Returns([]);
+            
 
-            _target.SendFriendRequest("test-user", "test-sender");
+            _target.SendFriendRequest("test-user", "test-request");
 
-            _friendRequestRepository.Received().AddFriendRequest("test-user", "test-sender");
+            _friendRequestRepository.Received().AddFriendRequest("test-user", "test-request");
         }
 
         [Test]

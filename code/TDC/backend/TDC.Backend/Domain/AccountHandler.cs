@@ -16,14 +16,11 @@ namespace TDC.Backend.Domain
             var friendsOfUser = _friendRepository.GetFriendsForUser(username);
             var friendsOfRequest = _friendRepository.GetFriendsForUser(request);
 
-            if (!friendsOfUser.Contains(request)) {
-                this._friendRepository.AddFriend(username, request);
-            }
+            if(!AccountWithUsernameExists(username)) { return Task.CompletedTask;}
+            if (!AccountWithUsernameExists(request)) { return Task.CompletedTask; }
 
-            if (!friendsOfRequest.Contains(username))
-            {
-                this._friendRepository.AddFriend(request, username);
-            }
+            if (!friendsOfUser.Contains(request)) { this._friendRepository.AddFriend(username, request); }
+            if (!friendsOfRequest.Contains(username)) { this._friendRepository.AddFriend(request, username); }
 
             this._friendRequestRepository.DeleteFriendRequest(username, request);
             this._friendRequestRepository.DeleteFriendRequest(request, username);
