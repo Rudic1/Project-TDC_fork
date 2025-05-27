@@ -16,7 +16,7 @@ public class ToDoList
     public ToDoList() {
         ListID = 0;
         Name = "";
-        IsCollaborative = false;
+        IsCollaborative = true;
     }
     #endregion
 }
