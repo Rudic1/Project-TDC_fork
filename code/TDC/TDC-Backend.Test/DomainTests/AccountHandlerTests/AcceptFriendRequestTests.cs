@@ -26,8 +26,8 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 
             _target.AcceptFriendRequest("test-user", "test-receiver");
 
-            _target.friendRepository.Received().AddFriend("test-user", "test-receiver");
-            _target.friendRepository.Received().AddFriend("test-receiver", "test-user");
+            _target._friendRepository.Received().AddFriend("test-user", "test-receiver");
+            _target._friendRepository.Received().AddFriend("test-receiver", "test-user");
         }
 
         [Test]
@@ -37,7 +37,7 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 
             _target.AcceptFriendRequest("test-user", "test-receiver");
 
-            _target.friendRepository.DidNotReceive().AddFriend(Arg.Any<string>(), Arg.Any<string>()); 
+            _target._friendRepository.DidNotReceive().AddFriend(Arg.Any<string>(), Arg.Any<string>()); 
         }
 
         [Test]
@@ -47,8 +47,8 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 
             _target.AcceptFriendRequest("test-user", "test-receiver");
 
-            _target.friendRequestRepository.Received().DeleteFriendRequest("test-user", "test-receiver");
-            _target.friendRequestRepository.Received().DeleteFriendRequest("test-receiver", "test-user");
+            _target._friendRequestRepository.Received().DeleteFriendRequest("test-user", "test-receiver");
+            _target._friendRequestRepository.Received().DeleteFriendRequest("test-receiver", "test-user");
         }
 
         [Test]
@@ -58,7 +58,7 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 
             _target.AcceptFriendRequest("test-user", "test-receiver");
 
-            _target.friendRequestRepository.DidNotReceive().DeleteFriendRequest(Arg.Any<string>(), Arg.Any<string>());
+            _target._friendRequestRepository.DidNotReceive().DeleteFriendRequest(Arg.Any<string>(), Arg.Any<string>());
         }
     }
 }
