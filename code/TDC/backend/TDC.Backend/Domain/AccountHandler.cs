@@ -13,11 +13,11 @@ namespace TDC.Backend.Domain
 
         public Task AcceptFriendRequest(string username, string request)
         {
+            if (!AccountWithUsernameExists(username)) { return Task.CompletedTask; }
+            if (!AccountWithUsernameExists(request)) { return Task.CompletedTask; }
+
             var friendsOfUser = _friendRepository.GetFriendsForUser(username);
             var friendsOfRequest = _friendRepository.GetFriendsForUser(request);
-
-            if(!AccountWithUsernameExists(username)) { return Task.CompletedTask;}
-            if (!AccountWithUsernameExists(request)) { return Task.CompletedTask; }
 
             if (!friendsOfUser.Contains(request)) { this._friendRepository.AddFriend(username, request); }
             if (!friendsOfRequest.Contains(username)) { this._friendRepository.AddFriend(request, username); }
@@ -81,10 +81,10 @@ namespace TDC.Backend.Domain
         public Task SendFriendRequest(string username, string request)
         {
 
-            if (_accountRepository.GetAccountByUsername(username) == null)
+            if (!AccountWithUsernameExists(username))
             { return Task.CompletedTask; }
 
-            if (_accountRepository.GetAccountByUsername(request) == null)
+            if (!AccountWithUsernameExists(request))
             { return Task.CompletedTask; }
 
             if (username.Equals(request)) { return Task.CompletedTask; }

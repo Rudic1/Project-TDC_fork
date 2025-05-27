@@ -57,5 +57,40 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 
             _friendRequestRepository.DidNotReceive().AddFriendRequest(Arg.Any<string>(), Arg.Any<string>());
         }
+
+        [Test]
+        public void SendFriendRequest_UserSendsToThemselves_DoesNotCallRepository()
+        {
+            _target.SendFriendRequest("test-user", "test-user");
+            _friendRequestRepository.DidNotReceive().AddFriendRequest(Arg.Any<string>(), Arg.Any<string>());
+        }
+
+        [Test]
+        public void SendFriendRequest_UserDoesNotExist_DoesNotCallRepository()
+        {
+            _friendRequestRepository.GetRequestsForUser("test-user").Returns([]);
+            _friendRepository.GetFriendsForUser("test-user").Returns([]);
+            _friendRequestRepository.GetRequestsForUser("test-request").Returns([]);
+            _friendRepository.GetFriendsForUser("test-request").Returns([]);
+            _accountRepository.GetAccountByUsername("test-user").Returns((AccountDbo?)null);
+
+            _target.SendFriendRequest("test-user", "test-request");
+            
+            _friendRequestRepository.DidNotReceive().AddFriendRequest(Arg.Any<string>(), Arg.Any<string>());
+        }
+
+        [Test]
+        public void SendFriendRequest_RequestUserDoesNotExist_DoesNotCallRepository()
+        {
+            _friendRequestRepository.GetRequestsForUser("test-user").Returns([]);
+            _friendRepository.GetFriendsForUser("test-user").Returns([]);
+            _friendRequestRepository.GetRequestsForUser("test-request").Returns([]);
+            _friendRepository.GetFriendsForUser("test-request").Returns([]);
+            _accountRepository.GetAccountByUsername("test-request").Returns((AccountDbo?)null);
+
+            _target.SendFriendRequest("test-user", "test-request");
+            
+            _friendRequestRepository.DidNotReceive().AddFriendRequest(Arg.Any<string>(), Arg.Any<string>());
+        }
     }
 }
