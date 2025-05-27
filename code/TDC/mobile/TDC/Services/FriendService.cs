@@ -70,6 +70,13 @@ namespace TDC.Services
             var response = await _httpClient.PutAsync(url, null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task RemoveFriend(string username, string friendUsername)
+        {
+            var url = ConnectionUrls.development + $"/api/account/removeFriend/{username}/{friendUsername}";
+            var response = await _httpClient.PostAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 
 }

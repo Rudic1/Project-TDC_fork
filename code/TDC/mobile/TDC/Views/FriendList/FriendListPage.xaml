@@ -4,12 +4,37 @@
              x:Class="TDC.Views.FriendList.FriendListPage"
              Title="Friends">
 
-    <CollectionView x:Name="FriendsCollectionView" Margin="10">
+    <CollectionView x:Name="FriendsCollectionView" Margin="10" SelectionMode="None">
+        <CollectionView.EmptyView>
+            <Label Text="No friends yet."
+                   TextColor="Gray" 
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center" />
+        </CollectionView.EmptyView>
+
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <HorizontalStackLayout Spacing="10" Padding="5">
-                    <Image Source="{Binding ProfileImage}" WidthRequest="40" HeightRequest="40" />
-                    <Label Text="{Binding Username}" VerticalOptions="Center" FontSize="Medium"/>
+                <HorizontalStackLayout Padding="10" Spacing="15" VerticalOptions="Center">
+                    <!-- Profile Image -->
+                    <Image Source="{Binding ProfileImage}"
+                           WidthRequest="40"
+                           HeightRequest="40"
+                           Aspect="AspectFit" />
+
+                    <!-- Username -->
+                    <Label Text="{Binding Username}"
+                           FontSize="16"
+                           VerticalOptions="Center"
+                           WidthRequest="150"
+                           LineBreakMode="TailTruncation" />
+
+                    <!-- Button in nested layout (for future expansion/styling) -->
+                    <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                        <Button Text="Remove"
+                                Clicked="OnRemoveFriendClicked"
+                                CommandParameter="{Binding Username}" />
+                    </HorizontalStackLayout>
                 </HorizontalStackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>

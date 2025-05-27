@@ -11,6 +11,7 @@ namespace TDC.IService
         Task AcceptFriendRequest(string username, string requestName);
         Task DenyFriendRequest(string username, string requestName);
         Task CancelFriendRequest(string sender, string receiver);
-        Task<bool> AccountExists(string username); 
+        Task<bool> AccountExists(string username);
+        Task RemoveFriend(string username, string friendUsername);
     }
 }

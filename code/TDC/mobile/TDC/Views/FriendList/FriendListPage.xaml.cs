@@ -38,4 +38,20 @@ public partial class FriendListPage : ContentPage
             FriendsCollectionView.ItemsSource = friends;
         }
     }
+
+    private async void OnRemoveFriendClicked(object sender, EventArgs e)
+    {
+        if (sender is Button button && button.CommandParameter is string friendUsername)
+        {
+            bool confirm = await DisplayAlert("Remove Friend", $"Do you really want to remove {friendUsername}?", "Yes", "Cancel");
+            if (!confirm) return;
+
+            if (_userService.CurrentUser != null)
+            {
+                await _friendService.RemoveFriend(_userService.CurrentUser.Username, friendUsername);
+
+                OnAppearing();
+            }
+        }
+    }
 }
