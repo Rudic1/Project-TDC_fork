@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TDC.Views.Profile.ProfilePage"
+             Title="Profile">
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="20"
+            Spacing="25">
+
+            <Image 
+                x:Name="ProfileImage"
+                WidthRequest="2000"
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                Margin="0,15,0,10"/>
+
+            <Label x:Name="UserNameLabel"
+                   FontFamily="Text-Bold"
+                   FontSize="Medium"
+                   HorizontalOptions="Center" />
+            
+            <Border
+                Stroke="#EEEEEE"
+                StrokeThickness="1"
+                BackgroundColor="#393E46"
+                Padding="10"
+                StrokeShape="RoundRectangle 8"
+                HeightRequest="200">
+
+                <Grid>
+                    <Editor
+                        x:Name="DescriptionEditor"
+                        Placeholder="Tell us about yourself..."
+                        TextChanged="DescriptionEditor_TextChanged"
+                        MaxLength="150"
+                        AutoSize="TextChanges" />
+
+                    <Button
+                        Text="Save"
+                        Clicked="SaveDescriptionButton_Clicked"
+                        HorizontalOptions="End"
+                        VerticalOptions="End"
+                        FontSize="10"
+                        HeightRequest="5"                        
+                        Margin="0,0,7,7" />
+
+                    <Label
+                        x:Name="CharacterCountLabel"
+                        Text="150"
+                        FontSize="12"
+                        HorizontalOptions="Start"
+                        VerticalOptions="End"
+                        TextColor="Gray"
+                        Margin="4,0,4,2" />
+                </Grid>
+            </Border>
+            
+            <Label x:Name="EmailLabel"
+                   FontSize="Default"
+                   HorizontalOptions="Center"/>
+
+            <Button Text="Friends"
+                    FontSize="Default"
+                    Clicked="OpenFriendList_Clicked"/>
+
+            <Button Text="Friend Requests"
+                    FontSize="Default"
+                    Clicked="OpenFriendRequests_Clicked"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

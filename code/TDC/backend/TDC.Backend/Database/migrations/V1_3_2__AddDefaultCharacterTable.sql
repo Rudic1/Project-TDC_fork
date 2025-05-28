@@ -6,5 +6,5 @@ CREATE TABLE[dbo].[DefaultCharacter] (
 GO
 
 INSERT INTO [dbo].[DefaultCharacter] VALUES
-    (N'default', N'https://raw.githubusercontent.com/Ninetilt/Project-TDC/refs/heads/dev/docs/resources/to_dewey.svg');
+    (N'default', N'https://raw.githubusercontent.com/Ninetilt/Project-TDC/refs/heads/dev/docs/resources/to_dewey.png');
 GO

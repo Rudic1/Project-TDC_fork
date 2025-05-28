@@ -1,6 +1,7 @@
 ﻿using NSubstitute;
 using TDC.Backend.Domain;
 using TDC.Backend.IDataRepository;
+using TDC.Backend.IDataRepository.Models;
 
 namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
 {
@@ -18,47 +19,55 @@ namespace TDC.Backend.Test.DomainTests.AccountHandlerTests
             _friendRepository = Substitute.For<IFriendRepository>();
             _friendRequestRepository = Substitute.For<IFriendRequestRepository>();
             _target = new AccountHandler(_accountRepository, _friendRepository, _friendRequestRepository);
+
+            _accountRepository.GetAccountByUsername("test-user").Returns(new AccountDbo());
+            _accountRepository.GetAccountByUsername("test-request").Returns(new AccountDbo());
         }
 
         [Test]
         public void AcceptFriendRequest_UserIsNotFriendsWithRequestYet_CallsAddFriendForSenderAndReceiver() {
-            _friendRepository.GetFriendsForUser("test-user").Returns(new List<string>());
+            _friendRepository.GetFriendsForUser("test-user").Returns([]);
+            _friendRepository.GetFriendsForUser("test-request").Returns([]);
 
-            _target.AcceptFriendRequest("test-user", "test-receiver");
+            _target.AcceptFriendRequest("test-user", "test-request");
 
-            _target.friendRepository.Received().AddFriend("test-user", "test-receiver");
-            _target.friendRepository.Received().AddFriend("test-receiver", "test-user");
+            _target._friendRepository.Received().AddFriend("test-user", "test-request");
+            _target._friendRepository.Received().AddFriend("test-request", "test-user");
         }
 
         [Test]
         public void AcceptFriendRequest_UserIsFriendsWithRequest_DoesNotCallRepository()
         {
-            _friendRepository.GetFriendsForUser("test-user").Returns(new List<string> { "test-receiver"});
+            _friendRepository.GetFriendsForUser("test-user").Returns(["test-request"]);
+            _friendRepository.GetFriendsForUser("test-request").Returns(["test-user"]);
 
-            _target.AcceptFriendRequest("test-user", "test-receiver");
+            _target.AcceptFriendRequest("test-user", "test-request");
 
-            _target.friendRepository.DidNotReceive().AddFriend(Arg.Any<string>(), Arg.Any<string>()); 
+            _target._friendRepository.DidNotReceive().AddFriend(Arg.Any<string>(), Arg.Any<string>()); 
         }
 
         [Test]
         public void AcceptFriendRequest_UserIsNotFriendsWithRequestYet_CallsDeleteFriendRequestOnBoth()
         {
-            _friendRepository.GetFriendsForUser("test-user").Returns(new List<string>());
+            _friendRepository.GetFriendsForUser("test-user").Returns([]);
+            _friendRepository.GetFriendsForUser("test-request").Returns([]);
 
-            _target.AcceptFriendRequest("test-user", "test-receiver");
+            _target.AcceptFriendRequest("test-user", "test-request");
 
-            _target.friendRequestRepository.Received().DeleteFriendRequest("test-user", "test-receiver");
-            _target.friendRequestRepository.Received().DeleteFriendRequest("test-receiver", "test-user");
+            _target._friendRequestRepository.Received().DeleteFriendRequest("test-user", "test-request");
+            _target._friendRequestRepository.Received().DeleteFriendRequest("test-request", "test-user");
         }
 
         [Test]
-        public void AcceptFriendRequest_UserIsFriendsWithRequest_DoesNotCallRequestRepository()
+        public void AcceptFriendRequest_UserIsFriendsWithRequest_CallsRequestRepository()
         {
-            _friendRepository.GetFriendsForUser("test-user").Returns(new List<string> { "test-receiver" });
+            _friendRepository.GetFriendsForUser("test-user").Returns(["test-request"]);
+            _friendRepository.GetFriendsForUser("test-request").Returns([]);
 
-            _target.AcceptFriendRequest("test-user", "test-receiver");
+            _target.AcceptFriendRequest("test-user", "test-request");
 
-            _target.friendRequestRepository.DidNotReceive().DeleteFriendRequest(Arg.Any<string>(), Arg.Any<string>());
+            _target._friendRequestRepository.Received().DeleteFriendRequest("test-user", "test-request");
+            _target._friendRequestRepository.Received().DeleteFriendRequest("test-request", "test-user");
         }
     }
 }

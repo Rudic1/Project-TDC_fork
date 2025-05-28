@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using TDC.Services;             // <-- Hinzufügen
-using TDC.IService;          // <-- Hinzufügen
+using TDC.Services;             
+using TDC.IService;          
 using TDC.Views.Login;
 
 namespace TDC
@@ -39,6 +39,8 @@ namespace TDC
             services.AddTransient<IListService, ListService>();
             services.AddTransient<IListItemService, ListItemService>();
             services.AddTransient<ListView>();
+            services.AddTransient<ICharacterService, CharacterService>();
+            services.AddTransient<IFriendService, FriendService>();
         }
 
         private static void AddPages(IServiceCollection services) {

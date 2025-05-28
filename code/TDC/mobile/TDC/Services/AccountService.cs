@@ -74,7 +74,10 @@ public class AccountService : IAccountService
         var response = await httpClient.GetAsync(url);
 
         string responseContent = await response.Content.ReadAsStringAsync();
-        var accountDto = JsonSerializer.Deserialize<AccountLoadingDto>(responseContent)!;
+
+        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var accountDto = JsonSerializer.Deserialize<AccountLoadingDto>(responseContent, options)!;
+
         return new Account(username, accountDto.Description, accountDto.Email);
     }
 

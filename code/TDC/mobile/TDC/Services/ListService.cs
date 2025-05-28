@@ -57,13 +57,13 @@ namespace TDC.Services
             var url = ConnectionUrls.development + $"/api/List/finishList/{listId}";
             var data = new
             {
-                sender = sender,
+                username = sender,
             };
 
             var json = JsonSerializer.Serialize(data);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync(url, content);
+            await httpClient.PostAsync(url, content);
         }
 
         public async Task<ToDoList> GetListById(long listId)
@@ -92,6 +92,28 @@ namespace TDC.Services
                 listObjects.Add(list);
             }
             return listObjects;
+        }
+
+        public async Task<List<RewardingMessageDto>> GetOpenRewardsForUser(string username)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getOpenRewardsForUser/{username}";
+
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var rewards = JsonSerializer.Deserialize<List<RewardingMessageDto>>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return rewards ?? new List<RewardingMessageDto>();
+        }
+
+        public async Task RemoveSeenReward(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/removeSeenRewarding/{username}/{listId}";
+            await httpClient.PostAsync(url, null);
         }
         #endregion
 
