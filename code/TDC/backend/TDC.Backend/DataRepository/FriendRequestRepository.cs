@@ -49,5 +49,18 @@ namespace TDC.Backend.DataRepository
 
             this.Insert<RequestDbo>(sql, parameter);
         }
+
+        public List<string> GetSentRequestsForUser(string username)
+        {
+            var sql = $"SELECT * FROM dbo.{this.TableName} "
+                      + $"WHERE Request = @username;";
+            var parameters = new
+            {
+                username,
+            };
+
+            return this.Query<RequestDbo>(sql, parameters).Select(m => m.Username)
+                       .ToList();
+        }
     }
 }

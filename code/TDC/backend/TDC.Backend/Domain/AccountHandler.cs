@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using TDC.Backend.IDataRepository;
+﻿using TDC.Backend.IDataRepository;
 using TDC.Backend.IDataRepository.Models;
 using TDC.Backend.IDomain;
 using TDC.Backend.IDomain.Models;
@@ -9,34 +8,35 @@ namespace TDC.Backend.Domain
     public class AccountHandler(IAccountRepository accountRepository, IFriendRepository friendRepository, IFriendRequestRepository friendRequestRepository) : IAccountHandler
     {
         public readonly IAccountRepository _accountRepository = accountRepository;
-        public readonly IFriendRepository friendRepository = friendRepository;
-        public readonly IFriendRequestRepository friendRequestRepository = friendRequestRepository;
+        public readonly IFriendRepository _friendRepository = friendRepository;
+        public readonly IFriendRequestRepository _friendRequestRepository = friendRequestRepository;
 
-        public Task AcceptFriendRequest(string username, string requestName)
+        public Task AcceptFriendRequest(string username, string request)
         {
-            var friends = friendRepository.GetFriendsForUser(username);
+            if (!AccountWithUsernameExists(username)) { return Task.CompletedTask; }
+            if (!AccountWithUsernameExists(request)) { return Task.CompletedTask; }
 
-            if (friends.Contains(requestName)) {
-                return Task.CompletedTask;
-            }
-            this.friendRepository.AddFriend(username, requestName);
-            this.friendRepository.AddFriend(requestName, username);
+            var friendsOfUser = _friendRepository.GetFriendsForUser(username);
+            var friendsOfRequest = _friendRepository.GetFriendsForUser(request);
 
-            this.friendRequestRepository.DeleteFriendRequest(username, requestName);
-            this.friendRequestRepository.DeleteFriendRequest(requestName, username);
+            if (!friendsOfUser.Contains(request)) { this._friendRepository.AddFriend(username, request); }
+            if (!friendsOfRequest.Contains(username)) { this._friendRepository.AddFriend(request, username); }
+
+            this._friendRequestRepository.DeleteFriendRequest(username, request);
+            this._friendRequestRepository.DeleteFriendRequest(request, username);
             
             return Task.CompletedTask;
         }
 
-        public Task CancelFriendRequest(string sender, string receiver)
+        public Task CancelFriendRequest(string username, string request)
         {
-            this.friendRequestRepository.DeleteFriendRequest(sender, receiver);
+            this._friendRequestRepository.DeleteFriendRequest(username, request);
             return Task.CompletedTask;
         }
 
         public Task DenyFriendRequest(string username, string requestName)
         {
-            this.friendRequestRepository.DeleteFriendRequest(username, requestName);
+            this._friendRequestRepository.DeleteFriendRequest(username, requestName);
             return Task.CompletedTask;
         }
 
@@ -48,12 +48,12 @@ namespace TDC.Backend.Domain
 
         public List<string> GetFriendsForUser(string username)
         {
-            return friendRepository.GetFriendsForUser(username);
+            return _friendRepository.GetFriendsForUser(username);
         }
 
         public List<string> GetRequestsForUser(string username)
         {
-            return friendRequestRepository.GetRequestsForUser(username);
+            return _friendRequestRepository.GetRequestsForUser(username);
         }
 
         public bool LoginWithMail(string email, string password)
@@ -78,15 +78,30 @@ namespace TDC.Backend.Domain
             return true;
         }
 
-        public Task SendFriendRequest(string sender, string receiver)
+        public Task SendFriendRequest(string username, string request)
         {
-            var requests = friendRequestRepository.GetRequestsForUser(receiver);
-            var friends = friendRepository.GetFriendsForUser(receiver);
-            if (requests.Contains(sender)) { return Task.CompletedTask; }
-            if (friends.Contains(sender)) { return Task.CompletedTask; }
 
-            this.friendRequestRepository.AddFriendRequest(receiver, sender);
+            if (!AccountWithUsernameExists(username))
+            { return Task.CompletedTask; }
+
+            if (!AccountWithUsernameExists(request))
+            { return Task.CompletedTask; }
+
+            if (username.Equals(request)) { return Task.CompletedTask; }
+        
+            var requests = _friendRequestRepository.GetRequestsForUser(username);
+            var friends = _friendRepository.GetFriendsForUser(username);
+            if (requests.Contains(request)) { return Task.CompletedTask; }
+            if (friends.Contains(request)) { return Task.CompletedTask; }
+
+            this._friendRequestRepository.AddFriendRequest(username, request);
             return Task.CompletedTask;
+        }
+
+        public bool AccountExists(string username)
+        {
+            var account = _accountRepository.GetAccountByUsername(username);
+            return account != null;
         }
 
         public bool UpdateEmail(string username, string email)
@@ -100,7 +115,7 @@ namespace TDC.Backend.Domain
         {
             if (!AccountWithUsernameExists(username)) { return false;}
 
-            var oldPassword = _accountRepository.GetAccountByUsername(username).Password;
+            var oldPassword = _accountRepository.GetAccountByUsername(username)!.Password;
             if(oldPassword!.Equals(password)) { return false; }
             
             _accountRepository.UpdatePassword(username, password);
@@ -121,6 +136,18 @@ namespace TDC.Backend.Domain
             if (AccountWithUsernameExists(newUsername)) { return false; }
             _accountRepository.UpdateUsername(oldUsername, newUsername);
             return true;
+        }
+
+        public List<string> GetSentRequestsForUser(string username)
+        {
+            return _friendRequestRepository.GetSentRequestsForUser(username);
+        }
+
+        public Task RemoveFriend(string username, string friend)
+        {
+            _friendRepository.RemoveFriend(username, friend);
+            _friendRepository.RemoveFriend(friend, username);
+            return Task.CompletedTask;
         }
 
         #region privates

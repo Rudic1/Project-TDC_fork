@@ -59,6 +59,12 @@ namespace TDC.Backend.Controllers
             return _accountHandler.GetAccountByUsername(username);
         }
 
+        [HttpGet("accountExists/{username}")]
+        public bool AccountExists([FromRoute] string username)
+        {
+            return _accountHandler.AccountExists(username);
+        }
+
         #region Friend Management
 
         [HttpGet("getFriendsForUser/{username}")]
@@ -73,28 +79,40 @@ namespace TDC.Backend.Controllers
             return this._accountHandler.GetRequestsForUser(username);
         }
 
-        [HttpPost("acceptFriendRequest/{username}/{requestName}")]
-        public async Task AcceptFriendRequest([FromRoute] string username, [FromRoute] string requestName)
+        [HttpGet("getSentFriendRequestsForUser/{username}")]
+        public List<string> GetSentFriendRequestsForUser([FromRoute] string username)
         {
-            await this._accountHandler.AcceptFriendRequest(username, requestName);
+            return this._accountHandler.GetSentRequestsForUser(username);
         }
 
-        [HttpPost("denyFriendRequest/{username}/{requestName}")]
-        public async Task DenyFriendRequest([FromRoute] string senderName, [FromRoute] string requestName)
+        [HttpPost("acceptFriendRequest/{username}/{request}")]
+        public async Task AcceptFriendRequest([FromRoute] string username, [FromRoute] string request)
         {
-            await this._accountHandler.DenyFriendRequest(senderName, requestName);   
+            await this._accountHandler.AcceptFriendRequest(username, request);
         }
 
-        [HttpPut("sendFriendRequest/{senderName}/{receiverName}")]
-        public async Task SendFriendRequest([FromRoute] string senderName, [FromRoute] string receiverName)
+        [HttpPost("denyFriendRequest/{username}/{request}")]
+        public async Task DenyFriendRequest([FromRoute] string username, [FromRoute] string request)
         {
-            await this._accountHandler.SendFriendRequest(senderName, receiverName);
+            await this._accountHandler.DenyFriendRequest(username, request);
         }
 
-        [HttpPut("cancelFriendRequest/{senderName}/{receiverName}")]
-        public async Task CancelFriendRequest([FromRoute] string senderName, [FromRoute] string receiverName)
+        [HttpPut("sendFriendRequest/{username}/{request}")]
+        public async Task SendFriendRequest([FromRoute] string username, [FromRoute] string request)
         {
-            await this._accountHandler.CancelFriendRequest(senderName, receiverName);
+            await this._accountHandler.SendFriendRequest(username, request);
+        }
+
+        [HttpPut("cancelFriendRequest/{username}/{request}")]
+        public async Task CancelFriendRequest([FromRoute] string username, [FromRoute] string request)
+        {
+            await this._accountHandler.CancelFriendRequest(username, request);
+        }
+
+        [HttpPost("removeFriend/{username}/{friend}")]
+        public async Task RemoveFriend([FromRoute] string username, [FromRoute] string friend)
+        {
+            await this._accountHandler.RemoveFriend(username, friend);
         }
         #endregion
     }

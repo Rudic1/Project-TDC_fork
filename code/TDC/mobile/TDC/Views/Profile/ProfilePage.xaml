@@ -60,9 +60,13 @@
                    FontSize="Default"
                    HorizontalOptions="Center"/>
 
-            <Button Text="Open Friend List"
+            <Button Text="Friends"
                     FontSize="Default"
                     Clicked="OpenFriendList_Clicked"/>
+
+            <Button Text="Friend Requests"
+                    FontSize="Default"
+                    Clicked="OpenFriendRequests_Clicked"/>
 
         </VerticalStackLayout>
     </ScrollView>

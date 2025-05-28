@@ -16,7 +16,11 @@ namespace TDC.Backend.IDomain
         public List<string> GetRequestsForUser(string username);
         public Task AcceptFriendRequest(string username, string requestName);
         public Task DenyFriendRequest(string username, string requestName);
-        public Task SendFriendRequest(string sender, string receiver);
-        public Task CancelFriendRequest(string sender, string receiver);
+        public Task SendFriendRequest(string username, string requestName);
+        public Task CancelFriendRequest(string username, string requestName);
+
+        public bool AccountExists(string username);
+        public List<string> GetSentRequestsForUser(string username);
+        public Task RemoveFriend(string username, string friend);
     }
 }

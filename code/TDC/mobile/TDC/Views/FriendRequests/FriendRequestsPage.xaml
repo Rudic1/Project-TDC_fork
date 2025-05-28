@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TDC.Views.FriendRequests.FriendRequestsPage"
+             Title="Friend Requests">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+
+            <!-- Incoming Friend Requests -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Incoming Friend Requests" FontSize="20" FontAttributes="Bold" />
+                <CollectionView x:Name="IncomingRequestsView" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label Text="-" 
+                               TextColor="Gray" 
+                               FontSize="12" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout Padding="10" VerticalOptions="Center" Spacing="15">
+                                <Image Source="{Binding ProfileImage}" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" />
+                                <Label Text="{Binding Username}" VerticalOptions="Center" FontSize="16" WidthRequest="150" LineBreakMode="TailTruncation" />
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Button Text="Accept" Clicked="Accept_Clicked" />
+                                    <Button Text="Decline" Clicked="Decline_Clicked" />
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Sent Requests -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Sent Requests" FontSize="20" FontAttributes="Bold" />
+                <CollectionView x:Name="SentRequestsView" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label Text="-"
+                               TextColor="Gray" 
+                               FontSize="12" />
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout Padding="10" VerticalOptions="Center" Spacing="15">
+                                <Image Source="{Binding ProfileImage}" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" />
+                                <Label Text="{Binding Username}" VerticalOptions="Center" FontSize="16" WidthRequest="150" LineBreakMode="TailTruncation" />
+                                <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
+                                    <Button Text="Cancel" Clicked="CancelSentRequest_Clicked" />
+                                </HorizontalStackLayout>
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+            <!-- Send Friend Request -->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Send Friend Request" FontSize="20" FontAttributes="Bold" />
+                <Entry x:Name="UsernameEntry" Placeholder="Enter username..." FontSize="16" />
+                <Button Text="Send Request" Clicked="SendRequest_Clicked" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

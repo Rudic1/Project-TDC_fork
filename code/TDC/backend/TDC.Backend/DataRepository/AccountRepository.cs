@@ -98,12 +98,12 @@ namespace TDC.Backend.DataRepository
             this.Execute<AccountDbo>(sql, parameter);
         }
 
-        public AccountDbo GetAccountByUsername(string username)
+        public AccountDbo? GetAccountByUsername(string username)
         {
             return this.GetByUsername<AccountDbo>(username);
         }
 
-        public AccountDbo GetAccountByEmail(string email)
+        public AccountDbo? GetAccountByEmail(string email)
         {
             return this.GetByEmail<AccountDbo>(email);
         }

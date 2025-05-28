@@ -76,7 +76,27 @@ public partial class ProfilePage : ContentPage
 
     private async void OpenFriendList_Clicked(object sender, EventArgs e)
     {
-        // TODO: Navigation to FriendListPage
-        //await Shell.Current.GoToAsync("FriendListPage");
+        try
+        {
+            await Shell.Current.GoToAsync("FriendListPage");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Fehler", "Beim Öffnen der Freundesliste ist ein Fehler aufgetreten.", "OK");
+            Console.WriteLine("Fehler beim Navigieren zur Freundesliste: " + ex.Message);
+        }
+    }
+
+    private async void OpenFriendRequests_Clicked(object sender, EventArgs e)
+    {
+        try
+        {
+            await Shell.Current.GoToAsync("FriendRequestsPage");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", "Failed to open friend requests.", "OK");
+            Console.WriteLine("Error navigating to FriendRequestsPage: " + ex.Message);
+        }
     }
 }
