@@ -148,6 +148,12 @@ namespace TDC.Backend.Controllers
         {
            return _listHandler.GetMembersForList(listId);
         }
+
+        [HttpGet("getPointsForMember/{username}/{listId}")]
+        public int GetPointsForMember([FromRoute] string username,[FromRoute] long listId)
+        {
+            return _listHandler.GetPointsForMember(username,listId);
+        }
         #endregion
     }
 }

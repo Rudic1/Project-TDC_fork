@@ -223,6 +223,21 @@ namespace TDC.Backend.Domain
             var members = _listMemberRepository.GetListMembers(listId);
             return new ListMembersDto(members);
         }
+
+        public int GetPointsForMember(string username, long listId)
+        {
+            var points = 0;
+            var items = _listItemRepository.GetItemsForList(listId);
+            foreach (var item in items)
+            {
+                var isDone = _listItemRepository.GetItemStatus(item.Id, username);
+                if (isDone)
+                {
+                    points += item.Effort * 5;
+                }
+            }
+            return points;
+        }
         #endregion
 
         #region privates
@@ -288,20 +303,6 @@ namespace TDC.Backend.Domain
             }
 
             return memberPlacement;
-        }
-
-        private int GetPointsForMember(string username, long listId)
-        {
-            var points = 0;
-            var items = _listItemRepository.GetItemsForList(listId);
-            foreach (var item in items) {
-                var isDone = _listItemRepository.GetItemStatus(item.Id, username);
-                if(isDone)
-                {
-                    points += item.Effort * 5;
-                }
-            }
-            return points;
         }
 
         private ToDoListItemLoadingDto ParseItemDboToDto(ToDoListItemDbo dbo, string currentUser, List<string> listMembers)
