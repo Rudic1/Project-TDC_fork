@@ -19,6 +19,7 @@ public partial class ListView : IOnPageKeyDown
     private readonly IListService _listService;
     private readonly IListItemService _listItemService;
     private readonly UserService _userService;
+    private readonly IFriendService _friendService;
     
     public long? ListId { get; set; }
     public string? IdString { get; set; }
@@ -27,14 +28,16 @@ public partial class ListView : IOnPageKeyDown
     public List<long> DeletedItems = [];
     public List<ListItem> NewItems { get; set; } = [];
     public ObservableCollection<MemberWithPoints> Members { get; set; } = new();
+    public ObservableCollection<string> FriendUsernames { get; set; } = new();
 
     #region constructors
-    public ListView(IListService listService, IListItemService listItemService, UserService userService)
+    public ListView(IListService listService, IListItemService listItemService, UserService userService, IFriendService friendService)
     {
         InitializeComponent();
         _userService = userService;
         _listService = listService;
         _listItemService = listItemService;
+        _friendService = friendService;
         BindingContext = this;
     }
 
@@ -215,6 +218,7 @@ public partial class ListView : IOnPageKeyDown
             UpdatePointLabels();
 
             await LoadMembers();
+            await LoadFriends();
 
             return;
         }
@@ -245,6 +249,21 @@ public partial class ListView : IOnPageKeyDown
         }
     }
 
+
+    private async Task LoadFriends()
+    {
+        var allFriends = await _friendService.GetFriendsForUser(_userService.CurrentUser!.Username);
+
+        var currentMembers = (await _listService.GetMembersForList(ListId.Value)).Members;
+
+        var filteredFriends = allFriends.Except(currentMembers).ToList();
+
+        FriendUsernames.Clear();
+        foreach (var name in filteredFriends)
+        {
+            FriendUsernames.Add(name);
+        }
+    }
     private void AddItemToView(ListItem item) {
         var listItemView = new ListItemView(item);
         ItemsContainer.Children.Add(listItemView);
@@ -305,6 +324,15 @@ public partial class ListView : IOnPageKeyDown
         }
 
         return true;
+    }
+
+    private async void OnAddFriendClicked(object sender, EventArgs e)
+    {
+        var selectedUsername = FriendPicker.SelectedItem as string;
+        if (!string.IsNullOrEmpty(selectedUsername))
+        {
+            //await AddUserToList(selectedUsername);
+        }
     }
     #endregion
 }
