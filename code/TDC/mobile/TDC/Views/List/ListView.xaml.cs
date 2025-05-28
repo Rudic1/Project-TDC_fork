@@ -4,6 +4,8 @@ using TDC.Services;
 using TDC.IService;
 using TDC.Models.DTOs;
 using TDC.Views.ListItem;
+using System.Collections.ObjectModel;
+
 
 #if ANDROID
 using Android.Views;
@@ -24,7 +26,7 @@ public partial class ListView : IOnPageKeyDown
     public List<ListItem> ExistingItems { get; set; }
     public List<long> DeletedItems = [];
     public List<ListItem> NewItems { get; set; } = [];
-
+    public ObservableCollection<string> Members { get; set; } = new();
     #region constructors
     public ListView(IListService listService, IListItemService listItemService, UserService userService)
     {
@@ -32,6 +34,7 @@ public partial class ListView : IOnPageKeyDown
         _userService = userService;
         _listService = listService;
         _listItemService = listItemService;
+        BindingContext = this;
     }
 
     protected override void OnAppearing()
@@ -209,6 +212,9 @@ public partial class ListView : IOnPageKeyDown
             AddItemsForExistingList();
 
             UpdatePointLabels();
+
+            await LoadMembers();
+
             return;
         }
         List = new ToDoList();
@@ -220,6 +226,18 @@ public partial class ListView : IOnPageKeyDown
         foreach (var item in ExistingItems) {
             AddItemToView(item);
         }
+    }
+
+    private async Task LoadMembers()
+    {
+        var result = await _listService.GetMembersForList(ListId.Value);
+
+        Members.Clear(); 
+        foreach (var member in result.Members)
+        {
+            Members.Add(member);
+        }
+        
     }
 
     private void AddItemToView(ListItem item) {

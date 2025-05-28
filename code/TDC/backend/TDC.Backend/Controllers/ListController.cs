@@ -140,5 +140,14 @@ namespace TDC.Backend.Controllers
             _listHandler.RemoveSeenRewardingForUser(username, listId);
         }
         #endregion
+
+        #region List-Members
+
+        [HttpGet("getMembersForList/{listId}")]
+        public ListMembersDto GetMembersForList([FromRoute] long listId)
+        {
+           return _listHandler.GetMembersForList(listId);
+        }
+        #endregion
     }
 }

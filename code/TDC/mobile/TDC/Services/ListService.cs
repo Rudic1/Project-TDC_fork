@@ -115,6 +115,21 @@ namespace TDC.Services
             var url = ConnectionUrls.development + $"/api/List/removeSeenRewarding/{username}/{listId}";
             await httpClient.PostAsync(url, null);
         }
+
+        public async Task<ListMembersDto> GetMembersForList(long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getMembersForList/{listId}";
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var members = JsonSerializer.Deserialize<ListMembersDto>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return members ?? new ListMembersDto();
+        }
         #endregion
 
 

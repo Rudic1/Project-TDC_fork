@@ -217,6 +217,12 @@ namespace TDC.Backend.Domain
         {
             _openRewardsRepository.RemoveSeenReward(username, listId);
         }
+
+        public ListMembersDto GetMembersForList(long listId)
+        {
+            var members = _listMemberRepository.GetListMembers(listId);
+            return new ListMembersDto(members);
+        }
         #endregion
 
         #region privates
