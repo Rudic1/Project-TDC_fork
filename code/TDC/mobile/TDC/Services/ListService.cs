@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Buffers.Text;
+using System.Text;
 using System.Text.Json;
 using TDC.IService;
 using TDC.Models;
@@ -129,6 +130,18 @@ namespace TDC.Services
             });
 
             return members ?? new ListMembersDto();
+        }
+
+        public async Task<int> GetPointsForMember(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getPointsForMember/{username}/{listId}";
+            var response = await httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return int.Parse(content);
+            }
+            return 0;
         }
         #endregion
 

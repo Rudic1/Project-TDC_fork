@@ -26,7 +26,8 @@ public partial class ListView : IOnPageKeyDown
     public List<ListItem> ExistingItems { get; set; }
     public List<long> DeletedItems = [];
     public List<ListItem> NewItems { get; set; } = [];
-    public ObservableCollection<string> Members { get; set; } = new();
+    public ObservableCollection<MemberWithPoints> Members { get; set; } = new();
+
     #region constructors
     public ListView(IListService listService, IListItemService listItemService, UserService userService)
     {
@@ -232,12 +233,16 @@ public partial class ListView : IOnPageKeyDown
     {
         var result = await _listService.GetMembersForList(ListId.Value);
 
-        Members.Clear(); 
-        foreach (var member in result.Members)
+        Members.Clear();
+        foreach (var username in result.Members)
         {
-            Members.Add(member);
+            var points = await _listService.GetPointsForMember(username, ListId.Value);
+            Members.Add(new MemberWithPoints
+            {
+                Username = username,
+                Points = points
+            });
         }
-        
     }
 
     private void AddItemToView(ListItem item) {

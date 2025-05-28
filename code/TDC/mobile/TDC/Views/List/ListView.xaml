@@ -102,10 +102,15 @@
                                            WidthRequest="24"
                                            HeightRequest="24"
                                            VerticalOptions="Center"/>
-                                    <Label Text="{Binding}" 
+                                    <Label Text="{Binding Username}" 
                                            VerticalOptions="Center"
                                            TextColor="Black"
                                            FontSize="14" />
+                                    <Label Text="{Binding Points}"
+                                           VerticalOptions="Center"
+                                           TextColor="Gray"
+                                           FontSize="14"
+                                           Margin="10,0,0,0"/>
                                 </HorizontalStackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>

@@ -13,5 +13,6 @@ public interface IListService
     public Task<List<RewardingMessageDto>> GetOpenRewardsForUser(string username);
     public Task RemoveSeenReward(string username, long listId);
     public Task<ListMembersDto> GetMembersForList(long listId);
+    public Task<int> GetPointsForMember(string username, long listId);
 }
 
