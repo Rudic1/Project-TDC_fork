@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Buffers.Text;
+using System.Text;
 using System.Text.Json;
 using TDC.IService;
 using TDC.Models;
@@ -29,7 +30,7 @@ namespace TDC.Services
             var url = ConnectionUrls.development + $"/api/List/updateListTitle/{listId}";
             var data = new
             {
-                newTitle = newTitle,
+                ListTitle = newTitle,
             };
 
             var json = JsonSerializer.Serialize(data);
@@ -114,6 +115,40 @@ namespace TDC.Services
         {
             var url = ConnectionUrls.development + $"/api/List/removeSeenRewarding/{username}/{listId}";
             await httpClient.PostAsync(url, null);
+        }
+
+        public async Task<ListMembersDto> GetMembersForList(long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getMembersForList/{listId}";
+            var response = await httpClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var members = JsonSerializer.Deserialize<ListMembersDto>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return members ?? new ListMembersDto();
+        }
+
+        public async Task<int> GetPointsForMember(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/getPointsForMember/{username}/{listId}";
+            var response = await httpClient.GetAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                return int.Parse(content);
+            }
+            return 0;
+        }
+
+        public async Task AddUserToList(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/addUserToList/{listId}/{username}";
+            var response = await httpClient.PostAsync(url, null);
+            response.EnsureSuccessStatusCode();
         }
         #endregion
 

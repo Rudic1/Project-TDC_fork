@@ -2,7 +2,7 @@
 public class ToDoList
 {
     public string Name { get; set; }
-    public long ListID { get; } 
+    public long ListID { get; set; }
     public bool IsCollaborative { get; set; }
 
     #region constructors 
