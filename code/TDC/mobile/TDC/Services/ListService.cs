@@ -150,8 +150,22 @@ namespace TDC.Services
             var response = await httpClient.PostAsync(url, null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task<bool> IsUserCreator(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/isUserCreator/{username}/{listId}";
+
+            var response = await httpClient.GetAsync(url);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            return bool.Parse(responseContent);
+        }
+
+        public async Task RemoveUserFromList(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/removeUserFromList/{listId}/{username}";
+
+            await httpClient.GetAsync(url);
+        }
         #endregion
-
-
     }
 }

@@ -38,7 +38,7 @@ namespace TDC.Backend.Controllers
             await _listHandler.FinishList(listId, sender.Username);
         }
 
-        [HttpPut("removeUserFromList/{listId}/{username}")]
+        [HttpGet("removeUserFromList/{listId}/{username}")]
         public async Task RemoveUserFromList([FromRoute] long listId, [FromRoute] string username)
         {
             await _listHandler.RemoveUserFromList(listId, username);
@@ -159,6 +159,12 @@ namespace TDC.Backend.Controllers
         public int GetPointsForMember([FromRoute] string username,[FromRoute] long listId)
         {
             return _listHandler.GetPointsForMember(username,listId);
+        }
+
+        [HttpGet("isUserCreator/{username}/{listId}")]
+        public bool IsUserCreator([FromRoute] string username, [FromRoute] long listId)
+        {
+            return _listHandler.IsUserCreator(username, listId);
         }
         #endregion
     }

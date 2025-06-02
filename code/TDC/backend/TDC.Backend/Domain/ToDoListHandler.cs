@@ -104,7 +104,6 @@ namespace TDC.Backend.Domain
         public Task DeleteList(long listId, string sender)
         {
             if (!UserIsCreator(listId, sender)) { 
-                _listMemberRepository.RemoveListMember(listId, sender);
                 return Task.CompletedTask; 
             }
             _listRepository.DeleteList(listId);
@@ -142,6 +141,11 @@ namespace TDC.Backend.Domain
         {
             var dbo = _listRepository.GetById(listId);
             return dbo == null ? null : new ToDoListLoadingDto(dbo.Id, dbo.Name, dbo.IsCollaborative);
+        }
+
+        public bool IsUserCreator(string username, long listId)
+        {
+            return _listMemberRepository.UserIsCreator(listId, username);
         }
 
         #region list items
