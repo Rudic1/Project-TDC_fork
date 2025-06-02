@@ -69,9 +69,10 @@ public partial class ListView : IOnPageKeyDown
 
     private void TitleEntryChanged(object sender, EventArgs e)
     {
-        List.Name = this.FindByName<Entry>("TitleEntry")?.Text;
+        var newTitle = this.FindByName<Entry>("TitleEntry")?.Text;
         if (!string.IsNullOrEmpty(this.FindByName<Entry>("TitleEntry").Text))
         {
+            List.Name = newTitle!;
             this.FindByName<Label>("ErrorLabel").IsVisible = false;
         }
     }
@@ -94,6 +95,8 @@ public partial class ListView : IOnPageKeyDown
             this.FindByName<Label>("ErrorLabel").IsVisible = true;
             return -1;
         }
+
+        List.Name = listName;
 
         if (HasListId(ListId))
         {
@@ -171,7 +174,10 @@ public partial class ListView : IOnPageKeyDown
         return items.Sum(item => item.Effort * 5);
     }
 
-    private async Task UpdateExistingList() {
+    private async Task UpdateExistingList()
+    {
+
+        await _listService.UpdateListTitle(List.Name, (long) ListId!);
 
         var currentUser = _userService.CurrentUser!.Username;
         foreach (var existingItem in ExistingItems)
