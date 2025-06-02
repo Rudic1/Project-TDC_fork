@@ -12,5 +12,8 @@ public interface IListService
     public Task<List<ToDoList>> GetAllListsForUser(string username);
     public Task<List<RewardingMessageDto>> GetOpenRewardsForUser(string username);
     public Task RemoveSeenReward(string username, long listId);
+    public Task<ListMembersDto> GetMembersForList(long listId);
+    public Task<int> GetPointsForMember(string username, long listId);
+    public Task AddUserToList(string username, long listId);
 }
 

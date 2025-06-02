@@ -25,5 +25,7 @@ namespace TDC.Backend.IDomain
         public ToDoListLoadingDto? GetListById(long listId);
         public List<RewardingMessageDto> GetOpenRewardsForUser(string username);
         public void RemoveSeenRewardingForUser(string username, long listId);
+        public ListMembersDto GetMembersForList(long listId);
+        public int GetPointsForMember(string username, long listId);
     }
 }

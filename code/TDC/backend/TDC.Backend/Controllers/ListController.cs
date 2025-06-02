@@ -44,6 +44,12 @@ namespace TDC.Backend.Controllers
             await _listHandler.RemoveUserFromList(listId, username);
         }
 
+        [HttpPost("addUserToList/{listId}/{username}")]
+        public async Task AddUserToList([FromRoute] long listId, [FromRoute] string username)
+        {
+            await _listHandler.AddUserToList(listId, username);
+        }
+
         [HttpGet("getListsForUser/{username}")]
         public List<ToDoListLoadingDto> GetListsForUser([FromRoute] string username)
         {
@@ -138,6 +144,21 @@ namespace TDC.Backend.Controllers
         public void RemoveSeenRewardingForUser([FromRoute] string username, [FromRoute] long listId)
         {
             _listHandler.RemoveSeenRewardingForUser(username, listId);
+        }
+        #endregion
+
+        #region List-Members
+
+        [HttpGet("getMembersForList/{listId}")]
+        public ListMembersDto GetMembersForList([FromRoute] long listId)
+        {
+           return _listHandler.GetMembersForList(listId);
+        }
+
+        [HttpGet("getPointsForMember/{username}/{listId}")]
+        public int GetPointsForMember([FromRoute] string username,[FromRoute] long listId)
+        {
+            return _listHandler.GetPointsForMember(username,listId);
         }
         #endregion
     }

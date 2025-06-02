@@ -4,6 +4,8 @@ using TDC.Services;
 using TDC.IService;
 using TDC.Models.DTOs;
 using TDC.Views.ListItem;
+using System.Collections.ObjectModel;
+
 
 #if ANDROID
 using Android.Views;
@@ -17,6 +19,7 @@ public partial class ListView : IOnPageKeyDown
     private readonly IListService _listService;
     private readonly IListItemService _listItemService;
     private readonly UserService _userService;
+    private readonly IFriendService _friendService;
     
     public long? ListId { get; set; }
     public string? IdString { get; set; }
@@ -24,14 +27,18 @@ public partial class ListView : IOnPageKeyDown
     public List<ListItem> ExistingItems { get; set; }
     public List<long> DeletedItems = [];
     public List<ListItem> NewItems { get; set; } = [];
+    public ObservableCollection<MemberWithPoints> Members { get; set; } = new();
+    public ObservableCollection<string> FriendUsernames { get; set; } = new();
 
     #region constructors
-    public ListView(IListService listService, IListItemService listItemService, UserService userService)
+    public ListView(IListService listService, IListItemService listItemService, UserService userService, IFriendService friendService)
     {
         InitializeComponent();
         _userService = userService;
         _listService = listService;
         _listItemService = listItemService;
+        _friendService = friendService;
+        BindingContext = this;
     }
 
     protected override void OnAppearing()
@@ -79,24 +86,25 @@ public partial class ListView : IOnPageKeyDown
         await SaveList(true);
     }
 
-    private async Task SaveList(bool redirect)
+    private async Task<long> SaveList(bool redirect)
     {
         var listName = TitleEntry.Text?.Trim();
         if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName))
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = true;
-            return;
+            return -1;
         }
 
         if (HasListId(ListId))
         {
             await UpdateExistingList();
             if(redirect) { await Shell.Current.GoToAsync("///MainPage");}
-            return;
+            return (long) ListId;
         }
 
-        await CreateNewList();
+        var newId = await CreateNewList();
         if(redirect) { await Shell.Current.GoToAsync("///MainPage");}
+        return newId;
     }
 
     private async void OnFinishListClicked(object sender, EventArgs e)
@@ -185,10 +193,12 @@ public partial class ListView : IOnPageKeyDown
         }
     }
 
-    private async Task CreateNewList()
+    private async Task<long> CreateNewList()
     {
         var currentUser = _userService.CurrentUser!.Username;
         var newId = await _listService.CreateList(List.Name, List.IsCollaborative, currentUser); //TODO: Add toggle option for collabs
+
+        ListId = newId;
 
         foreach (var item in NewItems)
         {
@@ -196,6 +206,8 @@ public partial class ListView : IOnPageKeyDown
             var itemId = await _listItemService.AddItemToList(newId, itemDto);
             await _listItemService.SetItemStatus(itemId, currentUser, item.IsDone);
         }
+
+        return newId;
     }
 
     private async Task SetUpAsync()
@@ -209,10 +221,15 @@ public partial class ListView : IOnPageKeyDown
             AddItemsForExistingList();
 
             UpdatePointLabels();
+
+            await LoadMembers();
+            await LoadFriends();
+
             return;
         }
         List = new ToDoList();
         ExistingItems = [];
+        await LoadFriends();
     }
 
     private void AddItemsForExistingList()
@@ -222,6 +239,61 @@ public partial class ListView : IOnPageKeyDown
         }
     }
 
+    private async Task LoadMembers()
+    {
+        var result = await _listService.GetMembersForList(ListId.Value);
+        var currentUser = _userService.CurrentUser!.Username;
+
+        Members.Clear();
+        foreach (var username in result.Members)
+        {
+            if (username == currentUser)
+                continue;
+
+            var points = await _listService.GetPointsForMember(username, ListId.Value);
+            Members.Add(new MemberWithPoints
+            {
+                Username = username,
+                Points = points
+            });
+        }
+    }
+
+    private async Task LoadFriends()
+    {
+        var allFriends = await _friendService.GetFriendsForUser(_userService.CurrentUser!.Username);
+
+        if (!HasListId(ListId))
+        {
+            FriendUsernames.Clear();
+            foreach (var friend in allFriends)
+            {
+                FriendUsernames.Add(friend);
+            }
+            return;
+        }
+
+        var currentMembers = (await _listService.GetMembersForList(ListId.Value)).Members;
+
+        if (currentMembers == null)
+        {
+            FriendUsernames.Clear();
+            foreach (var friend in allFriends)
+            {
+                FriendUsernames.Add(friend);
+            }
+        }
+        else
+        {
+            var filteredFriends = allFriends.Except(currentMembers).ToList();
+
+            FriendUsernames.Clear();
+            foreach (var name in filteredFriends)
+            {
+                FriendUsernames.Add(name);
+            }
+        }
+    }
     private void AddItemToView(ListItem item) {
         var listItemView = new ListItemView(item);
         ItemsContainer.Children.Add(listItemView);
@@ -282,6 +354,23 @@ public partial class ListView : IOnPageKeyDown
         }
 
         return true;
+    }
+
+    private async void OnAddFriendClicked(object sender, EventArgs e)
+    {
+        var selectedUsername = FriendPicker.SelectedItem as string;
+        var id = await SaveList(false);
+        if (id == -1)
+        {
+            return;
+        }
+        this.List.ListID = id;
+        this.ListId = id;
+        if (!string.IsNullOrEmpty(selectedUsername))
+        {
+            await _listService.AddUserToList(selectedUsername, ListId.Value);
+            await LoadMembers();
+        }
     }
     #endregion
 }
