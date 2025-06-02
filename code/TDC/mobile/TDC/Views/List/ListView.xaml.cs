@@ -242,10 +242,14 @@ public partial class ListView : IOnPageKeyDown
     private async Task LoadMembers()
     {
         var result = await _listService.GetMembersForList(ListId.Value);
+        var currentUser = _userService.CurrentUser!.Username;
 
         Members.Clear();
         foreach (var username in result.Members)
         {
+            if (username == currentUser)
+                continue;
+
             var points = await _listService.GetPointsForMember(username, ListId.Value);
             Members.Add(new MemberWithPoints
             {
@@ -254,7 +258,6 @@ public partial class ListView : IOnPageKeyDown
             });
         }
     }
-
 
     private async Task LoadFriends()
     {
