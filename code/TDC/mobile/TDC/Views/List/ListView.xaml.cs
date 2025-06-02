@@ -197,6 +197,8 @@ public partial class ListView : IOnPageKeyDown
         var currentUser = _userService.CurrentUser!.Username;
         var newId = await _listService.CreateList(List.Name, List.IsCollaborative, currentUser); //TODO: Add toggle option for collabs
 
+        ListId = newId;
+
         foreach (var item in NewItems)
         {
             var itemDto = new ListItemSavingDto(item.Description, item.Effort);
@@ -224,6 +226,7 @@ public partial class ListView : IOnPageKeyDown
         }
         List = new ToDoList();
         ExistingItems = [];
+        await LoadFriends();
     }
 
     private void AddItemsForExistingList()
@@ -254,14 +257,35 @@ public partial class ListView : IOnPageKeyDown
     {
         var allFriends = await _friendService.GetFriendsForUser(_userService.CurrentUser!.Username);
 
+        if (!HasListId(ListId))
+        {
+            FriendUsernames.Clear();
+            foreach (var friend in allFriends)
+            {
+                FriendUsernames.Add(friend);
+            }
+            return;
+        }
+
         var currentMembers = (await _listService.GetMembersForList(ListId.Value)).Members;
 
-        var filteredFriends = allFriends.Except(currentMembers).ToList();
-
-        FriendUsernames.Clear();
-        foreach (var name in filteredFriends)
+        if (currentMembers == null)
         {
-            FriendUsernames.Add(name);
+            FriendUsernames.Clear();
+            foreach (var friend in allFriends)
+            {
+                FriendUsernames.Add(friend);
+            }
+        }
+        else
+        {
+            var filteredFriends = allFriends.Except(currentMembers).ToList();
+
+            FriendUsernames.Clear();
+            foreach (var name in filteredFriends)
+            {
+                FriendUsernames.Add(name);
+            }
         }
     }
     private void AddItemToView(ListItem item) {
@@ -331,7 +355,8 @@ public partial class ListView : IOnPageKeyDown
         var selectedUsername = FriendPicker.SelectedItem as string;
         if (!string.IsNullOrEmpty(selectedUsername))
         {
-            //await AddUserToList(selectedUsername);
+            await _listService.AddUserToList(selectedUsername, ListId.Value);
+            await LoadMembers();
         }
     }
     #endregion

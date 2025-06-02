@@ -144,6 +144,13 @@ namespace TDC.Services
             }
             return 0;
         }
+
+        public async Task AddUserToList(string username, long listId)
+        {
+            var url = ConnectionUrls.development + $"/api/List/addUserToList/{listId}/{username}";
+            var response = await httpClient.PostAsync(url, null);
+            response.EnsureSuccessStatusCode();
+        }
         #endregion
 
 

@@ -14,5 +14,6 @@ public interface IListService
     public Task RemoveSeenReward(string username, long listId);
     public Task<ListMembersDto> GetMembersForList(long listId);
     public Task<int> GetPointsForMember(string username, long listId);
+    public Task AddUserToList(string username, long listId);
 }
 

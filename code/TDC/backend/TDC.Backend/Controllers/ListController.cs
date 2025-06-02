@@ -44,6 +44,12 @@ namespace TDC.Backend.Controllers
             await _listHandler.RemoveUserFromList(listId, username);
         }
 
+        [HttpPost("addUserToList/{listId}/{username}")]
+        public async Task AddUserToList([FromRoute] long listId, [FromRoute] string username)
+        {
+            await _listHandler.AddUserToList(listId, username);
+        }
+
         [HttpGet("getListsForUser/{username}")]
         public List<ToDoListLoadingDto> GetListsForUser([FromRoute] string username)
         {
