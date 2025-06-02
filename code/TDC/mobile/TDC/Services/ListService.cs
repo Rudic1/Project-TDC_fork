@@ -25,13 +25,12 @@ namespace TDC.Services
             return long.Parse(responseContent);
         }
 
-        //Bitte für bugfix in safe list oder so adden idk
         public async Task UpdateListTitle(string newTitle, long listId)
         {
             var url = ConnectionUrls.development + $"/api/List/updateListTitle/{listId}";
             var data = new
             {
-                newTitle = newTitle,
+                ListTitle = newTitle,
             };
 
             var json = JsonSerializer.Serialize(data);
