@@ -86,24 +86,25 @@ public partial class ListView : IOnPageKeyDown
         await SaveList(true);
     }
 
-    private async Task SaveList(bool redirect)
+    private async Task<long> SaveList(bool redirect)
     {
         var listName = TitleEntry.Text?.Trim();
         if (string.IsNullOrWhiteSpace(listName) || HasInvalidTitleCharacters(listName))
         {
             this.FindByName<Label>("ErrorLabel").IsVisible = true;
-            return;
+            return -1;
         }
 
         if (HasListId(ListId))
         {
             await UpdateExistingList();
             if(redirect) { await Shell.Current.GoToAsync("///MainPage");}
-            return;
+            return (long) ListId;
         }
 
-        await CreateNewList();
+        var newId = await CreateNewList();
         if(redirect) { await Shell.Current.GoToAsync("///MainPage");}
+        return newId;
     }
 
     private async void OnFinishListClicked(object sender, EventArgs e)
@@ -192,7 +193,7 @@ public partial class ListView : IOnPageKeyDown
         }
     }
 
-    private async Task CreateNewList()
+    private async Task<long> CreateNewList()
     {
         var currentUser = _userService.CurrentUser!.Username;
         var newId = await _listService.CreateList(List.Name, List.IsCollaborative, currentUser); //TODO: Add toggle option for collabs
@@ -205,6 +206,8 @@ public partial class ListView : IOnPageKeyDown
             var itemId = await _listItemService.AddItemToList(newId, itemDto);
             await _listItemService.SetItemStatus(itemId, currentUser, item.IsDone);
         }
+
+        return newId;
     }
 
     private async Task SetUpAsync()
@@ -353,6 +356,13 @@ public partial class ListView : IOnPageKeyDown
     private async void OnAddFriendClicked(object sender, EventArgs e)
     {
         var selectedUsername = FriendPicker.SelectedItem as string;
+        var id = await SaveList(false);
+        if (id == -1)
+        {
+            return;
+        }
+        this.List.ListID = id;
+        this.ListId = id;
         if (!string.IsNullOrEmpty(selectedUsername))
         {
             await _listService.AddUserToList(selectedUsername, ListId.Value);
