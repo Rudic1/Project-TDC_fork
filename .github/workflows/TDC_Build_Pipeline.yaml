@@ -208,8 +208,46 @@ jobs:
           --configuration Release \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --results-directory ./output/backend-test-results
+
       - name: Upload Backend Unit Test Results
         uses: actions/upload-artifact@v4
         with:
           name: backend-unit-test-results
           path: ./output/backend-test-results/backend-unit-tests.trx
+
+      - name:  Run backend tests for code coverage
+        run: |
+          mkdir -p ./output/backend-coverage
+          dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
+            --configuration Release \
+            --collect:"XPlat Code Coverage" \
+            --results-directory ./output/backend-coverage
+
+      - name: Install ReportGenerator
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generate HTML code coverage report
+        run: |
+          reportgenerator \
+            -reports:./output/backend-coverage/**/coverage.cobertura.xml \
+            -targetdir:./output/backend-coverage-report \
+            -reporttypes:Html
+
+      - name: Upload HTML code coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: ./output/backend-coverage-report
+
+      - name: Install Roslyn Metrics Tool
+        run: dotnet tool install --global Microsoft.CodeAnalysis.Metrics
+
+      - name: Run Roslyn code metrics
+        run: |
+          dotnet metrics code/TDC/backend/TDC.Backend/TDC.Backend.csproj -o ./output/backend-code-metrics.xml
+
+      - name: Upload Roslyn code metrics report
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-code-metrics
+          path: ./output/backend-code-metrics.xml
