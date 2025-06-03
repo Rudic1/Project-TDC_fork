@@ -203,7 +203,6 @@ jobs:
           dotnet-sonarscanner begin \
             /k:"Rudic1_Project-TDC_fork" \
             /o:"rudic1" \
-            /d:sonar.login="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.cs.opencover.reportsPaths="output/backend-test-results/**/coverage.cobertura.xml"
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
