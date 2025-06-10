@@ -193,6 +193,12 @@ jobs:
         run: |
           /opt/mssql-tools/bin/sqlcmd -S localhost,1433 -U sa -P "$SA_PASSWORD" -Q "IF DB_ID('TDC.Test') IS NULL CREATE DATABASE [TDC.Test];"
       
+      - name: Generate temporary CI solution
+        run: |
+            dotnet new sln -n TDC_TempCI
+            dotnet sln TDC_TempCI.sln add code/TDC/backend/TDC.Backend/TDC.Backend.csproj
+            dotnet sln TDC_TempCI.sln add code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj
+
       # SonarScanner installieren
       - name: Install SonarScanner for .NET
         run: dotnet tool install --global dotnet-sonarscanner
@@ -203,20 +209,21 @@ jobs:
           dotnet-sonarscanner begin \
             /k:"Rudic1_Project-TDC_fork" \
             /o:"rudic1" \
-            /d:sonar.cs.opencover.reportsPaths="output/backend-test-results/**/coverage.cobertura.xml"
+            /d:sonar.cs.opencover.reportsPaths="output/backend-test-results/**/coverage.cobertura.xml" \
+            /d:sonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Restore Backend dependencies
-        run: dotnet restore code/TDC/backend/TDC.Backend/TDC.Backend.csproj
+      #- name: Restore Backend dependencies
+      #  run: dotnet restore code/TDC/backend/TDC.Backend/TDC.Backend.csproj
         
       - name: Build backend project
-        run: dotnet build code/TDC/backend/TDC.Backend/TDC.Backend.csproj -c Release 
+        run: dotnet build TDC_TempCI.sln -c Release 
 
       - name: Run backend tests
         run: |
           mkdir -p ./output/backend-test-results
-          dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
+          dotnet test TDC_TempCI.sln \
           --configuration Release \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --collect:"XPlat Code Coverage" \
@@ -253,3 +260,4 @@ jobs:
         with:
           name: backend-coverage-report
           path: ./output/backend-test-results/**/coverage.cobertura.xml
+
