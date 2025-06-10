@@ -203,36 +203,38 @@ jobs:
       - name: Install SonarScanner for .NET
         run: dotnet tool install --global dotnet-sonarscanner
 
+      # dotnet-coverage installieren
+      - name: Install dotnet-coverage tool
+        run: dotnet tool install --global dotnet-coverage
+
+
       # Analyse starten
       - name: Begin SonarCloud analysis
         run: |
           dotnet-sonarscanner begin \
             /k:"Rudic1_Project-TDC_fork" \
             /o:"rudic1" \
-            /d:sonar.cs.opencover.reportsPaths="output/backend-test-results/**/coverage.cobertura.xml" \
+            /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" \
             /d:sonar.verbose=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      #- name: Restore Backend dependencies
-      #  run: dotnet restore code/TDC/backend/TDC.Backend/TDC.Backend.csproj
-        
       - name: Build backend project
         run: dotnet build TDC_TempCI.sln -c Release 
 
       - name: Run backend tests
         run: |
-          mkdir -p ./output/backend-test-results
-          dotnet test TDC_TempCI.sln \
-          --configuration Release \
-          --logger "trx;LogFileName=backend-unit-tests.trx" \
-          --collect:"XPlat Code Coverage" \
-          --results-directory ./output/backend-test-results
+          dotnet-coverage collect \
+              "dotnet test TDC_TempCI.sln --no-build --configuration Release --logger \"trx;LogFileName=backend-unit-tests.trx\"" \
+              -f xml -o coverage.xml
 
-      - name: Check coverage files
+      # Artefakte & Debug-Listing
+      - name: Check files
         run: |
-          echo "Listing files in output/backend-test-results:"
-          ls -lR output/backend-test-results
+            echo "Coverage-Report:"
+            ls -l coverage.xml
+            echo "TRX-Ergebnis:"
+            ls -l *.trx || true
 
       # Sonar-Analyse abschließen
       - name: End SonarCloud analysis
@@ -253,11 +255,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-unit-test-results
-          path: ./output/backend-test-results/backend-unit-tests.trx
+          path: backend-unit-tests.trx
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
         with:
           name: backend-coverage-report
-          path: ./output/backend-test-results/**/coverage.cobertura.xml
+          path: coverage.xml
 
