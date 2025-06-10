@@ -204,7 +204,8 @@ jobs:
             /k:"Rudic1_Project-TDC_fork" \
             /o:"rudic1" \
             /d:sonar.cs.opencover.reportsPaths="output/backend-test-results/**/coverage.cobertura.xml"
-        env:
+            /d:sonar.verbose=true
+            env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Restore Backend dependencies
@@ -216,7 +217,7 @@ jobs:
       - name: Run backend tests
         run: |
           mkdir -p ./output/backend-test-results
-          dotnet test code/TDC/TDC-Backend.Test/TDC.Backend.Test.csproj \
+          dotnet test code/TDC/TDC.sln \
           --configuration Release \
           --logger "trx;LogFileName=backend-unit-tests.trx" \
           --collect:"XPlat Code Coverage" \
