@@ -205,7 +205,7 @@ jobs:
             /o:"rudic1" \
             /d:sonar.cs.opencover.reportsPaths="output/backend-test-results/**/coverage.cobertura.xml" \
             /d:sonar.verbose=true
-            env:
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Restore Backend dependencies
