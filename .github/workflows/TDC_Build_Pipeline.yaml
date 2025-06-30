@@ -228,13 +228,11 @@ jobs:
               "dotnet test TDC_TempCI.sln --no-build --configuration Release --logger \"trx;LogFileName=backend-unit-tests.trx\"" \
               -f xml -o coverage.xml
 
-      # Artefakte & Debug-Listing
+      # Debug-Listing
       - name: Check files
         run: |
-            echo "Coverage-Report:"
-            ls -l coverage.xml
-            echo "TRX-Ergebnis:"
-            ls -l *.trx || true
+            echo " Find TRX-Files:"
+            find . -name "*.trx" -exec ls -l {} \; || true
 
       # Sonar-Analyse abschließen
       - name: End SonarCloud analysis
@@ -255,7 +253,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: backend-unit-test-results
-          path: backend-unit-tests.trx
+          path: code/TDC/TDC-Backend.Test/TestResults/backend-unit-tests.trx
 
       - name: Upload Coverage Report
         uses: actions/upload-artifact@v4
